@@ -574,3 +574,254 @@ Três diferenças estruturais frente à Shopify:
 3. **Barreira alta ≠ barreira útil** (rodada 3) — a barreira precisa ser **técnica**. Barreira operacional ou regulatória (impostos EUA) exige gente, licença e responsabilidade legal, o que quebra o modelo "IA First".
 4. **Na Shopify, dificuldade e volume são inversamente proporcionais** (rodada 3) — o quadrante "difícil e com muitos compradores self-serve" não existe, porque quem tem os problemas difíceis compra serviço, não app.
 5. **A restrição pode não ser a categoria, e sim o marketplace.** Três rodadas, quinze categorias, e o padrão da Shopify não se moveu: líder grátis, nota 4,9–5,0, centenas ou milhares de avaliações. O Atlassian tem a barra de qualidade num patamar visivelmente mais baixo e não tem o problema do líder grátis.
+   > ⚠️ **A segunda metade deste item foi corrigida na rodada 4.** A sonda rasa (4 categorias) levou à conclusão errada de que não há líder grátis no Atlassian. Há — ver rodada 4, categorias 4 e 6.
+
+---
+
+# RODADA 4 — Atlassian Marketplace, verificação completa
+
+Consultada em **25/08/2026**. Jira Cloud e Confluence Cloud. Shopify em espera por decisão do Amarildo.
+
+## ⚠️ Nota de método (diferenças frente às rodadas 1–3)
+
+Três limitações que precisam ficar explícitas, porque tornam esta rodada **menos rigorosa** que as anteriores:
+
+1. **Não existe filtro por estrelas.** A Shopify permite listar só as avaliações 1–3★; o Atlassian não. Tive de varrer o fluxo cronológico e selecionar as críticas por conteúdo. Cobertura menor e com viés meu na seleção.
+2. **Contagem de avaliações não é comparável com a Shopify.** O Atlassian mostra instalações e avaliações separadas, e a taxa de avaliação é de ~0,5% a 4% (draw.io: 62,7 mil instalações, 1.204 avaliações). **Uso instalações como medida de tração e nota como medida de satisfação.**
+3. **A cobertura nativa do Jira/Confluence está marcada por confiança.** Onde não verifiquei em fonte oficial, está marcado como *não verificado* — meu corte de conhecimento é maio/2026 e a Atlassian muda funcionalidade nativa com frequência. **Fechar essa lacuna é a primeira tarefa da rodada 5.**
+
+## Resumo executivo da rodada 4
+
+| # | Categoria | Líder | Nota | Instalações | Líder grátis? | Veredito |
+|---|---|---|---|---|---|---|
+| 1 | Time tracking | Tempo Timesheets | **4.1** | 27,2 mil | Não | 🟡 **Dor técnica confirmada** |
+| 2 | Test management | Xray | **4.3** | 25,7 mil | Não | 🟡 **Incumbentes fracos** |
+| 3 | Exportação PDF/Word (Confluence) | Scroll PDF (K15t) | 4.7 | 8,9 mil | Não | 🔴 K15t domina bem |
+| 4 | Checklists e subtarefas | Checklists Free | 4.8 | **31,3 mil** | **SIM** | 🔴 Reprovado |
+| 5 | Dependências e roadmaps | Structure by Tempo | 4.6 | 13,1 mil | Não | 🟡 Fragmentado, mas nativo avança |
+| 6 | Relatórios e dashboards | eazyBI | 4.7 | 11,1 mil | **SIM** (Easy Reports Free) | 🔴 Reprovado |
+
+**Dois candidatos com sinal real: time tracking e test management.** E uma correção importante à rodada 3 — ver "O que a rodada 4 corrigiu".
+
+---
+
+## Categoria 1 — Time tracking (Jira Cloud) 🟡
+
+| App | Nota | Aval. | Instalações | Selos |
+|---|---|---|---|---|
+| **Timesheets by Tempo** | **4.1** | 896 | **27,2 mil** | SPOTLIGHT |
+| Timesheet Tracking (Cappsule) | 4.4 | 251 | 13,4 mil | CLOUD FORTIFIED + BESTSELLER |
+| **Clockify** (CAKE.com) | **3.9** | 129 | 9,1 mil | CLOUD FORTIFIED |
+| Clockwork Lite (HeroCoders) | 4.6 | 112 | 7,1 mil | RUNS ON ATLASSIAN |
+| Time in Status (SaaSJet) | 4.5 | 208 | 5,4 mil | CLOUD FORTIFIED + SPOTLIGHT |
+| **Harvest (Oficial)** | **2.5** | 145 | 2,5 mil | CLOUD FORTIFIED |
+
+**Preço:** Tempo — **US$ 10,00/mês para 10 usuários (US$ 1,00/usuário)**, 30 dias de teste.
+
+**Nativo (não verificado em fonte oficial):** o Jira tem registro de tempo nativo — estimativa original, tempo gasto, worklogs e relatórios básicos. O que não tem: folha de ponto por período, aprovação de horas, taxas de faturamento e relatórios de utilização. É exatamente essa camada que os apps vendem.
+
+**Reclamações — duas técnicas e precisas:**
+
+- **Worklogs gravados como app, não como usuário** *(jun/2026)*: *"breaking any JQL queries on worklog authors, because on jira side each worklog gets loged asApp and not asUser… `worklogAuthor = currentUser()` returns zero results. This could be easily avoided by using asUser."* O app quebra a consulta nativa do Jira — e o próprio usuário aponta a correção.
+- **Usuário comum trancado fora após atualização** *(jul/2026)*: *"Instead of accessing my time tracking, I'm greeted with 'Choose which apps you would like on your Jira instance.' As a regular user, I don't manage Jira apps, so I'm effectively locked out."* Tela de administrador exibida para quem não é administrador.
+
+**Veredito 🟡:** líder com **4.1 e 27 mil instalações**, e as falhas são de **fidelidade de integração com o Jira** — categoria de problema técnica, verificável e corrigível por código. É o perfil que o critério nº 5 pede. Contra: categoria com 11+ concorrentes e consolidadores grandes (Tempo, HeroCoders, SaaSJet).
+
+---
+
+## Categoria 2 — Test management (Jira Cloud) 🟡
+
+| App | Nota | Aval. | Instalações | Selos |
+|---|---|---|---|---|
+| **Xray** (Xblend) | **4.3** | 551 | **25,7 mil** | CLOUD FORTIFIED + BESTSELLER |
+| **Zephyr** (SmartBear) | **4.1** | 492 | 15,5 mil | CLOUD FORTIFIED + SPOTLIGHT |
+| **Zephyr Essential** | **3.9** | 900 | 10,3 mil | — |
+| **TestRail** (integração) | **3.8** | 110 | 10,5 mil | — |
+| AIO Tests | **4.9** | 113 | 3,5 mil | CLOUD FORTIFIED + BESTSELLER |
+| QMetry (QTM4J) | 4.7 | 200 | 2,2 mil | CLOUD FORTIFIED |
+| Agile Test | 4.6 | 73 | 1,2 mil | CLOUD FORTIFIED |
+
+**Nativo:** o Jira **não tem** gestão de testes nativa. Categoria inteiramente de apps.
+
+**O padrão mais interessante das seis categorias:** os quatro maiores em instalação estão entre **3.8 e 4.3**; os desafiantes bem avaliados (AIO Tests 4.9, QMetry 4.7) têm 5 a 10 vezes menos instalações. **Qualidade e distribuição estão descorrelacionadas** — o que significa que ser melhor, sozinho, não desloca o incumbente. É um alerta, não um convite.
+
+**Reclamação recorrente — e é de modelo de licença, não de software:**
+- *"the licensing cost is based on all Jira users rather than just the QA team members who need it. For a team with only 4–5 QA engineers, the pricing was not cost-effective."* *(jun/2026)*
+
+Essa é a dor mais citada da categoria e **não é corrigível por nós**: o licenciamento por total de usuários da instância é regra da plataforma Atlassian, não escolha do fornecedor. Vale como aprendizado geral sobre o marketplace, não como brecha de produto.
+
+**Veredito 🟡:** demanda enorme (61 mil instalações somando os quatro maiores) e incumbentes fracos. Mas a descorrelação entre nota e distribuição sugere que a decisão de compra é institucional, não por qualidade.
+
+---
+
+## Categoria 3 — Exportação de PDF/Word do Confluence 🔴
+
+| App | Nota | Aval. | Instalações | Selos |
+|---|---|---|---|---|
+| **Scroll PDF Exporter** (K15t) | 4.7 | 225 | 8,9 mil | CLOUD FORTIFIED + BESTSELLER |
+| **Scroll Word Exporter** (K15t) | **4.9** | 135 | 4,7 mil | CLOUD FORTIFIED + BESTSELLER |
+| Content Exporter | **3.5** | 28 | 1,1 mil | CLOUD FORTIFIED |
+| PDF/HTML/Word Exporter | **3.1** | 8 | 192 | — |
+| Easy PDF Export | **2.7** | 6 | 44 | — |
+| Iota Copy (Markdown/LLM/PDF) | 5.0 | 2 | 73 | RUNS ON ATLASSIAN |
+
+**Preço:** Scroll PDF — **US$ 5,00/mês para 10 usuários (US$ 0,50/usuário)**. O mais barato das seis categorias.
+
+**Nativo:** o Confluence exporta para PDF e Word nativamente (página e espaço). O que os apps vendem é controle de template, capa, sumário, cabeçalho/rodapé, numeração e paginação.
+
+**A distribuição de notas conta a história:** a K15t tem 4.7 e 4.9; **todos os desafiantes estão entre 2.7 e 3.5**. Isso confirma que exportação fiel é tecnicamente difícil — mas confirma também que **alguém já resolveu**, e há mais de uma década.
+
+**Veredito 🔴:** dificuldade real, mas com um incumbente que a venceu e cobra pouco (US$ 0,50/usuário). Entrar aqui é competir contra a K15t em qualidade de renderização por US$ 5/mês. Sem espaço.
+
+---
+
+## Categoria 4 — Checklists e subtarefas (Jira Cloud) 🔴
+
+| App | Nota | Aval. | Instalações | Selos | Preço (10 usuários) |
+|---|---|---|---|---|---|
+| **Checklists for Jira (Free)** | **4.8** | **1.008** | **31,3 mil** | — | **Grátis** |
+| Checklists for Jira (Pro) | 4.5 | 264 | 8 mil | SPOTLIGHT | **Grátis até 10 usuários** |
+| Smart Checklists | 4.7 | 130 | 4,6 mil | RUNS ON ATLASSIAN + BESTSELLER | — |
+| Checklists for Jira (Enterprise) | 4.3 | 143 | 4,6 mil | BESTSELLER | — |
+| Multiple Checklists | **4.9** | 29 | 1,1 mil | CLOUD FORTIFIED | — |
+| Automatic Subtasks | 3.8 | 13 | 55 | — | — |
+
+**Nativo:** o Jira tem subtarefas nativas e listas de tarefas na descrição. *(Se a Atlassian adicionou campo de checklist nativo depois de maio/2026, não verifiquei — fica para a rodada 5.)*
+
+**Veredito 🔴 — e é a reprovação mais importante da rodada.** A HeroCoders opera uma escada Free → Pro → Enterprise em que o **degrau grátis tem 31,3 mil instalações e nota 4.8** — mais instalações que qualquer líder pago das outras cinco categorias. É exatamente o padrão que reprovou metade das categorias da Shopify.
+
+---
+
+## Categoria 5 — Dependências e roadmaps entre projetos 🟡
+
+| App | Nota | Aval. | Instalações | Selos |
+|---|---|---|---|---|
+| **Structure by Tempo** | 4.6 | 408 | **13,1 mil** | CLOUD FORTIFIED + SPOTLIGHT |
+| Deep Clone for Jira | 4.5 | 134 | 12,1 mil | CLOUD FORTIFIED + SPOTLIGHT |
+| Gantt Charts for Structure | **4.2** | 61 | 6,5 mil | CLOUD FORTIFIED |
+| Aha! Roadmaps for Jira | **4.9** | 357 | 1,7 mil | — |
+| Portfolio Roadmaps/Timeline | 4.3 | 30 | 1,5 mil | CLOUD FORTIFIED |
+| Projectrak | 4.5 | 127 | 1,4 mil | CLOUD FORTIFIED |
+| **Easy Agile Roadmaps** | **3.5** | 64 | 1,3 mil | CLOUD FORTIFIED |
+| Version Sync (cross-project) | 4.7 | 8 | 404 | CLOUD FORTIFIED |
+
+**Nativo — e aqui está o risco:** o Jira tem Timeline em todos os planos e **Advanced Roadmaps (planejamento entre projetos, dependências, capacidade) incluído no plano Premium**. *(Não reverifiquei o escopo atual — corte de maio/2026.)* Ou seja: **o nativo cresce com o upgrade de plano do cliente**, e é justamente o cliente grande, que paga mais por assento, quem tem Premium.
+
+**Veredito 🟡 com ressalva forte:** categoria fragmentada, sem líder grátis, com notas irregulares (3.5 a 4.9) — sinais bons. Mas competir contra uma função que a Atlassian entrega de graça no plano Premium é a versão Atlassian do problema "concorrente grátis". **Precisa de verificação do nativo antes de qualquer coisa.**
+
+---
+
+## Categoria 6 (escolha minha, a partir das negativas) — Relatórios e dashboards 🔴
+
+Escolhi esta porque as reclamações de time tracking e test management convergem para o mesmo lugar: **os dados existem no Jira, mas extrair relatório confiável deles é o que dói** (JQL quebrada, worklogs mal atribuídos, relatórios básicos demais).
+
+| App | Nota | Aval. | Instalações | Selos |
+|---|---|---|---|---|
+| **eazyBI** | 4.7 | 226 | **11,1 mil** | CLOUD FORTIFIED + BESTSELLER |
+| **Easy Reports Free** | **4.8** | 91 | **11,7 mil** | RUNS ON ATLASSIAN |
+| Custom Charts for Jira | 4.5 | 139 | 8,2 mil | CLOUD FORTIFIED + BESTSELLER |
+| Great Gadgets | 4.4 | 49 | 3,7 mil | CLOUD FORTIFIED + BESTSELLER |
+| Easy Reports (pago) | 4.8 | 91 | 3 mil | RUNS ON ATLASSIAN |
+| Dashboard Hub Pro | 4.6 | 82 | 3,2 mil | CLOUD FORTIFIED |
+
+**Preço:** eazyBI — **US$ 10,00/mês para 10 usuários (US$ 1,00/usuário)**.
+
+**Nativo:** o Jira tem dashboards e gadgets nativos, além de relatórios ágeis (burndown, velocity, control chart). Limitação: pouca customização e nenhuma modelagem de dados.
+
+**Veredito 🔴:** o app mais instalado da categoria é **grátis** (Easy Reports Free, 11,7 mil instalações, nota 4.8) e tem selo Runs on Atlassian. Mesmo padrão da categoria 4.
+
+---
+
+## Respostas às três perguntas de plataforma
+
+### (a) Forge vs Connect — o Forge é hospedado grátis pela Atlassian?
+
+**Não exatamente, e isso mudou recentemente.** A Atlassian hospeda a computação e o armazenamento (não há servidor nosso para manter, nem Railway, nem Postgres), **mas desde janeiro/2026 o Forge cobra por consumo**: há franquia mensal gratuita por app e o excedente é faturado no mês seguinte. As cotas rígidas antigas foram removidas em favor desse modelo.
+
+**Franquia gratuita mensal e preço do excedente** (fonte: documentação oficial do Forge, consultada hoje):
+
+| Capacidade | Franquia grátis/mês | Excedente (US$) |
+|---|---|---|
+| Funções: duração | 200.000 GB-segundos | 0,000025 / GB-s |
+| Key-Value Store: leituras | 0,1 GB | 0,055 / GB |
+| **Key-Value Store: escritas** | 0,1 GB | **1,090 / GB** |
+| Logs: escrita | 1 GB | 1,005 / GB |
+| SQL: computação | 1 hora | 0,143 / hora |
+| SQL: requisições | 100.000 | 1,929 / 1M |
+| SQL: armazenamento | 730 GB-hora | 0,00076850 / GB-h |
+| Object Store: requisições | 5.000 | 0,001353 / 1k |
+| **Containers (computação/memória)** | **0** | 0,07177 / vCPU-h · 0,00786 / GiB-h |
+| **LLM** | **0 créditos** | varia por modelo |
+
+**Limitações relevantes para nós:**
+- **Escrita em KVS é a linha cara** (US$ 1,09/GB): um app que grava muito estado por usuário sai caro. Arquitetura precisa favorecer leitura.
+- **Containers e LLM têm franquia zero** — qualquer uso de container ou de IA é custo desde o primeiro minuto. Isso importa muito num negócio "IA First".
+- Excedente não pago pode **suspender o app**.
+- Controles de egress: chamadas externas exigem permissão declarada, e alterá-las invalida o selo Runs on Atlassian.
+
+**Vantagem financeira do Forge — e é significativa:**
+
+| Framework | Repasse ao desenvolvedor | Atlassian retém |
+|---|---|---|
+| **Forge** | **84%** | 16% |
+| Connect | 80% | 20% |
+| Data Center | 75% | 25% |
+
+**Selo "Runs on Atlassian":** exclusivo de apps Forge que usam **só** computação e armazenamento da Atlassian, suportam residência de dados e permitem ao cliente controlar egress. É **automático** para apps elegíveis — não exige inscrição nem custo. É o selo de confiança barato.
+
+**Recomendação técnica: Forge**, por repasse maior, ausência de infraestrutura própria e acesso ao selo automático — com a arquitetura desenhada para evitar escrita pesada em KVS, containers e LLM na Atlassian.
+
+### (b) Taxa do marketplace e prazo de aprovação
+
+- **Taxa:** a Atlassian retém **16% (Forge)** ou **20% (Connect)** da receita bruta dos apps "Paid via Atlassian".
+- **Prazo de aprovação:** **10 a 15 dias úteis** (documentação oficial), variando com o volume da fila. Erros na submissão atrasam. Há verificações de segurança novas para apps e versões novas.
+
+> **Comparação honesta com a Shopify:** a Shopify cobra **0% abaixo de US$ 1M/ano acumulado**, depois 15%. **Na nossa fase, a Shopify é mais barata que o Atlassian** — 0% contra 16%. A vantagem do Atlassian não está na taxa; está no preço por cliente e na barra de qualidade da concorrência.
+
+### (c) Requisitos do Cloud Fortified
+
+Fonte oficial. Exige participação em três frentes:
+
+- **Segurança:** participar do **Marketplace Security Bug Bounty Program** e completar a aba de Privacidade e Segurança da listagem.
+- **Confiabilidade:** SLOs de capacidade central com testes; processo de gestão de incidentes, com **plano documentado de restauração de serviço**, **engenheiros respondendo a incidentes de alta severidade via serviço de alerta (ex.: Opsgenie)**, ticket canônico "EcoHOT" e revisões pós-incidente.
+- **Suporte:** ponto de contato de suporte e **resposta a ticket crítico/alta severidade em até 1 dia (24 h), 5 dias úteis por semana**, no fuso do parceiro.
+
+**Leitura para o nosso caso:** Cloud Fortified é **plantão humano**, não código. Bug bounty custa dinheiro; SLO e resposta em 24 h exigem alguém de sobreaviso. É a mesma armadilha de "barreira operacional" que reprovou impostos-EUA na rodada 3 — só que aqui é **opcional**. Dá para lançar sem o selo e mirar **Runs on Atlassian**, que é automático e gratuito.
+
+---
+
+## O que a rodada 4 corrigiu da rodada 3
+
+**Eu havia escrito, com base em 4 categorias, que o Atlassian "não tem líder grátis". Está errado.** Com 6 categorias examinadas:
+
+- **Checklists:** Checklists for Jira (Free) — **31,3 mil instalações, nota 4.8, grátis**
+- **Relatórios:** Easy Reports Free — **11,7 mil instalações, nota 4.8, grátis**
+- E o padrão **"grátis até 10 usuários"** aparece como preço de entrada de apps pagos (Checklists Pro é grátis nessa faixa)
+
+**Formulação corrigida:** o Atlassian **não tem líder grátis em toda categoria**, mas tem em algumas — e o filtro do critério nº 3 continua valendo lá igualzinho. O que muda de verdade frente à Shopify é a **barra de qualidade** (líderes em 3.8–4.3 sustentando 10–27 mil instalações) e o **valor por cliente**.
+
+## O que realmente diferencia o Atlassian da Shopify
+
+| Dimensão | Shopify | Atlassian |
+|---|---|---|
+| Nota dos líderes | 4,8–5,0 | **3.8–4.7** |
+| Líder grátis | Regra | Existe, mas **não em toda categoria** |
+| Preço em times pequenos | US$ 19–39 fixos | **US$ 0–10/mês** (grátis até 10 usuários é comum) |
+| Preço em clientes grandes | US$ 39 fixos | **Escala por assento** |
+| Taxa do marketplace | **0%** (até US$ 1M) | 16% (Forge) / 20% (Connect) |
+| Aprovação | dias a semanas | **10–15 dias úteis** |
+| Infraestrutura | nossa (Railway ~US$ 5/mês) | **da Atlassian**, com franquia + consumo |
+| Clientes para US$ 15k/mês | ~790 pagantes a US$ 19 | **~150 instâncias** a ~US$ 100/mês |
+
+**A diferença decisiva é a última linha.** Precisar de 150 clientes em vez de 790 muda o problema de aquisição por um fator de cinco — e é a primeira métrica em quatro rodadas que torna a meta de US$ 15k/mês plausível para um portfólio pequeno.
+
+**A contrapartida:** em times pequenos o Atlassian paga **menos** que a Shopify (grátis a US$ 10/mês contra US$ 19–39), a taxa é maior na nossa fase, e a receita só aparece quando entram instâncias grandes — que têm ciclo de compra institucional, revisão de segurança e, muitas vezes, exigência de Cloud Fortified.
+
+## Candidatos que sobreviveram à rodada 4
+
+| Candidato | A favor | Contra |
+|---|---|---|
+| **Time tracking** | Líder em 4.1 com 27,2 mil instalações; **duas falhas técnicas concretas e verificáveis** (worklog `asApp` quebrando JQL; tela de admin para não-admin); sem nativo equivalente; sem líder grátis | 11+ concorrentes, consolidadores grandes |
+| **Test management** | Sem nativo nenhum; incumbentes em 3.8–4.3 com 61 mil instalações somadas | Qualidade e distribuição descorrelacionadas — AIO Tests tem 4.9 e 7x menos instalações que o Xray de 4.3 |
+
+**Nenhum dos dois está aprovado.** Ambos precisam do que ficou faltando nesta rodada: **verificação da funcionalidade nativa em fonte oficial** e **leitura sistemática das negativas** — que aqui foi por varredura manual, não por filtro.

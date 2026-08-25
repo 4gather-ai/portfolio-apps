@@ -69,7 +69,52 @@ Entram aqui quando o app 1 estiver publicado:
 
 ---
 
-## 5. Regra de aprovação
+---
+
+## 6. Cenário Atlassian (rodada 4, 25/08/2026)
+
+Se o caminho for o Atlassian Marketplace, **a estrutura de custo muda para melhor**: some a hospedagem e o banco.
+
+| Item | Custo | Observação |
+|---|---|---|
+| Conta de Marketplace Partner | R$ 0 | Gratuita |
+| Instância de desenvolvimento (Jira/Confluence Cloud) | R$ 0 | Free tier da Atlassian |
+| **Hospedagem** | **R$ 0** | **A Atlassian hospeda.** Railway deixa de ser necessário |
+| **Banco de dados** | **R$ 0** | Forge KVS / Forge SQL, dentro da franquia |
+| Forge — consumo além da franquia | variável | Ver franquias abaixo |
+| Domínio | ~R$ 66/ano | Ainda necessário para suporte e política de privacidade |
+| Selo Runs on Atlassian | R$ 0 | Automático para apps Forge elegíveis |
+| Selo Cloud Fortified | **não orçado** | Exige Bug Bounty pago + plantão 24 h. **Fora da v1** |
+
+### Franquia mensal gratuita do Forge (por app) e preço do excedente
+
+| Capacidade | Franquia grátis | Excedente (US$) |
+|---|---|---|
+| Funções: duração | 200.000 GB-segundos | 0,000025 / GB-s |
+| KVS: leituras | 0,1 GB | 0,055 / GB |
+| **KVS: escritas** | 0,1 GB | **1,090 / GB** ← linha cara |
+| Logs | 1 GB | 1,005 / GB |
+| SQL: computação | 1 hora | 0,143 / hora |
+| SQL: requisições | 100.000 | 1,929 / 1M |
+| Object Store | 5.000 requisições | 0,001353 / 1k |
+| **Containers** | **0** | 0,07177 / vCPU-h |
+| **LLM** | **0 créditos** | varia por modelo |
+
+**Dois alertas de arquitetura:** escrita em KVS é a operação cara, então o desenho deve favorecer leitura; e **containers e LLM não têm franquia** — num negócio "IA First", qualquer inferência dentro do Forge é custo desde o primeiro minuto. Excedente não pago pode suspender o app.
+
+### Taxa do marketplace — comparação honesta
+
+| Marketplace | Retido | Na nossa fase |
+|---|---|---|
+| Shopify | 0% até US$ 1M acumulado, depois 15% | **0%** |
+| Atlassian Forge | 16% | 16% |
+| Atlassian Connect | 20% | 20% |
+
+**A Shopify é mais barata em taxa hoje.** A vantagem do Atlassian está no preço por cliente (escala por assento), não na comissão.
+
+---
+
+## 7. Regra de aprovação
 
 Qualquer linha da seção 3 vira gasto real **só depois** de:
 1. Estar registrada aqui com valor,

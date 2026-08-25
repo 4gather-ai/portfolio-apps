@@ -250,12 +250,58 @@ O `CLAUDE.md` justifica o App 1 com três premissas. As três foram verificadas 
 
 ---
 
+## 2026-08-25 — Rodada 4 no Atlassian: dois candidatos sobreviveram
+
+**Decisão:** Shopify em espera; impressora e domínio **não comprados**. Rodada 4 executada em 6 categorias de Jira e Confluence Cloud. Detalhe e fontes em `PESQUISA.md`, seção "Rodada 4".
+
+**Sobreviveram:** **time tracking** (líder Tempo em 4.1 com 27,2 mil instalações; app oficial da Harvest em 2.5) e **test management** (sem nativo; incumbentes entre 3.8 e 4.3, somando 61 mil instalações).
+**Reprovados:** checklists e relatórios (líder **grátis** com 31,3 mil e 11,7 mil instalações), exportação PDF/Word do Confluence (K15t com 4.7 e 4.9, a US$ 0,50/usuário). Roadmaps ficou 🟡 com ressalva: o Jira Premium entrega Advanced Roadmaps nativamente.
+
+**Dor técnica concreta encontrada (critério nº 5):** o Tempo grava worklogs como app e não como usuário, quebrando `worklogAuthor = currentUser()` no JQL nativo; e exibe tela de administrador para usuários comuns após atualização.
+
+**Nenhum aprovado.** Falta verificar a funcionalidade nativa do Jira em fonte oficial e ler as negativas sistematicamente.
+
+---
+
+## 2026-08-25 — Correção: o Atlassian TEM líder grátis em algumas categorias
+
+**Decisão:** corrigida a conclusão da rodada 3.
+**Motivo:** a sonda rasa (4 categorias) me levou a afirmar que "o Atlassian não tem líder grátis". Com 6 categorias, está errado: **Checklists for Jira (Free)** tem 31,3 mil instalações e nota 4.8; **Easy Reports Free** tem 11,7 mil e 4.8. Além disso, "**grátis até 10 usuários**" é preço de entrada comum de apps pagos.
+**Formulação correta:** o critério nº 3 (sem líder grátis) vale no Atlassian igualzinho. O que diferencia o Atlassian é a **barra de qualidade** dos líderes (3.8–4.7 contra 4,8–5,0 da Shopify) e o **valor por cliente**, não a ausência de grátis.
+
+---
+
+## 2026-08-25 — Plataforma Atlassian: fatos apurados em fonte oficial
+
+**Forge vs Connect:** repasse ao desenvolvedor de **84% (Forge)** contra **80% (Connect)**; Atlassian retém 16% / 20%. **Recomendação técnica: Forge** — sem infraestrutura própria (dispensa Railway e Postgres) e com acesso ao selo **Runs on Atlassian**, que é automático e gratuito.
+
+**Forge não é mais hospedagem grátis incondicional.** Desde janeiro/2026 vale modelo de **consumo com franquia mensal grátis por app** e excedente faturado. Franquias: 200.000 GB-s de função, 0,1 GB de leitura e 0,1 GB de escrita em KVS, 1 GB de log, 1 h de SQL. **Escrita em KVS custa US$ 1,09/GB; containers e LLM têm franquia zero** — relevante num negócio "IA First". Excedente não pago pode suspender o app.
+
+**Prazo de aprovação: 10 a 15 dias úteis.**
+
+**Comparação de taxa, honesta:** a Shopify cobra **0% até US$ 1M acumulado**. **Na nossa fase a Shopify é mais barata que o Atlassian.** A vantagem do Atlassian não está na taxa.
+
+**Cloud Fortified exige** Bug Bounty pago, aba de Privacidade e Segurança, SLOs com testes, plano documentado de restauração, **plantão via serviço de alerta** e **resposta a ticket crítico em 24 h, 5 dias/semana**. É **plantão humano, não código** — mesma armadilha operacional que reprovou impostos-EUA. **É opcional**: recomendo lançar sem ele e mirar Runs on Atlassian.
+
+---
+
+## 2026-08-25 — A métrica que mudou o quadro
+
+**Fato:** para chegar a US$ 15.000/mês seriam necessários **~790 lojistas pagantes a US$ 19** na Shopify, contra **~150 instâncias a ~US$ 100/mês** no Atlassian, porque lá o preço escala por assento.
+
+**Interpretação:** é a primeira métrica em quatro rodadas que torna a meta de 12 meses plausível para um portfólio pequeno — fator de cinco na dificuldade de aquisição.
+
+**Contrapartida registrada:** em times pequenos o Atlassian paga **menos** (grátis a US$ 10/mês contra US$ 19–39), a taxa é maior agora, e a receita só aparece com instâncias grandes — que compram institucionalmente, com revisão de segurança e ciclo longo.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: parado, aguardando retorno.** Nenhum trabalho em andamento; nenhum bloqueio técnico.
 
 | # | Tema | Pergunta | Bloqueia |
 |---|---|---|---|
-| 1 | **Marketplace** | Rodada 4 completa no Atlassian, ou insistir na Shopify? Três rodadas e quinze categorias não moveram o padrão da Shopify | **Todo o trabalho** |
-| 2 | **Etiquetas** | Segue como único candidato Shopify vivo, agora com custo de entrada de **R$ 300** (impressora). Vale a compra antes de decidir o marketplace? | O caminho Shopify |
-| 3 | Domínio | Comprar `northstackapps.com` agora ou esperar a decisão de marketplace? O nome serve aos dois | Submissão, quando houver app |
+| 1 | **Próximo passo** | Rodada 5 curta (verificar nativo do Jira em fonte oficial + ler negativas a fundo dos 2 sobreviventes), ou decidir já entre **time tracking** e **test management**? | **Todo o trabalho** |
+| 2 | **Framework** | Confirma **Forge**? 84% de repasse contra 80%, sem infraestrutura nossa | Arquitetura |
+| 3 | **Selos** | Confirma mirar **Runs on Atlassian** (automático, grátis) e **não** Cloud Fortified na v1? | Escopo da v1 |
+| 4 | Shopify | Fica em espera indefinida ou é abandonada de vez? Muda o que fica no repositório | Organização do repo |

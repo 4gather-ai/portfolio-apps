@@ -1,23 +1,82 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-25 (sessão 5) · Dia 1 de 365 · **Gasto: R$ 0,00**
+**Última atualização:** 2026-08-25 (sessão 6) · Dia 1 de 365 · **Gasto: R$ 0,00**
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
 ## ⏸️ ESTADO: parado, aguardando retorno
 
-Rodada 3 concluída (caminho B). **Nenhum candidato Shopify aprovado — três rodadas, quinze categorias.** A sonda no Atlassian, porém, deu sinal positivo. Tudo registrado em `PESQUISA.md`, `DECISOES.md`, `CUSTOS.md` e `CLAUDE.md`, commitado e pushado.
-
-**A pergunta mudou de nível: não é mais "qual app", é "qual marketplace".**
+Rodada 4 concluída no Atlassian Marketplace. **Dois candidatos sobreviveram — os primeiros em quatro rodadas.** Nenhum aprovado ainda; falta fechar uma lacuna de verificação. Shopify em espera; impressora e domínio **não comprados**, conforme instruído. Tudo em `PESQUISA.md`, `DECISOES.md`, `CUSTOS.md` e `CLAUDE.md`, commitado e pushado.
 
 | # | Pergunta | Quem responde | O que destrava |
 |---|---|---|---|
-| 1 | **Rodada 4 completa no Atlassian, ou insistir na Shopify?** | Chat estratégico / Amarildo | **Todo o trabalho** |
-| 2 | Etiquetas segue o único candidato Shopify vivo, agora com **R$ 300** de custo de entrada (impressora). Vale comprar antes de decidir o marketplace? | Amarildo | O caminho Shopify |
-| 3 | Comprar `northstackapps.com` agora ou esperar? O nome serve aos dois marketplaces | Amarildo | Submissão, quando houver app |
+| 1 | **Rodada 5 curta** (verificar o nativo do Jira em fonte oficial + ler negativas a fundo dos 2 sobreviventes), ou decidir já entre **time tracking** e **test management**? | Chat estratégico / Amarildo | **Todo o trabalho** |
+| 2 | Confirma **Forge** como framework? Repasse 84% contra 80% do Connect, sem infraestrutura nossa | Amarildo | Arquitetura |
+| 3 | Confirma mirar **Runs on Atlassian** (automático e grátis) e **não** Cloud Fortified na v1? Cloud Fortified exige bug bounty pago e plantão de 24 h | Amarildo | Escopo da v1 |
 
-**Não há bloqueio técnico.** CLI autenticado, ambiente pronto, repositório limpo e sincronizado.
+**Não há bloqueio técnico.** Repositório limpo e sincronizado.
+
+---
+
+## Rodada 4 — Atlassian Marketplace (Jira e Confluence Cloud)
+
+| # | Categoria | Líder | Nota | Instalações | Líder grátis? | Veredito |
+|---|---|---|---|---|---|---|
+| 1 | **Time tracking** | Tempo Timesheets | **4.1** | 27,2 mil | Não | 🟡 **Dor técnica confirmada** |
+| 2 | **Test management** | Xray | **4.3** | 25,7 mil | Não | 🟡 **Incumbentes fracos** |
+| 3 | PDF/Word do Confluence | Scroll PDF (K15t) | 4.7 | 8,9 mil | Não | 🔴 K15t resolveu bem |
+| 4 | Checklists e subtarefas | Checklists **Free** | 4.8 | **31,3 mil** | **SIM** | 🔴 Reprovado |
+| 5 | Dependências e roadmaps | Structure by Tempo | 4.6 | 13,1 mil | Não | 🟡 Nativo Premium avança |
+| 6 | Relatórios e dashboards | eazyBI | 4.7 | 11,1 mil | **SIM** | 🔴 Reprovado |
+
+### Os dois sobreviventes
+
+**Time tracking** — o líder tem **4.1 com 27,2 mil instalações** e o app oficial da Harvest sustenta 2,5 mil instalações com **nota 2.5**. As duas reclamações que encontrei são técnicas, concretas e corrigíveis:
+
+- **Worklog gravado como app, não como usuário** *(jun/2026)*: *"each worklog gets loged asApp and not asUser… `worklogAuthor = currentUser()` returns zero results. This could be easily avoided by using asUser."* O app quebra a consulta nativa do Jira — e o usuário aponta a correção.
+- **Usuário comum trancado fora após atualização** *(jul/2026)*: tela de administrador ("Choose which apps you would like on your Jira instance") exibida para quem não administra nada.
+
+**Test management** — o Jira **não tem nada nativo**. Os quatro maiores em instalação estão entre **3.8 e 4.3** (Xray 4.3, Zephyr 4.1, Zephyr Essential 3.9, TestRail 3.8), somando 61 mil instalações. Mas há um alerta: **qualidade e distribuição estão descorrelacionadas** — AIO Tests tem 4.9 e sete vezes menos instalações que o Xray de 4.3. Ser melhor, sozinho, não desloca o incumbente.
+
+### O que eu errei na rodada 3, e corrigi agora
+
+Eu havia concluído, com 4 categorias, que **"o Atlassian não tem líder grátis"**. Com 6, está errado:
+- **Checklists for Jira (Free)** — 31,3 mil instalações, nota 4.8, grátis
+- **Easy Reports Free** — 11,7 mil instalações, nota 4.8, grátis
+- E "**grátis até 10 usuários**" é preço de entrada comum dos apps pagos
+
+O critério nº 3 vale no Atlassian igualzinho. **O que muda de verdade é a barra de qualidade e o valor por cliente**, não a ausência de grátis.
+
+### Shopify × Atlassian, lado a lado
+
+| Dimensão | Shopify | Atlassian |
+|---|---|---|
+| Nota dos líderes | 4,8–5,0 | **3.8–4.7** |
+| Preço em times pequenos | US$ 19–39 fixos | US$ 0–10/mês |
+| Preço em clientes grandes | US$ 39 fixos | **escala por assento** |
+| Taxa do marketplace | **0%** até US$ 1M | 16% Forge / 20% Connect |
+| Aprovação | dias a semanas | **10–15 dias úteis** |
+| Infraestrutura | nossa (~US$ 5/mês) | **da Atlassian** (franquia + consumo) |
+| **Clientes para US$ 15k/mês** | ~790 pagantes a US$ 19 | **~150 instâncias a ~US$ 100** |
+
+**A última linha é a que importa.** Precisar de 150 clientes em vez de 790 muda a aquisição por um fator de cinco — é a primeira métrica em quatro rodadas que torna US$ 15k/mês plausível para um portfólio pequeno.
+
+**Contrapartida honesta:** em time pequeno o Atlassian paga **menos** que a Shopify, **a taxa é maior na nossa fase** (16% contra 0%), e a receita só aparece com instâncias grandes — que compram institucionalmente, com revisão de segurança.
+
+### Plataforma: as três respostas
+
+**(a) Forge é hospedado grátis?** Quase. A Atlassian hospeda computação e armazenamento — **não precisamos de Railway nem de Postgres** — mas desde **janeiro/2026 há cobrança por consumo**, com franquia mensal grátis por app e excedente faturado no mês seguinte. Franquias: 200.000 GB-s de função, 0,1 GB de leitura e 0,1 GB de escrita em KVS, 1 GB de log, 1 h de SQL. **Atenção: escrita em KVS custa US$ 1,09/GB, e containers e LLM têm franquia zero** — relevante para um negócio "IA First". Excedente não pago pode suspender o app.
+
+**Repasse:** **Forge 84%**, Connect 80%, Data Center 75%. **Recomendo Forge.** O selo **Runs on Atlassian** é automático e gratuito para apps Forge que usam só infraestrutura da Atlassian.
+
+**(b) Taxa e prazo:** Atlassian retém **16% (Forge)** ou **20% (Connect)**. Aprovação em **10–15 dias úteis**. *Comparação honesta: na nossa fase a Shopify é mais barata — 0% até US$ 1M.*
+
+**(c) Cloud Fortified exige:** participação no **Bug Bounty Program** pago + aba de Privacidade e Segurança; SLOs com testes, plano documentado de restauração e **engenheiros de plantão via serviço de alerta**; e **resposta a ticket crítico em 24 h, 5 dias por semana**. É **plantão humano, não código** — a mesma armadilha de barreira operacional que reprovou impostos-EUA. Mas aqui é **opcional**: dá para lançar sem ele.
+
+### Lacuna que esta rodada não fechou
+
+O Atlassian **não tem filtro por estrelas** como a Shopify. Varri o fluxo cronológico e selecionei as críticas por conteúdo — cobertura menor e com viés meu. E a **cobertura nativa do Jira/Confluence não foi verificada em fonte oficial** (meu corte é maio/2026). As duas coisas são a primeira tarefa da rodada 5.
 
 ---
 
