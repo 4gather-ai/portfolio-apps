@@ -1,105 +1,93 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-25 (sessão 2 do Claude Code)
-**Dia do projeto:** 1 de 365 · Início 25/08/2026
-**Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado
-**Orçamento:** R$ 10.000 · **gasto até agora: R$ 0,00**
+**Última atualização:** 2026-08-25 (sessão 3) · Dia 1 de 365 · **Gasto: R$ 0,00**
+**Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
-## 🔴 DECISÃO 1 — O App 1 não deve ser construído como está especificado
+## 🔴 ÚNICO BLOQUEIO — escolher o próximo app
 
-Fui verificar se o nome "Restock" estava livre. A verificação virou pesquisa de concorrência e derrubou as três premissas que justificam o App 1 no `CLAUDE.md`.
+Verifiquei os quatro candidatos na App Store. **Nenhum passa a nova regra 8 com folga.** Um único tem espaço, e é estreito. Evidência completa em [PESQUISA.md](PESQUISA.md).
 
-| Premissa no CLAUDE.md | Realidade na App Store hoje |
+| # | Candidato | Concorrente mais forte | Veredito |
+|---|---|---|---|
+| 1 | Documentos de pedido | MS Order Printer — 5,0★ (255), **grátis**, BFS | 🔴 **Não** |
+| 2 | **Etiquetas de código de barras** | RF Gerador — 5,0★ (326), **grátis**, BFS | 🟡 **Talvez — o único** |
+| 3 | Sync Airtable/Notion/ClickUp | SyncBase — 4,9★ (81), US$ 24/mês | 🔴 **Não** — sem demanda |
+| 4 | Bundles | Kaching — 5,0★ (**5.321**) | 🔴 **Não**, categoricamente |
+
+### Por que o candidato 2 é o único vivo
+
+- **É o único onde a Shopify não tem função nativa.** Nos outros três, o caminho nativo existe e é grátis.
+- **O app oficial não é só ruim, está regredindo.** Duas reclamações de julho/2026: uma atualização **removeu o SKU** das etiquetas Avery 5167 (risco de etiquetar produto errado) e trocou fonte e tamanho do código de barras, quebrando layouts de quem usava há 3 anos. 2,3★ com **204 avaliações de 1★**.
+- **A mesma dor técnica aparece no oficial e no líder pago:** o que imprime não é o que o preview mostra — dimensão errada, não escaneia, precisa baixar o PDF antes de imprimir senão sai torto. Ninguém resolveu.
+- **Formato de moeda por localidade está errado** no oficial (`€19,99` em vez de `19,99 €` na França) — casa com a nossa regra de i18n desde o dia 1.
+- Há disposição a pagar: o líder pago cobra **US$ 7,99/mês** com 447 avaliações.
+
+**O que trava o candidato 2:** **RF é grátis, 5,0★, 326 avaliações e Built for Shopify.** Teríamos que ganhar de graça, e a única dimensão onde dá para ganhar — fidelidade de impressão — **exige testar com impressora física** (Dymo, Zebra, Brother) e leitor real. Sem hardware, não dá para atacar justamente o que seria o diferencial.
+
+**Preciso da sua decisão:** candidato 2 com esse escopo estreito, nova rodada de candidatos com outros critérios, ou outra direção?
+
+## 🟡 Pendência que virou decisiva
+
+**Hardware — terceira vez que o campo vem como placeholder** (`[tem/não tem]`, `[sua resposta]`). Agora não é mais detalhe: se você **não** tem impressora de etiqueta e leitor, o candidato 2 cai também, e aí os quatro estão reprovados.
+
+Também: **`northstackapps.com` já foi comprado?**
+
+---
+
+## Resolvido nesta sessão
+
+| Item | Estado |
 |---|---|
-| Alternativas custam **US$ 100–300/mês** | **EasyScan: US$ 9,99/mês**, 5,0★ com **338 avaliações**. **Stockroom: grátis**, 5,0★ (36) |
-| O Admin da Shopify absorveu **só o básico** | Página oficial "Gestão de estoque — Incluído na Shopify": *"reabasteça com **pedidos de compra** e transferências"*. Código de barras, leitor, multi-local e previsão constam como compatíveis |
-| Diferencial: preço baixo + migração do Stocky | EasyScan se anuncia como **"O substituto completo do Stocky"**. Stockroom anuncia migração do Stocky **e** sync com QuickBooks — que é o nosso **App 2** |
-
-**O que isso faz com a v1:** o **Stockroom é grátis** e já entrega POs ilimitados, e-mail ao fornecedor, recebimento parcial, **impressão de etiquetas** e importação do Stocky. Nosso plano Free (5 POs/mês) é estritamente pior que um grátis existente, e nosso Growth de US$ 19 custa o **dobro** do EasyScan, que tem mais features e 338 avaliações de prova social.
-
-**Minha recomendação: não codar esta v1.** Escolha um caminho:
-
-- **A — Matar o App 1** e ir para o App 3 (documentos de pedido, alternativa ao Order Printer), aplicando a verificação de mercado *antes* da listagem. Custo: 1 dia.
-- **B — Reescopar** para um nicho estreito que os incumbentes não cobrem. Exige uma rodada de evidência que ainda não levantei.
-- **C — Seguir como está.** Registro que a recomendação é contrária.
-
-Detalhe com fontes em [DECISOES.md](DECISOES.md).
-
-## 🔴 DECISÃO 2 — O login do CLI não está valendo (HTTP 401)
-
-`shopify organization list` e `shopify app init` retornam **GraphQL Error (Code: 401)**, reproduzido duas vezes. Há um `config.json` gravado hoje às 12:23, mas o token não é aceito para o destino `APPS_CLI`. Meus shells não têm stdin, então o login interativo tem que ser seu:
-
-```bash
-"C:\Program Files\nodejs\npx.cmd" @shopify/cli@latest auth logout
-```
-
-```bash
-"C:\Program Files\nodejs\npx.cmd" @shopify/cli@latest auth login
-```
-
-```bash
-"C:\Program Files\nodejs\npx.cmd" @shopify/cli@latest organization list
-```
-
-Se o terceiro listar **Northstack Apps**, me avise. **Não preciso que você me passe o org ID** — descobri que o `organization list` resolve isso sozinho.
-
-## 🟡 Pendência menor
-
-Você deixou **`hardware: [tem/não tem]`** literal na mensagem. Tem impressora de etiqueta e/ou leitor de código de barras? Só importa se o caminho B for escolhido.
+| **App 1 cancelado** (caminho A) | Registrado em `DECISOES.md` e marcado no `CLAUDE.md`. Zero linhas de código escritas |
+| **Regra 8 na nova forma** | Aprovada e aplicada no `CLAUDE.md`, com critérios objetivos de reprovação |
+| **Login do CLI** | ✅ Funcionando. **Northstack Apps, org ID `232549161`** |
+| **Pesquisa dos 4 candidatos** | ✅ `PESQUISA.md` — concorrentes, preços, notas, nº de avaliações, reclamações 1–3★ e vereditos |
 
 ---
 
-## Decisões registradas nesta sessão
+## O achado que vale mais que os quatro vereditos
 
-| Decisão | Valor | Status |
-|---|---|---|
-| Hospedagem | **Railway** (~US$ 5/mês) — Fly.io descartado | Registrada. **Não contratar ainda** — escopo em revisão |
-| Domínio | **northstackapps.com** (~R$ 66/ano) — você compra | Aprovado. Compra é segura: serve ao portfólio inteiro |
-| Dev store | **northstack-dev** | Registrada |
-| Nome "Restock" | **Reprovado** | Ver abaixo |
+Os quatro candidatos partiam da mesma tese: *"o app oficial da Shopify é mal avaliado, logo há espaço"*. A nota ruim confirma-se nos três casos verificáveis — Order Printer **3,6★**, Retail Barcode Labels **2,3★**, Shopify Bundles **2,8★**. E nos três o mercado terceiro **já resolveu**, quase sempre de graça.
 
-**Por que "Restock" foi reprovado:** a busca por "restock" na App Store retorna **1.612 apps** e a primeira página inteira é de alertas *back in stock* — Stoq (3.534 avaliações), Kbite (3.899), Notify! (3.583). Na App Store, "restock" significa *avisar o cliente*, não *comprar do fornecedor*: o nome nos coloca competindo na busca errada. E `Stockroom`, a alternativa nº 3 da nossa listagem, **já é um app concorrente**.
+> **"App oficial mal avaliado" não é sinal de oportunidade — é sinal de categoria madura, já servida.** Foi o app oficial ruim que empurrou a demanda para terceiros anos atrás. Quando chegamos, o espaço já está ocupado por quem chegou na época da dor.
+
+Isso está gravado no `CLAUDE.md` e invalida boa parte do backlog original, que foi montado sobre essa tese.
+
+### O que eu procuraria na próxima rodada
+1. **Dor com data recente** — mudança de API ou integração descontinuada nos últimos ~6 meses, antes de os líderes responderem.
+2. **Regulação com prazo de vigência** — demanda datada, e a manutenção contínua vira barreira contra concorrente grátis.
+3. Categoria **sem líder grátis com selo Built for Shopify**.
+4. Soma de avaliações da categoria entre **~500 e ~5.000**.
+5. **Reclamação técnica repetida nos 1–3★ de vários concorrentes ao mesmo tempo.**
 
 ---
 
 ## Portfólio
 
-| # | App | Fase | Próximo marco |
-|---|---|---|---|
-| 1 | `restock` | 🔴 Escopo em revisão | Sua escolha: caminho A, B ou C |
-| 2 | Conector contábil (QuickBooks/Xero) | Premissa abalada — MyWorks já entrega junto com o Stockroom grátis | Verificar mercado antes de qualquer listagem |
-| 3 | Documentos de pedido | Não iniciado, **não verificado** | Candidato natural se o caminho for A |
+| # | App | Estado |
+|---|---|---|
+| 1 | ~~`restock`~~ | 🔴 **Cancelado** em 25/08/2026 |
+| 2 | Conector contábil (QuickBooks/Xero) | Premissa abalada, **não verificado** — MyWorks já entrega junto com o Stockroom grátis |
+| 3 | ~~Documentos de pedido~~ | 🔴 **Reprovado** na verificação |
+| — | Etiquetas de código de barras | 🟡 Aguardando sua decisão |
 
-**Receita hoje: US$ 0/mês.** Apps publicados: 0. Instalações: 0.
-
----
-
-## Feito nesta sessão
-
-- [x] Decisões de hospedagem, domínio e dev store registradas em `DECISOES.md` e `CUSTOS.md`
-- [x] Nome "Restock" verificado na App Store — reprovado, com evidência
-- [x] Pesquisa de concorrência com preços, notas e contagem de avaliações reais
-- [x] Tentativa de `shopify app init` — bloqueada por 401; mapeadas as flags corretas (`--template reactRouter`, `--flavor`, `--organization-id`)
-- [x] Descoberto `shopify organization list`, que dispensa você me passar o org ID
-- [x] Repositório mantido íntegro (os docs do app saíram e voltaram para o `init`; `git status` limpo)
+**Receita hoje: US$ 0/mês.** Apps publicados: 0. Instalações: 0. **Gasto: R$ 0,00.**
 
 ---
 
-## Mudança de processo que eu recomendo
+## Ambiente (não repetir investigação)
 
-A regra 8 do `CLAUDE.md` diz "escrever a listagem antes do código". Ela falhou aqui: escrevi uma listagem convincente para um produto que o mercado já resolveu de graça. A regra deveria ser:
-
-> **Verificar o mercado real antes de escrever a listagem.** Preço, nota e contagem de avaliações dos 5 concorrentes mais próximos, mais o que a Shopify já faz nativamente. Se um concorrente grátis cobre a v1 inteira, o app não começa.
-
-São 20 minutos de verificação que teriam evitado a sessão 1 inteira. Se você concordar, eu atualizo o `CLAUDE.md`.
-
----
+- Node **v24.19.0**, npm **11.17.0** em `C:\Program Files\nodejs` — **fora do PATH**, usar caminho completo
+- Shopify CLI autenticado · org **Northstack Apps** `232549161` · dev store **northstack-dev**
+- `app init` exige `--organization-id` e `--flavor`; `--template reactRouter`; recusa diretório não vazio
+- `shopify organization list` devolve o org ID sozinho
+- Hospedagem: **Railway** (não contratar antes de haver app) · Domínio: **northstackapps.com**
 
 ## Como retomar (leia nesta ordem)
 
-1. [CLAUDE.md](CLAUDE.md) — missão e regras
-2. **este arquivo** — as duas decisões travadas
-3. [DECISOES.md](DECISOES.md) — a evidência de mercado com fontes
-4. [apps/restock/STATUS.md](apps/restock/STATUS.md) — detalhe técnico e do bloqueio do CLI
+1. [CLAUDE.md](CLAUDE.md) — missão e regras (regra 8 mudou)
+2. **este arquivo** — o bloqueio de decisão
+3. [PESQUISA.md](PESQUISA.md) — a evidência por trás dos vereditos
+4. [DECISOES.md](DECISOES.md) — histórico com datas e motivos

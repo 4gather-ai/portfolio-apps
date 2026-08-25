@@ -108,10 +108,50 @@ O `CLAUDE.md` justifica o App 1 com três premissas. As três foram verificadas 
 
 ---
 
+## 2026-08-25 — Caminho A: App 1 cancelado
+
+**Decisão:** o App 1 (`restock`) está **cancelado**. Nenhuma linha de código foi escrita.
+**Motivo:** decisão do Amarildo, sobre a evidência acima.
+**Reversível?** Sim, mas exigiria refutar a pesquisa.
+**Feito:** `CLAUDE.md` marcado, `apps/restock/LISTING.md` mantido como registro histórico do que uma listagem convincente para um produto inviável se parece.
+
+---
+
+## 2026-08-25 — Regra 8 substituída: mercado antes da listagem
+
+**Decisão:** aprovada e aplicada no `CLAUDE.md`. Verificação de mercado obrigatória em `PESQUISA.md` antes de qualquer listagem, com critérios objetivos de reprovação (concorrente grátis cobrindo a v1; líder com 4,8★+ e 300+ avaliações; categoria somando menos de ~500 ou mais de ~5.000 avaliações).
+**Motivo:** a regra antiga produziu uma listagem convincente para um produto que o mercado já resolvia de graça. O custo do erro foi uma sessão inteira; teria sido semanas se tivéssemos codado.
+**Reversível?** Sim, mas não vejo por quê.
+
+---
+
+## 2026-08-25 — Sessão do CLI resolvida
+
+**Fato registrado:** login refeito e funcionando. **Organização Northstack Apps, org ID `232549161`.** Dev store `northstack-dev`. `shopify organization list` confirma.
+**Consequência:** o bloqueio técnico acabou. O bloqueio agora é só de produto.
+
+---
+
+## 2026-08-25 — Quatro candidatos verificados, nenhum aprovado
+
+**Decisão:** nenhum dos quatro candidatos entra em produção sem uma decisão explícita adicional.
+**Resultado** (detalhe e fontes em `PESQUISA.md`):
+
+| Candidato | Veredito | Razão principal |
+|---|---|---|
+| Documentos de pedido | 🔴 Reprovado | 4 apps com 250–700 avaliações a 4,7–5,0★, vários grátis e Built for Shopify |
+| **Etiquetas de código de barras** | 🟡 **Único com espaço** | Shopify não tem função nativa; app oficial 2,3★ e **regredindo**; mesma dor técnica no oficial e no líder pago |
+| Sync Airtable/Notion/ClickUp | 🔴 Reprovado | 3 apps de ClickUp com **zero** avaliações somadas; Airtable inteiro tem 176 |
+| Bundles | 🔴 Reprovado | 8 apps com 1.000–5.300 avaliações a 4,9–5,0★, quase todos grátis |
+
+**Achado transversal registrado no `CLAUDE.md`:** "app oficial mal avaliado" não é sinal de oportunidade — é sinal de categoria madura já servida por terceiros.
+
+---
+
 ## Decisões em aberto (precisam do humano)
 
 | Tema | Pergunta | Bloqueia |
 |---|---|---|
-| **Escopo do App 1** | Caminho A, B ou C acima | **Todo o trabalho** |
-| **Sessão do CLI** | O `auth login` retorna 401 — precisa ser refeito | **Todo o código** |
-| Hardware | Você deixou `[tem/não tem]` sem preencher: tem impressora de etiqueta e/ou leitor de código de barras? | Validação física, se o caminho B for escolhido |
+| **Próximo app** | Candidato 2 (etiquetas) com escopo estreito, nova rodada de candidatos, ou outra direção? | **Todo o trabalho** |
+| Hardware | Terceira vez que o campo vem como placeholder (`[sua resposta]`). Tem impressora de etiqueta (Dymo/Zebra/Brother) e leitor de código de barras? | Só o candidato 2 — mas é decisivo lá |
+| Domínio | `northstackapps.com` já foi comprado? | Submissão, quando houver app |

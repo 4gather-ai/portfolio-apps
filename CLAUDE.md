@@ -17,7 +17,15 @@ Objetivo: portfólio de apps Shopify (e depois outros marketplaces) que gere US$
 5. Nunca gastar sem aprovação. Preferir free tier. Listar todo custo previsto em `CUSTOS.md`.
 6. Sem segredos em commits. Usar `.env.example` documentando cada variável.
 7. Escopo mínimo primeiro: a versão 1 de cada app faz UMA coisa completa. Nada de dashboard, settings ou onboarding elaborado antes do core funcionar de ponta a ponta numa dev store.
-8. Antes de codar um app: escrever a listagem da App Store (`apps/<app>/LISTING.md`) — título, subtítulo, descrição, planos, 3 screenshots descritos. Se a listagem não convence, o produto não está claro.
+8. **Verificar o mercado real ANTES de escrever a listagem.** Para cada candidato, registrar em `PESQUISA.md`: os 5 concorrentes mais próximos com preço, nota e nº de avaliações; o que a Shopify já faz nativamente; as reclamações das avaliações 1–3★ dos líderes; e o veredito.
+   **Critérios de reprovação — se qualquer um bater, o app não começa:**
+   - um concorrente **grátis** cobre a v1 inteira;
+   - existe líder com **4,8★+ e 300+ avaliações** no mesmo escopo;
+   - a categoria somada tem menos de ~500 avaliações (não há demanda) ou mais de ~5.000 (guerra de marketing).
+
+   **"App oficial da Shopify mal avaliado" NÃO é sinal de oportunidade.** É sinal de que a categoria é velha o bastante para já estar servida por terceiros — foi justamente o app oficial ruim que empurrou a demanda para eles anos atrás. Verificado em 25/08/2026 nos três casos (Order Printer 3,6★, Retail Barcode Labels 2,3★, Shopify Bundles 2,8★): nos três o mercado terceiro já resolveu, quase sempre de graça. Ver `PESQUISA.md`.
+
+   Só depois de passar nesse filtro, escrever a listagem da App Store (`apps/<app>/LISTING.md`) — título, subtítulo, descrição, planos, 3 screenshots descritos. Se a listagem não convence, o produto não está claro.
 9. Toda UI e listagem em EN como base, com i18n desde o dia 1: pt-BR, es, de, fr. (76% dos apps são só em inglês; traduzir é ganho grátis.)
 10. Preço padrão: 3 planos — Free (1 caso de uso completo, sem paywall na função central), Growth ~US$ 19–29, Pro ~US$ 49–79. Trial 14 dias nos pagos. Cobrar via Shopify Billing API (obrigatório).
 11. Mirar lojas de US$ 50k–5M/ano. Não construir para enterprise/Plus.
@@ -37,6 +45,7 @@ Objetivo: portfólio de apps Shopify (e depois outros marketplaces) que gere US$
 ```
 CLAUDE.md          este arquivo
 STATUS.md          visão geral do portfólio + o que precisa do humano
+PESQUISA.md        verificação de mercado por candidato (regra 8) — vem ANTES da listagem
 CUSTOS.md          todo gasto real e previsto (R$ e US$)
 DECISOES.md        decisões de negócio com data e motivo
 apps/<slug>/       um app por pasta
@@ -48,7 +57,13 @@ packages/shared/   código comum
 
 ## Portfólio (ordem de construção)
 
-### App 1 — `restock` (PRIORIDADE: começar já)
+> **Estado em 25/08/2026:** o App 1 (`restock`) foi **CANCELADO** e os candidatos a substituto foram verificados — nenhum aprovado ainda. Ver `PESQUISA.md` e `STATUS.md`. A descrição abaixo fica como registro histórico do que foi cancelado e por quê.
+
+### ~~App 1 — `restock`~~ — CANCELADO em 25/08/2026
+
+**Motivo do cancelamento:** as três premissas abaixo foram verificadas na App Store e nenhuma se sustenta. **Stockroom ‑ Purchase Orders** entrega POs ilimitados, e-mail ao fornecedor, recebimento parcial, etiquetas e importação do Stocky — **de graça**, 5,0★. **EasyScan** cobra US$ 9,99/mês com 5,0★ e 338 avaliações e já se anuncia como "o substituto completo do Stocky". E o admin da Shopify passou a cobrir pedidos de compra nativamente. Detalhe em `DECISOES.md`.
+
+#### Texto original (histórico)
 **Problema:** Shopify Stocky (app oficial de estoque/compras) é desligado em 31/08/2026. Lojistas perdem: pedidos de compra, recebimento com custo médio, etiquetas de preço a partir do PO, inventário por código de barras. O Admin da Shopify absorveu só o básico. Alternativas custam US$ 100–300/mês (categoria: média US$ 193/mês, nota 4,12). O app oficial de etiquetas tem nota 2,3.
 **Produto v1:** Pedidos de compra (criar, enviar por e-mail ao fornecedor, receber parcial/total com leitor de código de barras, atualizar estoque e custo médio) + impressão de etiquetas de preço/código de barras dos itens recebidos (PDF, tamanhos de etiqueta comuns: Dymo, Zebra, A4).
 **Não fazer na v1:** previsão de demanda, multi-armazém avançado, manufatura/BOM.
@@ -57,12 +72,29 @@ packages/shared/   código comum
 **Nome público sugerido:** "Restock: PO & Barcode Labels" (verificar disponibilidade na loja).
 **Meta:** submeter à App Store em até 14 dias.
 
-### App 2 — conector contábil (Shopify → QuickBooks/Xero), foco em conciliação de payouts (vendas, taxas, reembolsos, impostos) no formato que o contador aceita. Só iniciar após App 1 submetido.
+### App 2 — conector contábil (Shopify → QuickBooks/Xero)
+Conciliação de payouts (vendas, taxas, reembolsos, impostos) no formato que o contador aceita. **Premissa abalada, não verificado:** o MyWorks já entrega sync com QuickBooks junto com o Stockroom, que é grátis. Passar pela regra 8 antes de qualquer coisa.
 
-### App 3 — documentos de pedido (fatura/packing slip/PDF) como alternativa ao Shopify Order Printer (mal avaliado). Rápido de construir; candidato a "app de volume".
+### ~~App 3 — documentos de pedido~~ — REPROVADO na verificação de 25/08/2026
+Quatro apps com 250–700 avaliações entre 4,7★ e 5,0★, vários inteiramente grátis e Built for Shopify. O líder tem 10 avaliações negativas em 692. Ver `PESQUISA.md`.
+
+### Candidatos verificados em 25/08/2026 (ver `PESQUISA.md`)
+| Candidato | Veredito |
+|---|---|
+| Documentos de pedido vs Order Printer | 🔴 Reprovado |
+| **Etiquetas de código de barras vs Retail Barcode Labels** | 🟡 **Único com espaço** — estreito, exige teste com impressora física |
+| Sync Airtable/Notion/ClickUp | 🔴 Reprovado — sem demanda (3 apps de ClickUp, zero avaliações somadas) |
+| Bundles vs Shopify Bundles | 🔴 Reprovado — 8 apps com 1.000–5.300 avaliações a 4,9–5,0★ |
 
 ### Backlog para avaliar depois
-Shopify Bundles (2,7★ oficial), integrações Airtable/Monday/ClickUp, pós-compra por micro-segmento, outros marketplaces (WordPress, Chrome, Atlassian).
+Pós-compra por micro-segmento, outros marketplaces (WordPress, Chrome, Atlassian). Aplicar a regra 8 antes de escrever qualquer listagem.
+
+### O que procurar na próxima rodada (aprendido em 25/08/2026)
+1. Dor com **data recente** — mudança de API, regra nova ou integração descontinuada nos últimos ~6 meses, antes de os líderes responderem.
+2. **Regulação com prazo de vigência** — cria demanda datada e defende contra concorrente grátis, porque manutenção contínua vira barreira.
+3. Categoria **sem líder grátis com selo Built for Shopify**.
+4. Soma de avaliações da categoria entre ~500 e ~5.000.
+5. **Reclamação técnica repetida nos 1–3★ de vários concorrentes ao mesmo tempo** — dor que ninguém resolveu costuma ser cara de resolver, e essa é a barreira que nos protege depois.
 
 ## Definição de "pronto para submeter"
 - Core funciona ponta a ponta na dev store, demo em 60s.
@@ -73,8 +105,15 @@ Shopify Bundles (2,7★ oficial), integrações Airtable/Monday/ClickUp, pós-co
 - Política de privacidade e página de suporte publicadas.
 - Checklist de revisão da Shopify conferido item a item.
 
-## Primeira tarefa (sessão 1 do Claude Code)
-1. Criar `STATUS.md`, `CUSTOS.md`, `DECISOES.md` e a estrutura de pastas.
-2. Escrever `apps/restock/LISTING.md`.
-3. Rodar `shopify app init` em `apps/restock` e conectar à organização Northstack Apps (pedir login ao humano quando o CLI exigir).
-4. Registrar em `STATUS.md` o que precisa do humano e parar.
+## Estado atual (atualizado em 25/08/2026)
+
+Estrutura, `STATUS.md`, `CUSTOS.md`, `DECISOES.md` e `PESQUISA.md` criados. App 1 cancelado. Quatro candidatos verificados, um único com espaço possível (etiquetas de código de barras) e ainda sem aprovação.
+
+**Bloqueio atual: escolher o próximo app.** Nenhum candidato passou a regra 8 com folga. Não escrever listagem nem código antes dessa decisão — ler `STATUS.md` e `PESQUISA.md`.
+
+### Ambiente já resolvido (não repetir investigação)
+- Node **v24.19.0** e npm **11.17.0** em `C:\Program Files\nodejs` — **fora do PATH**, usar caminho completo
+- Shopify CLI autenticado. Organização **Northstack Apps**, org ID **232549161**. Dev store: **northstack-dev**
+- `shopify app init` exige `--organization-id` **e** `--flavor` em terminal não interativo; `--template` aceita `reactRouter` (não mais `remix`); recusa diretório não vazio
+- `shopify organization list` devolve o org ID — não é preciso pedir ao humano
+- Hospedagem decidida: **Railway**. Domínio: **northstackapps.com**
