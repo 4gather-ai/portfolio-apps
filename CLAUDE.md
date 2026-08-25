@@ -32,6 +32,7 @@ Objetivo: portfólio de apps Shopify (e depois outros marketplaces) que gere US$
 12. Usar só APIs documentadas e estáveis da Shopify. Nada de beta como dependência central.
 13. Seguir os requisitos de "Built for Shopify" desde o início (App Bridge, Polaris, performance, GDPR webhooks obrigatórios, sem checkout script tags).
 14. Suporte: responder tickets/reviews com rascunho em `apps/<app>/support/`; humano só envia se a plataforma exigir login.
+15. **Ao final de cada sessão e a cada marco: `git add -A`, commit com mensagem descritiva e `git push origin main`.** Sem push, o chat estratégico não enxerga o trabalho — commit local não conta como entregue. Antes do push, conferir que nenhum segredo entrou (`.env` fica no `.gitignore`; só `.env.example` é commitado).
 
 ## Stack padrão
 - Template oficial: `shopify app init` (Remix/React Router + Node), Polaris, App Bridge, Prisma.
