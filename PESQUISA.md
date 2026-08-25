@@ -4,7 +4,7 @@ Verificação obrigatória antes de escrever qualquer listagem (regra 8 do `CLAU
 Fonte: Shopify App Store, consultada em **25/08/2026**. Notas, preços e nº de avaliações são os exibidos na loja nessa data.
 Método: busca na App Store, extração dos cards de resultado, páginas de preço dos líderes e filtro de avaliações 1–3★.
 
-**Rodadas:** [Rodada 1](#rodada-1--categorias-maduras) (4 candidatos, todos reprovados) · [Rodada 2](#rodada-2--conformidade-regulatória-com-prazo) (conformidade regulatória, todos reprovados)
+**Rodadas:** [Rodada 1](#rodada-1--categorias-maduras) (4 candidatos, todos reprovados) · [Rodada 2](#rodada-2--conformidade-regulatória-com-prazo) (conformidade regulatória, todos reprovados) · [Rodada 3](#rodada-3--dificuldade-técnica--sonda-no-atlassian) (dificuldade técnica na Shopify + sonda no Atlassian)
 
 ---
 
@@ -375,3 +375,202 @@ A confirmação está no EmpCo: **7 apps posicionados antes mesmo do prazo chega
 Dos 5 critérios originais, o nº 2 está corrigido e o nº 1 ("dor com data recente") herda a mesma ressalva: **dor pública com data é dor disputada**. O que sobra como fonte real de vantagem são os critérios 3 e 5 — ausência de líder grátis com selo, e dor técnica que ninguém resolveu porque é cara de resolver.
 
 Isso aponta para **dificuldade técnica, não para calendário**, como filtro principal da rodada 3.
+
+---
+
+# RODADA 3 — dificuldade técnica + sonda no Atlassian
+
+Consultada em **25/08/2026**. Parte 1: Shopify sob filtro de dificuldade técnica. Parte 2: sonda no Atlassian Marketplace (Jira e Confluence Cloud).
+
+## Resumo executivo da rodada 3
+
+| # | Candidato Shopify | Líder | Soma de avaliações | Veredito |
+|---|---|---|---|---|
+| 1 | **Impostos sobre vendas (EUA, apuração e envio)** | Numeral 4,5★ (114) | ~330 | 🟡 **Barreira real, mas errada** |
+| 2 | Isenção de IVA / B2B UE | VAT/TAX Exemption 4,9★ (40) | ~63 | 🔴 Sem demanda |
+| 3 | EDI / trading partners | SPS Commerce 4,9★ (7) | ~58 | 🔴 Sem demanda self-serve |
+| 4 | Fiscal por país (NF-e Brasil) | — nenhum | ~18 | 🔴 Sem demanda |
+| 5 | Conectores de ERP | Odoo 5,0★ (61) | ~120 | 🔴 Volume baixíssimo |
+| 6 | Frete / transportadoras | ShipX 5,0★ (1.169) | ~2.600 | 🔴 Saturado |
+| 7 | Multimoeda / arredondamento | BUCKS 4,9★ (1.167) | ~2.500 | 🔴 Saturado, com líder **grátis** |
+| 8 | B2B wholesale / catálogo | BSS 4,9★ (1.107) | ~4.400 | 🔴 Saturado |
+
+**Nenhum aprovado.** E a rodada revelou por que: na Shopify, dificuldade técnica e volume são **inversamente proporcionais**.
+
+**Atlassian:** 🟢 **Sim, a densidade é menor — na dimensão que importa.** Detalhe na parte 2.
+
+---
+
+## Parte 1 — Shopify sob filtro de dificuldade técnica
+
+### O achado estrutural: o quadrante que procurávamos não existe
+
+Procurávamos "problema caro de resolver **e** disposição a pagar acima de US$ 20/mês". Os dados mostram uma correlação inversa limpa:
+
+| Categoria | Dificuldade técnica | Disposição a pagar | Volume (avaliações somadas) |
+|---|---|---|---|
+| Conectores de ERP | Altíssima | **US$ 199,92/mês** (NetSuite) | ~120 |
+| EDI / trading partners | Altíssima | US$ 50/mês (Dscopify) | ~58 |
+| Fiscal por país (Brasil) | Altíssima | — | ~18 |
+| Impostos EUA | Alta (mas ver abaixo) | US$ 100–300/mês | ~330 |
+| Frete / transportadoras | Média | US$ 10–30/mês | ~2.600 |
+| Multimoeda | Baixa | **grátis** | ~2.500 |
+| B2B wholesale | Baixa/média | US$ 20–50/mês | ~4.400 |
+
+**Quanto mais difícil o problema, menos lojistas da Shopify o têm.** E a razão é econômica, não técnica: o lojista que precisa de EDI, ERP ou apuração fiscal multiestado já é grande o bastante para comprar um **serviço** com vendedor, contrato e implantação — não um app self-serve de US$ 29. Quem compra app self-serve tem os problemas fáceis, e os problemas fáceis já estão resolvidos de graça.
+
+O nosso alvo declarado no `CLAUDE.md` — lojas de **US$ 50k–5M/ano** — fica exatamente no meio desse vão: grande demais para os problemas triviais, pequena demais para ter os problemas caros.
+
+### Candidato 1 — Impostos sobre vendas nos EUA 🟡
+
+| App | Nota | Avaliações | Preço |
+|---|---|---|---|
+| **Sales Tax Automation by TaxRex** | 5,0★ | 117 | Avaliação gratuita |
+| **Numeral Sales Tax** | **4,5★** | 114 | Grátis para instalar (+ taxas) |
+| **TaxCloud Sales Tax Automation** | 4,8★ | 96 | Grátis para instalar |
+| Refundably Sales Tax Refunds | 5,0★ | 1 | Avaliação gratuita |
+| Shopify Data Exporter ‑ Tax | **1,9★** | 7 | Grátis |
+
+**O que a Shopify faz nativamente:** calcula imposto no checkout (Shopify Tax), mas **não apura nem entrega declaração**. A lacuna é real.
+
+**Notas mais baixas que o normal da App Store** (4,5 e 4,8, contra os 4,9–5,0 onipresentes) — sinal de insatisfação genuína. Distribuição do Numeral: 5:90 · 4:11 · 3:0 · 2:0 · **1:13**. Polarizado.
+
+**Reclamações 1–3★ do Numeral** — e aqui está o ponto:
+- *"I have tax authorities contacting me indicating I'm non-compliant"* — declarações não entregues *(jun/2026)*
+- *"TWELVE MONTHS into a support case... Numeral incorrectly filed my state taxes and can not figure out how to fix it"* *(jun/2026)*
+- Cobrança por registros estaduais que nunca aconteceram; caixa postal virtual não funciona *(ago/2026)*
+- Não devolvem nem apagam dados de login após o cancelamento
+- Sem telefone, tickets sem resposta por semanas
+
+### Veredito: 🟡 A barreira é real — mas é a barreira errada
+
+Este é o único candidato das três rodadas que satisfaz o critério nº 5 com folga: **dor técnica repetida, severa e não resolvida pelo líder.** Não há líder grátis dominante. Há disposição a pagar de US$ 100–300/mês. Passa nos critérios 3, 4 e 5.
+
+**E mesmo assim é "não".** Porque as reclamações não são de software — são de **operação regulada**. "Declaração entregue errada", "registro estadual não feito", "autoridade fiscal me notificou": isso não se resolve com código melhor. Resolve-se sendo agente fiscal habilitado em dezenas de estados americanos, com procuração, endereço postal por estado e contadores humanos respondendo em prazo legal.
+
+Isso é incompatível com duas coisas nossas ao mesmo tempo: o modelo **"IA First"** (o humano só faz o que exige CPF/CNPJ — aqui o humano faria o produto inteiro) e o orçamento de **R$ 10.000**.
+
+**Registrado como aprendizado:** "barreira alta" não basta. A barreira precisa ser **técnica**, não operacional ou regulatória — porque barreira técnica a IA atravessa, e barreira operacional exige gente, licença e responsabilidade legal.
+
+### Candidatos 2 a 5 — barreira alta, mercado inexistente
+
+**IVA / isenção B2B UE:** VAT/TAX Exemption 4,9★ (40), Momsify 5,0★ (9), Taxify 4,6★ (9), VAT & Tax Switcher 5,0★ (5). Soma ~63 avaliações — muito abaixo do piso de 500. 🔴
+
+**EDI:** só a **SPS Commerce** (gigante do setor) com 4,9★ e **7 avaliações**, grátis para instalar; ProcureSync (PunchOut/OCI/cXML) 5,0★ (4); Dscopify Dropship 5,0★ (47) a **US$ 50/mês**. Soma ~58. EDI é vendido como serviço com implantação, não como app. 🔴
+
+**Fiscal por país — NF-e Brasil:** **não existe app de NF-e para Shopify.** Só hutko Fiscal (grátis, zero avaliações). E os dois maiores ERPs brasileiros têm apps oficiais mal avaliados: **Bling 2,1★ (7)** e **Sistema ERP da Olist/Tiny 1,6★ (11)**. Soma da categoria: ~18 avaliações. 🔴
+*Observação:* a combinação "mercado brasileiro + CNPJ do Amarildo + barreira de certificado digital e webservices da SEFAZ" seria a vantagem local que o critério corrigido nº 2 pede. Mas **não há demanda mensurável**: a Shopify tem pouca penetração no Brasil frente a Nuvemshop e VTEX, e quem vende lá já emite NF-e pelo ERP. É o padrão ClickUp de novo — ausência de oferta que não se distingue de ausência de procura.
+*Contraexemplo útil:* o fiscal localizado **funciona** onde há base instalada — GST da Índia tem WebPlanex 5,0★ (459) e GST Pro 5,0★ (251), somando ~710. Mas já está servido por dois líderes 5,0★.
+
+**Conectores de ERP:** NetSuite ERP Connector 4,4★ (6) a **US$ 199,92/mês**, Odoo Integration 5,0★ (61), MRPeasy 4,7★ (35), Xorosoft 5,0★ (11), OdooSyncO 4,5★ (8), UpSeller ERP 3,0★ (6), Acumatica 5,0★ (1). Preço altíssimo, qualidade irregular, **volume irrisório**. 🔴
+
+### Candidatos 6 a 8 — saturados
+
+**Frete/transportadoras:** ShipX 5,0★ (1.169), PH Ship Rate for FedEx 4,9★ (622), ShipZip 5,0★ (406), SMART Shipping 5,0★ (372) — quase todos grátis para instalar. 🔴
+
+**Multimoeda/arredondamento:** BUCKS Currency Converter 4,9★ (1.167), **Nova Multi Currency 4,9★ (749) — grátis**, MLV Multi Country Pricing 4,7★ (402), Webrex 4,8★ (125), CVC 4,5★ (124). Líder grátis com nota alta: reprovação direta pela regra 8. 🔴
+
+**B2B wholesale / catálogo:** BSS 4,9★ (1.107), Sami B2B Lock 4,9★ (937), Sami Wholesale 4,9★ (936), Descontos B2B 4,9★ (695), SparkLayer 4,9★ (360), MultiVariants 4,9★ (341), Clay 5,0★ (261), Massy 5,0★ (215). 🔴
+
+### Correção a um dado da rodada 1
+
+Na rodada 1 registrei que o líder de documentos de pedido tinha 692 avaliações. **Faltou o maior:** **Order Printer Pro — 4,9★ com 2.731 avaliações**, grátis para instalar. A categoria é ainda mais saturada do que documentei. O veredito de reprovação não muda; o número, sim.
+
+---
+
+## Parte 2 — Sonda no Atlassian Marketplace (Jira e Confluence Cloud)
+
+### ⚠️ Aviso metodológico antes dos números
+
+**Contagem de avaliações não é comparável entre as duas lojas.** O Atlassian exibe instalações e avaliações separadamente, e a taxa de avaliação é baixíssima: draw.io tem **62,7 mil instalações e 1.204 avaliações** (~2%); Just Add+ tem 8,3 mil instalações e 50 avaliações (~0,6%). Na Shopify, o Judge.me tem 44.087 avaliações.
+
+Comparar "1.204 do draw.io" com "5.321 do Kaching" levaria à conclusão errada. **O que é comparável é a nota dos líderes e a presença de líder grátis.**
+
+### Categoria 1 — Time tracking (Jira Cloud)
+
+| App | Nota | Avaliações | Instalações |
+|---|---|---|---|
+| **Timesheets by Tempo** | **4.1** | 896 | **27,2 mil** |
+| Timesheet Tracking (Cappsule) | 4.4 | 251 | 13,4 mil |
+| **Clockify** | **3.9** | 129 | 9,1 mil |
+| Clockwork Lite (HeroCoders) | 4.6 | 112 | 7,1 mil |
+| Time in Status (SaaSJet) | 4.5 | 208 | 5,4 mil |
+| Worklogs (SolDevelo) | 4.5 | 101 | 5,4 mil |
+| Clockwork Pro | 4.6 | 140 | 4,6 mil |
+| Activity Timeline (Reliex) | 4.7 | 121 | 3,8 mil |
+| Time to SLA (Appfire) | 4.8 | 236 | 3,4 mil |
+| **Harvest Time Tracking (Oficial)** | **2.5** | 145 | 2,5 mil |
+| Timetracker | 4.1 | 110 | 2,3 mil |
+
+**O líder da categoria tem nota 4.1 com 27 mil instalações.** E o app oficial da Harvest sustenta 2.500 instalações com **nota 2.5**. Na Shopify isso não acontece: lá o líder de qualquer categoria examinada está entre 4,8 e 5,0.
+
+### Categoria 2 — Test management (Jira Cloud)
+
+| App | Nota | Avaliações | Instalações |
+|---|---|---|---|
+| Xray (Xblend) | **4.3** | 551 | 25,7 mil |
+| Zephyr (SmartBear) | **4.1** | 492 | 15,5 mil |
+
+Duas empresas grandes dividindo a categoria, **ambas em 4.1–4.3**. Demanda evidente (41 mil instalações somadas), satisfação medíocre.
+
+### Categoria 3 — Diagramas e formatação (Confluence Cloud)
+
+| App | Nota | Avaliações | Instalações |
+|---|---|---|---|
+| draw.io | 4.8 | 1.204 | **62,7 mil** |
+| Gliffy | 4.5 | 799 | 16,3 mil |
+| Table Filter, Charts & Spreadsheets | 4.9 | 442 | 15,1 mil |
+| Scroll PDF Exporter (K15t) | 4.7 | 225 | 8,9 mil |
+| Just Add+ (Modus Create) | **4.2** | 50 | 8,3 mil |
+| Scroll Word Exporter (K15t) | 4.9 | 135 | 4,7 mil |
+| Mosaic (Kolekti/Adaptavist) | **4.3** | 112 | 4,5 mil |
+| AURA Content Formatting | 5.0 | 209 | 4,3 mil |
+
+Aqui a qualidade é maior (draw.io 4.8 domina com folga), mas ainda há apps com 4.2–4.3 sustentando 4–8 mil instalações.
+
+### Categoria 4 — Automação de workflow (Jira Cloud)
+
+| App | Nota | Avaliações | Instalações |
+|---|---|---|---|
+| ScriptRunner (Adaptavist) | 4.6 | 822 | **35 mil** |
+| JMWE (Appfire) | 4.8 | 534 | 16,8 mil |
+| JSU Automation Suite (Appfire) | 4.6 | 298 | 12,3 mil |
+| Jira Workflow Toolbox (Decadis) | 4.9 | 539 | 4,8 mil |
+| Structure by Tempo | 4.6 | 408 | 13,1 mil |
+| Rich Filters for Dashboards | 4.8 | 183 | 9,4 mil |
+
+Categoria mais madura e mais bem avaliada — dominada por consolidadores (Appfire, Adaptavist, Tempo).
+
+### Preço por usuário e presença de líder grátis
+
+O modelo é **por usuário/mês, com piso**. O Tempo Timesheets, para uma instância de 10 usuários, custa **US$ 10,00/mês — US$ 1,00 por usuário**. Todos os apps oferecem **30 dias de teste**.
+
+Três diferenças estruturais frente à Shopify:
+
+1. **Não encontrei líder grátis em nenhuma das quatro categorias.** O único que se anuncia como grátis é o Clockify — e tem nota **3.9**. Na Shopify, o líder grátis é a norma nas oito categorias da rodada 3.
+2. **A receita escala com o número de assentos.** Um cliente de 500 usuários paga centenas de dólares por mês pelo mesmo produto que rende US$ 10 num cliente de 10. Na Shopify, nosso plano Pro era US$ 39 fixos, com ou sem 500 pedidos.
+3. **O comprador é uma empresa com orçamento de ferramentas**, não um lojista pagando do próprio bolso. Isso muda a elasticidade de preço inteira.
+
+### Resposta direta: a densidade de concorrência é menor que na Shopify?
+
+**Sim — mas não em número de apps. Em barra de qualidade e em preço.**
+
+- **Número de apps:** equivalente. Ambas as buscas do Atlassian devolvem "over 1,000 matches", assim como as da Shopify. Não há menos concorrentes.
+- **Barra de qualidade: muito mais baixa, e essa é a diferença que importa.** No Atlassian, líderes de categoria vivem em **4.1–4.6** com dezenas de milhares de instalações; um app oficial de 2.5 sobrevive. Na Shopify, as três rodadas mostraram líderes uniformemente em **4,8–5,0**. Ser melhor é um diferencial viável no Atlassian; na Shopify, "melhor que 4,9 e grátis" quase não é uma proposta.
+- **Piso de preço: existe.** Sem líder grátis, o preço não converge a zero — o problema que reprovou 3 das 8 categorias Shopify desta rodada e a categoria inteira da rodada 2.
+- **Valor por cliente: muito maior**, porque escala por assento.
+
+**Ressalvas honestas:**
+- Ciclo de venda mais longo: quem instala é o admin do Jira, e em empresa há aprovação e revisão de segurança pelo caminho.
+- **Barreira de plataforma real:** "Cloud Fortified" e "Runs on Atlassian" são selos com requisitos de segurança, suporte e confiabilidade. Isso é custo de entrada — e também fosso, uma vez dentro.
+- Sonda rasa: quatro categorias, sem leitura de avaliações negativas nem verificação do que a Atlassian faz nativamente. **Isto não é um veredito de entrada, é um sinal de que vale a rodada 4 completa aqui.**
+
+---
+
+## Aprendizados acumulados após três rodadas
+
+1. **App oficial mal avaliado ≠ oportunidade** (rodada 1) — é sinal de categoria madura já servida.
+2. **Regulação com prazo ≠ vantagem** (rodada 2) — prazo legal é informação pública, logo é a oportunidade mais disputada.
+3. **Barreira alta ≠ barreira útil** (rodada 3) — a barreira precisa ser **técnica**. Barreira operacional ou regulatória (impostos EUA) exige gente, licença e responsabilidade legal, o que quebra o modelo "IA First".
+4. **Na Shopify, dificuldade e volume são inversamente proporcionais** (rodada 3) — o quadrante "difícil e com muitos compradores self-serve" não existe, porque quem tem os problemas difíceis compra serviço, não app.
+5. **A restrição pode não ser a categoria, e sim o marketplace.** Três rodadas, quinze categorias, e o padrão da Shopify não se moveu: líder grátis, nota 4,9–5,0, centenas ou milhares de avaliações. O Atlassian tem a barra de qualidade num patamar visivelmente mais baixo e não tem o problema do líder grátis.

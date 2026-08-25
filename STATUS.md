@@ -1,29 +1,87 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-25 (sessão 4) · Dia 1 de 365 · **Gasto: R$ 0,00**
+**Última atualização:** 2026-08-25 (sessão 5) · Dia 1 de 365 · **Gasto: R$ 0,00**
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
 ## ⏸️ ESTADO: parado, aguardando retorno
 
-O Claude Code entregou tudo o que dependia dele e **parou**. Nada está em andamento. Tudo o que segue está registrado neste arquivo, em `PESQUISA.md`, `DECISOES.md` e `CLAUDE.md`, e commitado e pushado para `origin/main`.
+Rodada 3 concluída (caminho B). **Nenhum candidato Shopify aprovado — três rodadas, quinze categorias.** A sonda no Atlassian, porém, deu sinal positivo. Tudo registrado em `PESQUISA.md`, `DECISOES.md`, `CUSTOS.md` e `CLAUDE.md`, commitado e pushado.
 
-**Perguntas abertas, em ordem de importância:**
+**A pergunta mudou de nível: não é mais "qual app", é "qual marketplace".**
 
 | # | Pergunta | Quem responde | O que destrava |
 |---|---|---|---|
-| 1 | Qual o próximo app? (caminho A, B ou C — ver abaixo) | Chat estratégico / Amarildo | **Todo o trabalho** |
-| 2 | Tem impressora de etiqueta (Dymo/Zebra/Brother) e leitor de código de barras? *(4ª vez que pergunto)* | Amarildo | Decide se o único candidato vivo sobrevive |
-| 3 | `northstackapps.com` já foi comprado? | Amarildo | Submissão, quando houver app |
+| 1 | **Rodada 4 completa no Atlassian, ou insistir na Shopify?** | Chat estratégico / Amarildo | **Todo o trabalho** |
+| 2 | Etiquetas segue o único candidato Shopify vivo, agora com **R$ 300** de custo de entrada (impressora). Vale comprar antes de decidir o marketplace? | Amarildo | O caminho Shopify |
+| 3 | Comprar `northstackapps.com` agora ou esperar? O nome serve aos dois marketplaces | Amarildo | Submissão, quando houver app |
 
-**Não há bloqueio técnico.** CLI autenticado, ambiente pronto, repositório limpo e sincronizado. O bloqueio é inteiramente de decisão de produto.
+**Não há bloqueio técnico.** CLI autenticado, ambiente pronto, repositório limpo e sincronizado.
+
+---
+
+## Rodada 3 — dificuldade técnica (Shopify) + sonda no Atlassian
+
+### Shopify: 8 categorias, nenhuma aprovada
+
+| Candidato | Líder | Soma de avaliações | Veredito |
+|---|---|---|---|
+| **Impostos sobre vendas EUA** | Numeral 4,5★ (114) | ~330 | 🟡 **Barreira real, mas errada** |
+| Isenção de IVA / B2B UE | 4,9★ (40) | ~63 | 🔴 Sem demanda |
+| EDI / trading partners | SPS Commerce 4,9★ (7) | ~58 | 🔴 Sem demanda self-serve |
+| Fiscal por país (NF-e Brasil) | nenhum | ~18 | 🔴 Sem demanda |
+| Conectores de ERP | Odoo 5,0★ (61) | ~120 | 🔴 Volume irrisório |
+| Frete / transportadoras | ShipX 5,0★ (1.169) | ~2.600 | 🔴 Saturado |
+| Multimoeda / arredondamento | BUCKS 4,9★ (1.167) | ~2.500 | 🔴 Saturado, líder **grátis** |
+| B2B wholesale / catálogo | BSS 4,9★ (1.107) | ~4.400 | 🔴 Saturado |
+
+**O melhor candidato falhou por um motivo novo e importante.** Impostos EUA passa nos critérios 3, 4 e 5: sem líder grátis, notas atipicamente baixas (4,5★ e 4,8★ contra os 4,9–5,0 onipresentes), US$ 100–300/mês de disposição a pagar e reclamações graves — *"tax authorities contacting me indicating I'm non-compliant"*, *"TWELVE MONTHS into a support case... incorrectly filed my state taxes"*.
+
+**Mas essas falhas não são de software — são de operação regulada.** Resolver exige ser agente fiscal habilitado em dezenas de estados americanos, com procuração e contadores humanos. Isso quebra o modelo "IA First" e o orçamento de R$ 10.000.
+
+> **Barreira alta ≠ barreira útil.** A barreira precisa ser **técnica** — barreira técnica a IA atravessa; barreira operacional exige gente, licença e responsabilidade legal.
+
+### E o achado estrutural sobre a Shopify
+
+| Categoria | Disposição a pagar | Volume |
+|---|---|---|
+| Conectores de ERP | **US$ 199,92/mês** | ~120 avaliações |
+| EDI | US$ 50/mês | ~58 |
+| NF-e Brasil | — | ~18 |
+| Multimoeda | **grátis** | ~2.500 |
+| B2B wholesale | US$ 20–50/mês | ~4.400 |
+
+**Dificuldade e volume são inversamente proporcionais.** Quem tem problema caro já compra *serviço* com contrato e implantação, não app de US$ 29. Quem compra app self-serve tem os problemas fáceis — e esses já são grátis. Nosso alvo declarado (lojas de US$ 50k–5M/ano) cai exatamente no vão.
+
+**O quadrante que procurávamos pode não existir na Shopify.**
+
+### Atlassian: 🟢 a densidade é menor — na dimensão que importa
+
+⚠️ **Aviso metodológico:** contagem de avaliações **não é comparável** entre as lojas. O draw.io tem 62,7 mil instalações e 1.204 avaliações (~2%); na Shopify o Judge.me tem 44.087 avaliações. O comparável é **nota dos líderes** e **presença de líder grátis**.
+
+| Categoria (Jira/Confluence Cloud) | Líder | Nota | Instalações |
+|---|---|---|---|
+| Time tracking | Timesheets by Tempo | **4.1** | 27,2 mil |
+| Test management | Xray / Zephyr | **4.3 / 4.1** | 25,7k / 15,5k |
+| Diagramas (Confluence) | draw.io | 4.8 | 62,7 mil |
+| Automação de workflow | ScriptRunner | 4.6 | 35 mil |
+
+E o app oficial da **Harvest sustenta 2,5 mil instalações com nota 2.5**.
+
+**Resposta direta:**
+- **Número de apps: equivalente** — ambas as lojas devolvem "over 1,000 matches". Não há menos concorrentes.
+- **Barra de qualidade: muito mais baixa, e é isso que importa.** Líderes vivem em 4.1–4.6 no Atlassian; na Shopify, em 4,8–5,0. **Ser melhor é um diferencial viável lá; aqui, "melhor que 4,9 e grátis" quase não é proposta.**
+- **Sem líder grátis** em nenhuma das quatro categorias — o preço não converge a zero, que é o problema que reprovou 3 das 8 categorias Shopify desta rodada e a rodada 2 inteira.
+- **Preço por usuário com piso:** Tempo cobra US$ 10,00/mês para 10 usuários. **A receita escala por assento** — um cliente de 500 usuários paga centenas de dólares pelo mesmo produto. Nosso Pro na Shopify era US$ 39 fixos.
+
+**Ressalvas honestas:** ciclo de venda mais longo (comprador é admin de Jira, com aprovação e revisão de segurança); os selos "Cloud Fortified" e "Runs on Atlassian" são custo de entrada real — e fosso depois. E **a sonda é rasa**: 4 categorias, sem ler avaliações negativas nem verificar o que a Atlassian faz nativamente. **Não é veredito de entrada; é sinal de que a rodada 4 vale a pena ali.**
 
 ---
 
 ## 🔴 ÚNICO BLOQUEIO — escolher o próximo app
 
-**Duas rodadas de pesquisa, sete candidatos, nenhum aprovado.** Evidência completa em [PESQUISA.md](PESQUISA.md).
+**Três rodadas, quinze categorias, nenhum candidato aprovado.** Evidência completa em [PESQUISA.md](PESQUISA.md).
 
 ### Rodada 2 — conformidade regulatória com prazo
 

@@ -64,7 +64,7 @@ O escopo do App 1 está **em revisão** — ver `DECISOES.md`, seção "premissa
 Entram aqui quando o app 1 estiver publicado:
 - Tráfego/anúncios da App Store (opcional; começar com 0)
 - Ferramenta de suporte/help desk (começar com e-mail simples: R$ 0)
-- Impressora de etiqueta e leitor de código de barras para teste físico — **verificar se o humano já tem**; se não, avaliar se o teste com PDF + leitor de smartphone é suficiente na v1
+- ~~Impressora de etiqueta e leitor de código de barras~~ — **respondido em 25/08/2026:** tem leitor; **não tem impressora**. Compraria por **~R$ 300** se o app de etiquetas for escolhido. Vira custo de entrada obrigatório desse candidato, porque o diferencial dele é justamente fidelidade de impressão — não dá para validar sem imprimir
 - Contabilidade/abertura de PJ para receber pagamento internacional da Shopify
 
 ---

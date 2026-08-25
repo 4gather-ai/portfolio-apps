@@ -192,12 +192,70 @@ O `CLAUDE.md` justifica o App 1 com três premissas. As três foram verificadas 
 
 ---
 
+## 2026-08-25 — Hardware e domínio respondidos
+
+**Hardware:** tem **leitor de código de barras**; **não tem impressora de etiqueta**; pode comprar (~R$ 300) se o app de etiquetas for escolhido.
+**Consequência:** o candidato de etiquetas (rodada 1) continua tecnicamente viável, mas passa a ter **custo de entrada de R$ 300** e depende de uma compra antes da primeira validação real. Registrado em `CUSTOS.md`.
+**Domínio:** `northstackapps.com` **ainda não comprado**. Aprovado, não executado.
+
+---
+
+## 2026-08-25 — Caminho B escolhido: rodada 3 com filtro de dificuldade técnica
+
+**Decisão:** rodada 3 executada — 8 categorias Shopify sob filtro de dificuldade técnica, mais uma sonda no Atlassian Marketplace.
+**Resultado: nenhum candidato Shopify aprovado.** Detalhe e fontes em `PESQUISA.md`, seção "Rodada 3".
+
+---
+
+## 2026-08-25 — Aprendizado: barreira alta não é o mesmo que barreira útil
+
+**Fato:** o melhor candidato da rodada 3 — apuração de imposto sobre vendas nos EUA — passa nos critérios 3, 4 e 5: sem líder grátis, notas mais baixas que o normal da App Store (Numeral 4,5★, TaxCloud 4,8★), disposição a pagar de US$ 100–300/mês e reclamações graves e não resolvidas.
+
+**E mesmo assim é "não".** As reclamações não são de software: *"tax authorities contacting me indicating I'm non-compliant"*, *"TWELVE MONTHS into a support case... incorrectly filed my state taxes"*, cobrança por registros estaduais nunca feitos. Isso é falha de **operação regulada**, não de código.
+
+**Regra derivada:** a barreira que nos serve precisa ser **técnica**. Barreira operacional ou regulatória exige pessoas, licença e responsabilidade legal — incompatível com o modelo "IA First" e com o orçamento de R$ 10.000.
+
+---
+
+## 2026-08-25 — Aprendizado: na Shopify, dificuldade e volume são inversamente proporcionais
+
+**Fato medido na rodada 3:**
+
+| Categoria | Disposição a pagar | Volume (avaliações somadas) |
+|---|---|---|
+| Conectores de ERP | US$ 199,92/mês | ~120 |
+| EDI | US$ 50/mês | ~58 |
+| NF-e Brasil | — | ~18 |
+| Multimoeda | **grátis** | ~2.500 |
+| B2B wholesale | US$ 20–50/mês | ~4.400 |
+
+**Interpretação:** quem tem os problemas caros já é grande o bastante para comprar **serviço** com contrato e implantação, não app self-serve. Quem compra app self-serve tem os problemas fáceis, e esses já estão resolvidos de graça. O alvo declarado no `CLAUDE.md` — lojas de US$ 50k–5M/ano — cai no vão entre os dois.
+
+**Consequência:** o quadrante "tecnicamente difícil **e** com muitos compradores self-serve" pode simplesmente não existir na Shopify.
+
+---
+
+## 2026-08-25 — Sonda no Atlassian: densidade menor em qualidade e preço
+
+**Fato:** quatro categorias sondadas (time tracking, test management, diagramas/formatação, automação de workflow) em Jira e Confluence Cloud.
+
+- **Barra de qualidade muito mais baixa:** o líder de time tracking (Tempo Timesheets) tem **nota 4.1 com 27,2 mil instalações**; o app oficial da Harvest sustenta 2,5 mil instalações com **nota 2.5**; Xray 4.3 e Zephyr 4.1 dividem test management. Na Shopify, todo líder examinado nas três rodadas está entre 4,8★ e 5,0★.
+- **Sem líder grátis** em nenhuma das quatro categorias. O único que se anuncia grátis (Clockify) tem nota 3.9.
+- **Preço por usuário com piso:** Tempo cobra US$ 10,00/mês para 10 usuários (US$ 1,00/usuário). Receita escala por assento — um cliente de 500 usuários paga centenas de dólares pelo mesmo produto.
+- **Número de apps é equivalente** ("over 1,000 matches" nas duas lojas). A diferença não é quantidade de concorrentes.
+
+**Ressalvas:** ciclo de venda mais longo (comprador é admin de Jira em empresa, com aprovação e revisão de segurança); selos "Cloud Fortified"/"Runs on Atlassian" são custo de entrada real — e fosso depois. **Sonda rasa: 4 categorias, sem leitura de avaliações negativas nem verificação do nativo da Atlassian.**
+
+**Isto não é decisão de entrada.** É evidência de que vale uma rodada 4 completa no Atlassian antes de insistir na Shopify.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: parado, aguardando retorno.** Nenhum trabalho em andamento; nenhum bloqueio técnico.
 
 | # | Tema | Pergunta | Bloqueia |
 |---|---|---|---|
-| 1 | **Próximo app** | Caminho **A** (decidir o candidato de etiquetas), **B** (rodada 3 com filtro de dificuldade técnica) ou **C** (rever se a Shopify é o marketplace certo para começar)? | **Todo o trabalho** |
-| 2 | Hardware | **4ª vez que a resposta vem como placeholder.** Tem impressora de etiqueta (Dymo/Zebra/Brother) e leitor de código de barras? Se não, os sete candidatos das duas rodadas estão reprovados | O caminho A |
-| 3 | Domínio | `northstackapps.com` já foi comprado? | Submissão, quando houver app |
+| 1 | **Marketplace** | Rodada 4 completa no Atlassian, ou insistir na Shopify? Três rodadas e quinze categorias não moveram o padrão da Shopify | **Todo o trabalho** |
+| 2 | **Etiquetas** | Segue como único candidato Shopify vivo, agora com custo de entrada de **R$ 300** (impressora). Vale a compra antes de decidir o marketplace? | O caminho Shopify |
+| 3 | Domínio | Comprar `northstackapps.com` agora ou esperar a decisão de marketplace? O nome serve aos dois | Submissão, quando houver app |
