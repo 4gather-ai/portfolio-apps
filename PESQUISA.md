@@ -4,6 +4,12 @@ Verificação obrigatória antes de escrever qualquer listagem (regra 8 do `CLAU
 Fonte: Shopify App Store, consultada em **25/08/2026**. Notas, preços e nº de avaliações são os exibidos na loja nessa data.
 Método: busca na App Store, extração dos cards de resultado, páginas de preço dos líderes e filtro de avaliações 1–3★.
 
+**Rodadas:** [Rodada 1](#rodada-1--categorias-maduras) (4 candidatos, todos reprovados) · [Rodada 2](#rodada-2--conformidade-regulatória-com-prazo) (conformidade regulatória, todos reprovados)
+
+---
+
+# RODADA 1 — categorias maduras
+
 ---
 
 ## Resumo executivo
@@ -206,3 +212,166 @@ Os quatro falharam pelo mesmo motivo: são categorias **maduras**. Os critérios
 3. **Categoria sem líder grátis com selo Built for Shopify.** Se existe um, o teto de preço é zero e a v1 precisa ser melhor que grátis.
 4. **Nº de avaliações somado da categoria acima de ~500 e abaixo de ~5.000.** Menos que isso não sustenta US$ 15k/mês (caso ClickUp/Notion); mais que isso é guerra de marketing (caso bundles).
 5. **Reclamação técnica repetida nos 1–3★ de *vários* concorrentes ao mesmo tempo** — como a fidelidade de impressão no candidato 2. Dor que ninguém resolveu costuma ser dor cara de resolver, e isso é a barreira que nos protege depois.
+
+---
+
+# RODADA 2 — conformidade regulatória com prazo
+
+Consultada em **25/08/2026**, mesmo método. Testa diretamente o critério nº 2 da rodada 1 ("regulação com prazo de vigência").
+
+## Resumo executivo da rodada 2
+
+| Candidato | Prazo legal | Apps existentes | Avaliações somadas | Veredito |
+|---|---|---|---|---|
+| **Botão de desistência da UE** | 19/06/2026 | **17** | **~3.374** | 🔴 **Não — chegamos ~8 meses tarde** |
+| EmpCo / selo de garantia GARAN | 27/09/2026 | **7** | **~5** | 🔴 **Não** — 7 concorrentes já posicionados, zero tração |
+| Right to Repair | não verificado | **0** de conformidade | **0** | 🔴 **Não** — sem evidência de demanda |
+
+**Nenhum aprovado.** E a rodada produziu uma correção importante ao meu próprio critério nº 2 — ver o fim desta seção.
+
+---
+
+## Candidato principal — Botão de desistência da UE (Diretiva 2023/2673)
+
+### (a) O que a Shopify faz nativamente
+
+**Nada específico.** Não há função nativa de botão de desistência, nem em customer accounts, nem em returns, nem em self-serve returns. O nativo da Shopify cobre *devolução de mercadoria* (RMA, etiqueta de retorno, reembolso) — que é um processo comercial, não o ato jurídico unilateral de desistir do contrato. Nenhuma página de "Incluído na Shopify" cobre returns; a categoria é inteiramente de apps.
+
+Isto é um ponto **a favor** do candidato. É o único fator favorável que encontrei.
+
+### (b) Apps existentes — 17 apps dedicados
+
+| App | Nota | Avaliações | Preço | Obs. |
+|---|---|---|---|---|
+| **EU Withdrawal Button & Form** (401layers UG) | 4,9★ | **2.203** | Plano gratuito | Líder absoluto. 5:2,1mil 4:96 3:15 2:3 1:9 |
+| **Revoq ‑ EU Withdrawal Button** (BuschBytes) | 4,9★ | **508** | Plano gratuito | **Built for Shopify** |
+| **EU Withdrawal Button Pro** | 5,0★ | **306** | Plano gratuito | "Law firm approved" |
+| EU Withdrawal Button (wideruf-button) | 4,9★ | 91 | Plano gratuito | |
+| Returns & EU Withdrawal‑Button (easyreturns) | 4,7★ | 77 | Plano gratuito | Combina returns + desistência |
+| EU Widerrufsbutton Pro | 5,0★ | 47 | Plano gratuito | |
+| BOO EU Withdrawal Button | 4,9★ | 44 | Plano gratuito | |
+| EU Withdrawal Button Free | 4,5★ | 26 | Plano gratuito | |
+| Avada EU Withdrawal Button | 5,0★ | 26 | Plano gratuito | |
+| Retractly: EU Withdrawal | 4,8★ | 16 | Plano gratuito | |
+| EU Withdrawal Button ‑ SEOLab | 5,0★ | 10 | **Grátis** | |
+| Withdraw Order: EU Withdrawal | 5,0★ | 7 | Avaliação gratuita | |
+| Revoco: EU Withdrawal | 5,0★ | 6 | Plano gratuito | |
+| Rückruf: EU Widerrufsbutton | 5,0★ | 4 | Plano gratuito | |
+| Widerruf Button: EU Compliance | 3,7★ | 3 | Plano gratuito | |
+| Withdrax: EU Withdrawal Button | — | **0** | Plano gratuito | Comprando anúncio |
+| EU Withdrawal Button by Square | — | **0** | **Grátis** | "duas etapas, sem login, confirmação" |
+
+**Soma da categoria: ~3.374 avaliações.** Busca por `withdrawal`, `Widerrufsbutton`, `Widerruf` — todos os termos convergem para o mesmo conjunto. Idiomas já cobertos pelo líder: alemão, inglês, espanhol, holandês, francês. Um concorrente anuncia "All 24 EU languages".
+
+**Datas:** não consegui extrair a data de lançamento oficial da página. As avaliações do líder concentram-se em **junho–agosto de 2026**, com uma data de referência de **09/01/2026** na página — ou seja, o app existia meses antes do prazo e a explosão de instalações ocorreu na virada de 19/06.
+
+### (c) Os líderes de returns cobrem o requisito? **Não — mas isso não ajuda**
+
+**AfterShip Returns & Exchanges** (4,7★, 1.393 avaliações): verifiquei a página inteira — **zero menções** a `withdrawal`, `Widerruf`, `rétractation`, `2023/2673`, `EU compliance`, `desistência` ou `desistimiento`.
+
+Nenhum dos líderes de returns (Loop 4,7★/410, ReturnGO 4,8★/358, Return Prime 4,8★/725, AfterShip 4,7★/1.393) aparece em nenhuma das buscas por termos de desistência. Rich Returns não apareceu em nenhuma busca.
+
+**Mas a lacuna já foi preenchida** — pelos 17 apps dedicados, não pelos apps de returns. E um deles (easyreturns, 4,7★/77) já faz a ponte "returns + botão de desistência" num produto só.
+
+**Os quatro requisitos que você listou já estão cobertos**, textualmente, pelos dois maiores:
+- *Duas etapas:* Revoq — "compliant **two-step** confirmation flow"
+- *Cliente sem conta:* líder — "without needing to log in"; Revoq — "Guests and account holders are covered"
+- *Confirmação automática:* líder — "automatically sends the legally required confirmation via email"
+- *Permanentemente visível:* líder — "**Permanently visible** EU withdrawal button directly in the shop"
+
+O líder ainda entrega dashboard de solicitações, documentação completa e **relatório de auditoria em PDF**. O Revoq entrega conferência de prazo, cruzamento com os pedidos da Shopify e hospedagem na UE.
+
+### (d) Reclamações 1–3★ mencionando UE / Alemanha / lei
+
+O líder tem **27 avaliações abaixo de 4★ em 2.203** (15 de 3★, 3 de 2★, 9 de 1★). As que existem:
+
+- **Cobrança sobre obrigação legal:** *"I dont quite understand why there are paid tiers on something that is required by the law"* — para adicionar links de FAQ ao formulário é preciso pagar *(EUA, jun/2026)*
+- **Risco ao tema da loja:** ao instalar, o app desabilitou uma seção existente da página principal (`disabled: true`) e a substituiu pelo próprio bloco. O lojista alerta que isso pode quebrar páginas de conteúdo e landing pages de SEO *(Taiwan, jun/2026)*
+- **CSP / JavaScript inline:** *"Formular wird nach zweimaliger Einrichtung nicht angezeigt... aufgrund der Sicherheitsrichtlinien vom Browser blockiert... App somit unbrauchbar"* — nada na documentação sobre isso *(Alemanha, jun/2026)*
+
+Não encontrei nenhuma reclamação dizendo que o app **falha o requisito legal**. As três queixas são de preço, de integração com o tema e de CSP — problemas de implementação, não de conformidade.
+
+### Aplicação dos 5 critérios
+
+| # | Critério | Resultado |
+|---|---|---|
+| 1 | Dor com data recente | ✅ **Passa** — 19/06/2026, dois meses atrás |
+| 2 | Regulação com prazo de vigência | ✅ **Passa** |
+| 3 | Sem líder grátis com selo Built for Shopify | ❌ **FALHA** — Revoq é 4,9★, 508 avaliações, **Built for Shopify**, com plano gratuito. E o líder de 2.203 também é gratuito |
+| 4 | Categoria entre ~500 e ~5.000 avaliações | ✅ **Passa** — ~3.374 |
+| 5 | Dor técnica repetida nos 1–3★ de vários concorrentes | ❌ **FALHA** — 27 negativas em 2.203; não há dor sistêmica a capturar |
+
+**Critérios de reprovação da regra 8:** dois dos três batem — concorrente grátis cobre a v1 inteira **e** existem **três** líderes com 4,8★+ e 300+ avaliações.
+
+### Veredito: 🔴 Não — a tese estava certa, o timing não
+
+Este é o candidato mais bem fundamentado que apareceu até agora, e ainda assim é um "não" claro. A regulação criou demanda real e datada, exatamente como o critério nº 2 previa. **O problema é que 17 desenvolvedores previram a mesma coisa.**
+
+Chegando hoje, seríamos o 18º app numa categoria onde o líder tem 2.203 avaliações, o segundo tem selo Built for Shopify, e o preço de entrada é **zero**. Não há dimensão de qualidade aberta: as poucas reclamações são de integração com tema e CSP, que qualquer concorrente corrige numa sprint.
+
+### ⚠️ Ressalva jurídica que precisa de verificação antes de qualquer decisão futura
+
+Pelo meu entendimento, a **Diretiva (UE) 2023/2673 altera a Diretiva 2011/83/UE no que diz respeito a contratos de serviços financeiros celebrados à distância**, e o botão de desistência (art. 11º-A) aplica-se a esses contratos — não à venda de bens em geral. Os apps, porém, vendem a obrigação para *todas* as lojas da UE ("Required for EU shops from June 19, 2026").
+
+Não consigo resolver isso pela App Store, meu corte de conhecimento é anterior à entrada em vigor, e **não sou fonte jurídica**. Há duas possibilidades: transposições nacionais ampliaram o escopo (a Alemanha é a hipótese mais provável, e os dois maiores apps são alemães), ou parte do mercado está vendendo urgência acima do que a lei exige.
+
+**Isso não muda o veredito** — o mercado está tomado de qualquer forma. Mas fica registrado: se um dia entrarmos em produto de conformidade, o escopo legal tem que ser confirmado em fonte primária ou com advogado **antes** da listagem, nunca a partir do texto de marketing dos concorrentes.
+
+---
+
+## Candidato secundário — EmpCo / selo de garantia GARAN (verificação leve)
+
+Prazo citado: **27/09/2026** — daqui a ~1 mês.
+
+| App | Nota | Avaliações | Preço |
+|---|---|---|---|
+| EU Warranty Label & GARAN | 5,0★ | **5** | Plano gratuito |
+| Warranto ‑ EU Warranty Label | — | **0** | Plano gratuito |
+| EU Warranty & GARAN Label | — | **0** | Plano gratuito |
+| EU Warranty Label GARAN | — | **0** | Plano gratuito |
+| EU Warranty GARAN Withdrawal | — | **0** | Plano gratuito |
+| EU‑Label GARAN | — | **0** | Avaliação gratuita |
+
+**Sete apps já posicionados, cerca de 5 avaliações somadas.** Um deles já combina selo de garantia **e** botão de desistência no mesmo produto — os desenvolvedores do primeiro ciclo estão migrando para o segundo.
+
+**Critério nº 4 reprova:** a categoria soma ~5 avaliações, muito abaixo do piso de ~500. Critério nº 5 também: não há reclamações porque ainda não há uso.
+
+### Veredito: 🔴 Não
+
+Entrar hoje seria ser o **8º app** numa categoria sem tração, um mês antes do prazo, sem distribuição e sem avaliações. E o desfecho é previsível: é exatamente o filme do botão de desistência, um ciclo antes. Quando a demanda chegar em 27/09, quem tem base instalada e avaliações captura — e não seremos nós.
+
+---
+
+## Candidato secundário — Right to Repair (verificação leve)
+
+**Nenhum app de conformidade existe.** A busca por `right to repair`, `spare parts`, `reparatur`, `réparation` devolve apenas apps de "disable right click" (falso positivo pela palavra "right") e um único **Repair & Service Ops by VZLAB** (4,5★, 5 avaliações), que é gestão de oficina — operação, não conformidade.
+
+Não verifiquei prazo legal nem escopo; não há o que verificar na App Store.
+
+### Veredito: 🔴 Não
+
+Categoria vazia, sem prazo confirmado por mim e sem nenhum sinal de demanda. É o padrão ClickUp da rodada 1: ausência de oferta que não se distingue de ausência de procura. Se houver interesse real, o primeiro passo é confirmar a obrigação legal em fonte primária, não construir.
+
+---
+
+## 🔧 Correção ao critério nº 2 da rodada 1
+
+O critério dizia: *"Regulação com prazo de vigência — cria demanda datada e defende contra concorrente grátis, porque manutenção contínua é barreira."*
+
+**A rodada 2 mostra que a segunda metade está errada.** O botão de desistência tem prazo legal, demanda datada e manutenção contínua — e mesmo assim atraiu **17 concorrentes**, quase todos gratuitos. A barreira não se formou.
+
+O motivo é estrutural e eu não tinha visto:
+
+> **Um prazo legal é informação pública.** Todo desenvolvedor da App Store lê a mesma diretiva, na mesma data, e chega à mesma conclusão. Oportunidade regulatória é a **mais contestada**, não a menos — o oposto do que o critério supunha. E o preço converge a zero porque conformidade é obrigação, não benefício: ninguém consegue cobrar caro por algo que o lojista é forçado a ter e que o concorrente ao lado dá de graça.
+
+A confirmação está no EmpCo: **7 apps posicionados antes mesmo do prazo chegar.** O ciclo se repete, e mais rápido a cada vez.
+
+**Critério nº 2 reescrito:**
+
+> **Regulação com prazo serve como sinal de demanda, nunca como vantagem competitiva.** Só vale entrar se houver, além do prazo, uma barreira que não seja o conhecimento da lei — dado proprietário, integração difícil, certificação, ou relação com o canal. Se a única barreira é "saber que a lei existe", já chegamos tarde: dezessete pessoas leram a mesma lei.
+
+### Consequência para a próxima rodada
+
+Dos 5 critérios originais, o nº 2 está corrigido e o nº 1 ("dor com data recente") herda a mesma ressalva: **dor pública com data é dor disputada**. O que sobra como fonte real de vantagem são os critérios 3 e 5 — ausência de líder grátis com selo, e dor técnica que ninguém resolveu porque é cara de resolver.
+
+Isso aponta para **dificuldade técnica, não para calendário**, como filtro principal da rodada 3.

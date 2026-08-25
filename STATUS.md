@@ -1,13 +1,52 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-25 (sessão 3) · Dia 1 de 365 · **Gasto: R$ 0,00**
+**Última atualização:** 2026-08-25 (sessão 4) · Dia 1 de 365 · **Gasto: R$ 0,00**
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
 ## 🔴 ÚNICO BLOQUEIO — escolher o próximo app
 
-Verifiquei os quatro candidatos na App Store. **Nenhum passa a nova regra 8 com folga.** Um único tem espaço, e é estreito. Evidência completa em [PESQUISA.md](PESQUISA.md).
+**Duas rodadas de pesquisa, sete candidatos, nenhum aprovado.** Evidência completa em [PESQUISA.md](PESQUISA.md).
+
+### Rodada 2 — conformidade regulatória com prazo
+
+| Candidato | Prazo | Apps existentes | Avaliações somadas | Veredito |
+|---|---|---|---|---|
+| **Botão de desistência da UE** | 19/06/2026 | **17** | **~3.374** | 🔴 **Chegamos ~8 meses tarde** |
+| EmpCo / selo GARAN | 27/09/2026 | **7** | **~5** | 🔴 7 já posicionados, zero tração |
+| Right to Repair | — | **0** | **0** | 🔴 Sem evidência de demanda |
+
+**O botão de desistência era a melhor tese até agora — e ainda assim é "não".** A Shopify não faz nada nativo, os líderes de returns não cobrem (verifiquei o AfterShip: **zero** menções a `withdrawal`, `Widerruf`, `2023/2673`), e a regulação criou demanda real e datada. O problema é que **17 desenvolvedores previram exatamente a mesma coisa**:
+
+- Líder: **4,9★ com 2.203 avaliações**, plano gratuito
+- Segundo: **4,9★ com 508**, **Built for Shopify**, plano gratuito
+- Terceiro: 5,0★ com 306, "law firm approved"
+- Preço de entrada da categoria: **zero**
+
+Os quatro requisitos legais que você listou — duas etapas, cliente sem conta, confirmação automática, permanentemente visível — **já estão cobertos textualmente** pelos dois maiores. E as poucas reclamações (27 negativas em 2.203) são de preço, integração com tema e CSP — nada de conformidade, nada que não se corrija numa sprint.
+
+### ⚠️ Ressalva jurídica registrada
+
+Pelo meu entendimento, a Diretiva 2023/2673 altera a 2011/83/UE **quanto a contratos de serviços financeiros à distância** — e o botão de desistência aplica-se a esses contratos, não à venda de bens em geral. Os apps vendem a obrigação para todas as lojas da UE. Ou transposições nacionais ampliaram o escopo (a Alemanha é a hipótese provável — os dois maiores apps são alemães), ou parte do mercado está vendendo urgência acima do que a lei exige.
+
+**Não sou fonte jurídica e meu corte de conhecimento é anterior à entrada em vigor.** Não muda o veredito — o mercado está tomado de qualquer forma — mas fica a regra: escopo legal se confirma em fonte primária ou com advogado, nunca no marketing do concorrente.
+
+## 🔧 A rodada 2 corrigiu um critério meu que estava errado
+
+Eu havia escrito que regulação com prazo "defende contra concorrente grátis, porque manutenção contínua vira barreira". **Está errado.**
+
+> **Um prazo legal é informação pública.** Todo desenvolvedor lê a mesma diretiva, na mesma data, e chega à mesma conclusão. Oportunidade regulatória é a **mais** contestada, não a menos. E o preço converge a zero porque conformidade é obrigação, não benefício: ninguém cobra caro por algo que o lojista é forçado a ter e que o concorrente dá de graça.
+
+A confirmação está no EmpCo: **7 apps posicionados antes do prazo sequer chegar.** O ciclo se repete, e mais rápido a cada vez.
+
+Critério reescrito no `CLAUDE.md`. **Conclusão prática: o filtro principal da rodada 3 é dificuldade técnica, não calendário.** Os únicos critérios que apontam vantagem real são "categoria sem líder grátis com selo Built for Shopify" e "dor técnica repetida nos 1–3★ de vários concorrentes".
+
+---
+
+## Rodada 1 — categorias maduras
+
+Nenhum passa a regra 8 com folga. Um único tem espaço, e é estreito.
 
 | # | Candidato | Concorrente mais forte | Veredito |
 |---|---|---|---|
@@ -26,7 +65,17 @@ Verifiquei os quatro candidatos na App Store. **Nenhum passa a nova regra 8 com 
 
 **O que trava o candidato 2:** **RF é grátis, 5,0★, 326 avaliações e Built for Shopify.** Teríamos que ganhar de graça, e a única dimensão onde dá para ganhar — fidelidade de impressão — **exige testar com impressora física** (Dymo, Zebra, Brother) e leitor real. Sem hardware, não dá para atacar justamente o que seria o diferencial.
 
-**Preciso da sua decisão:** candidato 2 com esse escopo estreito, nova rodada de candidatos com outros critérios, ou outra direção?
+---
+
+## Onde estamos, depois de sete candidatos
+
+**Etiquetas de código de barras (rodada 1) segue como o único candidato vivo** — e continua dependendo da sua resposta sobre hardware. Nada da rodada 2 o substitui.
+
+Sua decisão, em ordem de preferência minha:
+
+- **A — Decidir o candidato de etiquetas.** Se você tem impressora e leitor, é o único caminho com dimensão de vantagem aberta (fidelidade de impressão) e sem líder pago dominante. Se não tem, ele cai.
+- **B — Rodada 3 com filtro de dificuldade técnica**, não de calendário: categorias onde o problema é caro de resolver (hardware, formato de arquivo, integração externa instável, precisão de cálculo), que é o que os critérios 3 e 5 apontam.
+- **C — Rever a premissa do portfólio.** Duas rodadas mostraram que a App Store da Shopify, nas categorias que examinamos, está madura: líder grátis, nota alta e centenas de avaliações é o padrão, não a exceção. Se isso se repetir na rodada 3, a conversa deixa de ser "qual app" e passa a ser "Shopify é o marketplace certo para começar" — o `CLAUDE.md` já prevê WordPress, Chrome e Atlassian no backlog.
 
 ## 🟡 Pendência que virou decisiva
 
@@ -36,14 +85,16 @@ Também: **`northstackapps.com` já foi comprado?**
 
 ---
 
-## Resolvido nesta sessão
+## Resolvido até agora
 
 | Item | Estado |
 |---|---|
 | **App 1 cancelado** (caminho A) | Registrado em `DECISOES.md` e marcado no `CLAUDE.md`. Zero linhas de código escritas |
 | **Regra 8 na nova forma** | Aprovada e aplicada no `CLAUDE.md`, com critérios objetivos de reprovação |
+| **Regra 15 (commit + push)** | Aplicada. Remoto sincronizado a cada marco |
 | **Login do CLI** | ✅ Funcionando. **Northstack Apps, org ID `232549161`** |
-| **Pesquisa dos 4 candidatos** | ✅ `PESQUISA.md` — concorrentes, preços, notas, nº de avaliações, reclamações 1–3★ e vereditos |
+| **Pesquisa — rodada 1** | ✅ 4 candidatos (categorias maduras) |
+| **Pesquisa — rodada 2** | ✅ 3 candidatos (conformidade regulatória) + correção do critério nº 2 |
 
 ---
 

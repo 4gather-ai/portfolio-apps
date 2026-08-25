@@ -90,12 +90,17 @@ Quatro apps com 250–700 avaliações entre 4,7★ e 5,0★, vários inteiramen
 ### Backlog para avaliar depois
 Pós-compra por micro-segmento, outros marketplaces (WordPress, Chrome, Atlassian). Aplicar a regra 8 antes de escrever qualquer listagem.
 
-### O que procurar na próxima rodada (aprendido em 25/08/2026)
-1. Dor com **data recente** — mudança de API, regra nova ou integração descontinuada nos últimos ~6 meses, antes de os líderes responderem.
-2. **Regulação com prazo de vigência** — cria demanda datada e defende contra concorrente grátis, porque manutenção contínua vira barreira.
+### O que procurar (v2 — corrigido pela rodada 2 de pesquisa, 25/08/2026)
+1. Dor com **data recente** — útil como sinal de demanda, mas **dor pública com data é dor disputada**. Ver critério 2.
+2. **Regulação com prazo serve como sinal de demanda, NUNCA como vantagem competitiva.** Um prazo legal é informação pública: todo desenvolvedor lê a mesma diretiva na mesma data. Oportunidade regulatória é a **mais** contestada, não a menos, e o preço converge a zero porque conformidade é obrigação, não benefício. Só entrar se houver barreira além do conhecimento da lei — dado proprietário, integração difícil, certificação ou relação com o canal.
+   *Evidência: botão de desistência da UE (prazo 19/06/2026) tinha **17 apps** e ~3.374 avaliações dois meses depois, quase todos grátis. O EmpCo (prazo 27/09/2026) já tem **7 apps** posicionados um mês ANTES do prazo.*
 3. Categoria **sem líder grátis com selo Built for Shopify**.
 4. Soma de avaliações da categoria entre ~500 e ~5.000.
 5. **Reclamação técnica repetida nos 1–3★ de vários concorrentes ao mesmo tempo** — dor que ninguém resolveu costuma ser cara de resolver, e essa é a barreira que nos protege depois.
+
+**Os critérios 3 e 5 são os que apontam vantagem real. O filtro principal é dificuldade técnica, não calendário.**
+
+**Conformidade legal:** se algum dia entrarmos em produto regulatório, o escopo da lei tem que ser confirmado em **fonte primária ou com advogado antes da listagem** — nunca a partir do texto de marketing dos concorrentes.
 
 ## Definição de "pronto para submeter"
 - Core funciona ponta a ponta na dev store, demo em 60s.
