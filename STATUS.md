@@ -5,6 +5,22 @@
 
 ---
 
+## ⏸️ ESTADO: parado, aguardando retorno
+
+O Claude Code entregou tudo o que dependia dele e **parou**. Nada está em andamento. Tudo o que segue está registrado neste arquivo, em `PESQUISA.md`, `DECISOES.md` e `CLAUDE.md`, e commitado e pushado para `origin/main`.
+
+**Perguntas abertas, em ordem de importância:**
+
+| # | Pergunta | Quem responde | O que destrava |
+|---|---|---|---|
+| 1 | Qual o próximo app? (caminho A, B ou C — ver abaixo) | Chat estratégico / Amarildo | **Todo o trabalho** |
+| 2 | Tem impressora de etiqueta (Dymo/Zebra/Brother) e leitor de código de barras? *(4ª vez que pergunto)* | Amarildo | Decide se o único candidato vivo sobrevive |
+| 3 | `northstackapps.com` já foi comprado? | Amarildo | Submissão, quando houver app |
+
+**Não há bloqueio técnico.** CLI autenticado, ambiente pronto, repositório limpo e sincronizado. O bloqueio é inteiramente de decisão de produto.
+
+---
+
 ## 🔴 ÚNICO BLOQUEIO — escolher o próximo app
 
 **Duas rodadas de pesquisa, sete candidatos, nenhum aprovado.** Evidência completa em [PESQUISA.md](PESQUISA.md).
@@ -79,7 +95,7 @@ Sua decisão, em ordem de preferência minha:
 
 ## 🟡 Pendência que virou decisiva
 
-**Hardware — terceira vez que o campo vem como placeholder** (`[tem/não tem]`, `[sua resposta]`). Agora não é mais detalhe: se você **não** tem impressora de etiqueta e leitor, o candidato 2 cai também, e aí os quatro estão reprovados.
+**Hardware — quarta vez que o campo vem como placeholder** (`[tem/não tem]`, `[sua resposta]`). Não é mais detalhe: se você **não** tem impressora de etiqueta e leitor, o candidato de etiquetas cai também — e aí **os sete candidatos das duas rodadas estão reprovados**, sem exceção.
 
 Também: **`northstackapps.com` já foi comprado?**
 

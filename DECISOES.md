@@ -148,10 +148,56 @@ O `CLAUDE.md` justifica o App 1 com três premissas. As três foram verificadas 
 
 ---
 
-## Decisões em aberto (precisam do humano)
+## 2026-08-25 — Regra 15: commit e push ao fim de cada sessão
 
-| Tema | Pergunta | Bloqueia |
-|---|---|---|
-| **Próximo app** | Candidato 2 (etiquetas) com escopo estreito, nova rodada de candidatos, ou outra direção? | **Todo o trabalho** |
-| Hardware | Terceira vez que o campo vem como placeholder (`[sua resposta]`). Tem impressora de etiqueta (Dymo/Zebra/Brother) e leitor de código de barras? | Só o candidato 2 — mas é decisivo lá |
-| Domínio | `northstackapps.com` já foi comprado? | Submissão, quando houver app |
+**Decisão:** aprovada e aplicada no `CLAUDE.md`. `git add -A`, commit descritivo e `git push origin main` ao final de cada sessão e a cada marco, com checagem de segredos antes do push.
+**Motivo:** commit local não é visível para o chat estratégico. Sem push, o trabalho não conta como entregue.
+**Reversível?** Sim, mas não faz sentido.
+
+---
+
+## 2026-08-25 — Rodada 2 de pesquisa: três candidatos regulatórios, todos reprovados
+
+**Decisão:** nenhum candidato de conformidade regulatória entra em produção. Detalhe e fontes em `PESQUISA.md`, seção "Rodada 2".
+
+| Candidato | Prazo legal | Apps existentes | Avaliações somadas | Veredito |
+|---|---|---|---|---|
+| Botão de desistência da UE (2023/2673) | 19/06/2026 | **17** | ~3.374 | 🔴 Chegamos ~8 meses tarde |
+| EmpCo / selo de garantia GARAN | 27/09/2026 | **7** | ~5 | 🔴 Já disputado antes do prazo |
+| Right to Repair | não verificado | 0 | 0 | 🔴 Sem sinal de demanda |
+
+**Motivo do "não" no candidato principal:** era a melhor tese até hoje — a Shopify não faz nada nativo e os líderes de returns não cobrem (AfterShip: zero menções a `withdrawal`/`Widerruf`/`2023/2673`). Mas a lacuna já foi preenchida por 17 apps dedicados: líder com **4,9★ e 2.203 avaliações**, segundo com **4,9★, 508 avaliações e selo Built for Shopify**, ambos gratuitos, e os quatro requisitos legais (duas etapas, sem login, confirmação automática, visível) já cobertos textualmente. Só 27 avaliações negativas em 2.203, nenhuma sobre conformidade.
+
+**Reversível?** Sim, mas exigiria refutar a evidência.
+
+---
+
+## 2026-08-25 — Critério nº 2 corrigido: regulação não é vantagem competitiva
+
+**Decisão:** o critério "regulação com prazo defende contra concorrente grátis" foi **reescrito no `CLAUDE.md`**, porque estava errado.
+
+**Motivo:** um prazo legal é **informação pública** — todo desenvolvedor lê a mesma diretiva na mesma data. Oportunidade regulatória é a **mais** contestada, não a menos, e o preço converge a zero porque conformidade é obrigação, não benefício. Evidência: 17 apps no botão de desistência dois meses após o prazo, e **7 apps no EmpCo um mês antes** do prazo sequer chegar.
+
+**Nova forma:** regulação com prazo serve como sinal de demanda, nunca como vantagem. Só entrar se houver barreira além do conhecimento da lei — dado proprietário, integração difícil, certificação ou relação com o canal.
+
+**Consequência:** o filtro principal da rodada 3 passa a ser **dificuldade técnica, não calendário**. Os critérios que apontam vantagem real são o nº 3 (sem líder grátis com selo Built for Shopify) e o nº 5 (dor técnica repetida nos 1–3★ de vários concorrentes).
+
+---
+
+## 2026-08-25 — Regra de conformidade legal registrada
+
+**Decisão:** se algum dia entrarmos em produto regulatório, o escopo da lei tem que ser confirmado em **fonte primária ou com advogado antes da listagem** — nunca a partir do texto de marketing dos concorrentes. Gravado no `CLAUDE.md`.
+
+**Motivo:** pelo entendimento do Claude Code, a Diretiva 2023/2673 altera a 2011/83/UE **quanto a contratos de serviços financeiros à distância**, enquanto os 17 apps vendem a obrigação para todas as lojas da UE. Ou transposições nacionais ampliaram o escopo (Alemanha é a hipótese provável — os dois maiores apps são alemães), ou parte do mercado vende urgência acima do que a lei exige. **O Claude Code não é fonte jurídica e seu corte de conhecimento é anterior à entrada em vigor.** Não muda o veredito acima, mas é risco reputacional real num produto futuro.
+
+---
+
+## Decisões em aberto (precisam do humano / do chat estratégico)
+
+**Estado: parado, aguardando retorno.** Nenhum trabalho em andamento; nenhum bloqueio técnico.
+
+| # | Tema | Pergunta | Bloqueia |
+|---|---|---|---|
+| 1 | **Próximo app** | Caminho **A** (decidir o candidato de etiquetas), **B** (rodada 3 com filtro de dificuldade técnica) ou **C** (rever se a Shopify é o marketplace certo para começar)? | **Todo o trabalho** |
+| 2 | Hardware | **4ª vez que a resposta vem como placeholder.** Tem impressora de etiqueta (Dymo/Zebra/Brother) e leitor de código de barras? Se não, os sete candidatos das duas rodadas estão reprovados | O caminho A |
+| 3 | Domínio | `northstackapps.com` já foi comprado? | Submissão, quando houver app |
