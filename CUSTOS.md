@@ -39,20 +39,23 @@ Estimativas **não confirmadas**. Nenhuma contratação antes de aprovação exp
 
 | Item | Opção | US$/mês | R$/mês | Quando vira necessário |
 |---|---|---|---|---|
-| Hospedagem | Fly.io (1 shared-cpu-1x, 256MB) | ~5 | ~28 | Ao sair do túnel do CLI, antes de submeter |
-| Hospedagem (alt.) | Railway Hobby | 5 | ~28 | idem |
+| **Hospedagem — DECIDIDO: Railway Hobby** | Railway | 5 | ~28 | Ao sair do túnel do CLI, antes de submeter |
+| ~~Hospedagem (alt.)~~ | ~~Fly.io~~ | — | — | Descartado em 25/08/2026 |
 | Banco Postgres | Neon free tier (0,5 GB) | 0 | 0 | Já na v1 |
 | Banco (alt.) | Supabase free tier | 0 | 0 | idem |
 | Envio de e-mail (PO ao fornecedor) | Resend free (3.000 e-mails/mês) | 0 | 0 | Feature do plano Growth |
 | Monitoramento de erro | Sentry free tier | 0 | 0 | Antes de submeter |
-| Domínio `.com` | Registro anual | ~1 (12/ano) | ~66/ano | **Bloqueante para submeter** — privacidade, suporte e domínio do remetente de e-mail |
+| **Domínio `northstackapps.com` — APROVADO** | Registro anual (Amarildo compra) | ~1 (12/ano) | ~66/ano | **Bloqueante para submeter** — privacidade, suporte e domínio do remetente de e-mail |
 
 **Estimativa de recorrente na submissão: US$ 5/mês (~R$ 28/mês) + ~R$ 66/ano de domínio.**
 **Estimativa de gasto até a submissão do App 1: menos de R$ 100.**
 
 ### Por que free tier não cobre tudo
-- **Hospedagem:** o Fly.io não tem mais free tier real para orgs novas; o Railway dá crédito de teste e depois cobra US$ 5. Um plano gratuito de verdade (Render free) hiberna a instância, o que quebra webhooks da Shopify — inaceitável para app publicado.
-- **Domínio:** dá para publicar política de privacidade e página de suporte em GitHub Pages de graça (`*.github.io`), mas isso passa mal na revisão da Shopify e prejudica a entrega de e-mail ao fornecedor. Recomendo o domínio; o valor é baixo.
+- **Hospedagem:** um plano gratuito de verdade (Render free) hiberna a instância, o que quebra webhooks da Shopify — inaceitável para app publicado. Railway Hobby resolve por US$ 5/mês.
+- **Domínio:** aprovado (`northstackapps.com`). GitHub Pages seria grátis mas passa mal na revisão da Shopify e prejudica a entrega dos e-mails ao fornecedor.
+
+### ⚠️ Nenhum destes custos deve ser contratado ainda
+O escopo do App 1 está **em revisão** — ver `DECISOES.md`, seção "premissas contrariadas pelo mercado real". Contratar Railway agora é pagar por um app cujo escopo pode mudar ou ser cancelado. **A compra do domínio é segura** (serve ao portfólio inteiro, não a um app específico).
 
 ---
 
