@@ -5,22 +5,37 @@
 
 ---
 
-## 🔴 PRECISA DE VOCÊ — um comando, 2 minutos
+## 🔴 PRECISA DE VOCÊ — criar o Developer Space (1 comando interativo)
 
-O spike está **escrito e pronto**. Falta só o login, e **eu não manipulo tokens de API** — é regra minha, não do projeto, e vale mesmo quando você autoriza. Rode no seu terminal:
+✅ `forge login` funcionou — **Amarildo Pereira (amrldprr@gmail.com)**, account ID `712020:9b4086b1-…`.
+
+❌ **Bloqueio novo:** a conta ainda não é membro de nenhum **Developer Space**, e desde 2025 a Atlassian exige um para criar qualquer app Forge. O CLI se oferece para criar na hora, mas **pergunta o nome num prompt interativo** — e nenhum dos meus shells tem TTY (confirmado: `[ -t 0 ]` falso em PowerShell e Bash). A flag `--personal` não dispensa o Space.
+
+**Rode no seu terminal** (o `forge create` cria o Space e o app na mesma passada):
 
 ```bash
-forge login
+mkdir C:\Pessoal\Projeto\PortfolioApps\spike-asuser
 ```
 
-Ele pede seu e-mail Atlassian e um API token (criado em `id.atlassian.com/manage-profile/security/api-tokens`). O token fica no keychain da sua máquina; não passa por mim e não entra no repositório.
+```bash
+cd C:\Pessoal\Projeto\PortfolioApps\spike-asuser
+```
 
-**Me avise quando terminar** e eu executo o resto sozinho: `forge create`, aplicar os arquivos do spike, `forge deploy`, `forge install` e rodar. Levo poucos minutos e volto com os cinco resultados.
+```bash
+forge create -t jira-issue-panel -d asuser-spike
+```
 
-> **Nota técnica:** o `npm install -g @forge/cli` avisou que o script de instalação do **keytar** não rodou (política de `allow-scripts` do npm). O keytar é o que guarda a credencial no keychain do Windows. Se o `forge login` reclamar de keychain, rode antes:
-> ```bash
-> npm install -g --allow-scripts=@forge/cli,cloudflared,keytar @forge/cli
-> ```
+Quando perguntar o nome do Developer Space, sugiro **`Northstack Apps`** — ele não é descartável como o spike: **é onde todos os nossos apps vão morar**, e o nome aparece para a Atlassian. Vale usar o nome do negócio.
+
+**Me avise quando terminar.** Daí eu aplico os arquivos do spike, ajusto os escopos no `manifest.yml`, rodo `forge deploy` e `forge install`, e volto com os resultados.
+
+> **Nota:** o `npm install -g @forge/cli` avisou que o script de instalação do **keytar** não rodou. O login funcionou mesmo assim, então provavelmente não é problema. Se algo reclamar de keychain: `npm install -g --allow-scripts=@forge/cli,cloudflared,keytar @forge/cli`
+
+### ⚠️ Um ponto que vou precisar resolver depois do deploy
+
+O spike roda num **painel de item do Jira**, ou seja, dentro do navegador logado no `northstack-dev.atlassian.net`. **Eu não tenho essa sessão** — meu navegador interno não está logado na sua conta Atlassian.
+
+Quando chegarmos lá, as opções são: **(a)** você abre `SCRUM-1`, clica em "Rodar spike" e me manda o resultado; ou **(b)** você me autoriza a usar o seu Chrome (extensão Claude in Chrome), que já tem a sessão. Prefiro perguntar antes de tocar no seu navegador.
 
 ---
 
