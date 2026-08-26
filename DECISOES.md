@@ -484,6 +484,24 @@ Iniciar um timer em outro item grava o worklog do anterior primeiro. **Se essa g
 
 ---
 
+## 2026-08-26 — O navegador manda o instante do clique; o servidor valida
+
+**Decisão:** ao iniciar um timer, o painel envia o instante do clique junto e o resolver **adota esse instante** como início do timer, desde que ele esteja no passado e a no máximo **2 minutos** do relógio do servidor. Fora disso, vale o relógio do servidor.
+**Motivo:** o cold start do resolver Forge chegou a **20 s** medidos na instância real. Com o início marcado pelo servidor, esses segundos **sumiriam do apontamento de todo mundo, calados**, e o relógio da tela pularia para trás na confirmação. Entra aqui, e não é decisão técnica pura, porque toca **o dado que o cliente fatura**.
+**Por que não é brecha:** quem usa o app **já pode lançar a hora que quiser em seu próprio nome pela tela do Jira** — o `asUser()` não concede nada que a pessoa não tenha. A validação protege contra **relógio de máquina errado**, não contra o usuário.
+**Reversível?** Sim, e barato: `inicioDoTimer` em `lib/time.js` é um ponto só. Reverter traz de volta os segundos perdidos e o pulo do relógio.
+
+---
+
+## 2026-08-26 — O painel reconsulta o estado; não confia na própria tela
+
+**Decisão:** o painel do item reconsulta o servidor ao voltar o foco, ao voltar a aba ao primeiro plano e **a cada 30 s enquanto há relógio na tela**. Quando o timer sumiu por fora, a tela diz isso em vez de apagar o relógio calada.
+**Motivo:** o teste manual de 26/08 achou uma aba mostrando **"Running" para um timer encerrado em outra aba**. Relógio andando é uma afirmação forte, e a pessoa confia nela. **O painel não é dono da verdade:** o mesmo timer é mexido em outra aba, no celular ou pelo próprio Jira.
+**Custo aceito:** uma invocação do Forge a cada 30 s por painel **com timer correndo** — nada quando não há relógio na tela. Se a conta de invocações apertar no beta, o número sobe antes de qualquer outra coisa ser cortada.
+**Reversível?** Sim — `intervaloDeSincronia` em `frontend/estado.js`.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: em construção.** D1 e D2 entregues. Nenhuma decisão em aberto bloqueia o código.

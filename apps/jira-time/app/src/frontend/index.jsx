@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ForgeReconciler, {
   Button,
   ButtonGroup,
@@ -12,13 +12,13 @@ import ForgeReconciler, {
 } from '@forge/react';
 import { invoke } from '@forge/bridge';
 import { formatarRelogio } from '../lib/time.js';
-
-/** O servidor manda `startedAt`; o relógio da tela conta a partir dele. */
-function segundosDesde(startedAt) {
-  const inicio = new Date(startedAt).getTime();
-  if (Number.isNaN(inicio)) return 0;
-  return Math.max(0, Math.floor((Date.now() - inicio) / 1000));
-}
+import {
+  avisoDeMudanca,
+  estadoOtimista,
+  intervaloDeSincronia,
+  ligarSincronia,
+  segundosDesde,
+} from './estado.js';
 
 /**
  * Motivo técnico vira frase que o usuário entende.
@@ -68,11 +68,47 @@ const App = () => {
   // Contado no cliente para o relógio andar sem uma chamada por segundo.
   const [decorrido, setDecorrido] = useState(0);
 
-  const carregar = useCallback(async () => {
-    const r = await invoke('estadoDoTimer');
-    if (r?.ok) setEstado(r);
-    else setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
-    return r;
+  /**
+   * Os dois refs existem pelo mesmo motivo: os ouvintes de `ligarSincronia` são
+   * registrados uma vez e enxergariam para sempre os valores do render em que
+   * nasceram.
+   */
+  const ocupadoRef = useRef(false);
+  const estadoRef = useRef(null);
+
+  const definirOcupado = (valor) => {
+    ocupadoRef.current = valor;
+    setOcupado(valor);
+  };
+
+  const aplicarEstado = (novo) => {
+    estadoRef.current = novo;
+    setEstado(novo);
+  };
+
+  /**
+   * `silencioso`: a falha de uma leitura que a pessoa não pediu não pode apagar
+   * a confirmação de gravação que está na tela nem piscar um erro do nada.
+   * `avisarMudanca`: só as reconsultas de fundo comparam o antes e o depois —
+   * depois de Stop, a tela já está mostrando a frase certa, que é melhor.
+   */
+  const carregar = useCallback(async ({ silencioso = false, avisarMudanca = false } = {}) => {
+    try {
+      const r = await invoke('estadoDoTimer');
+      if (r?.ok) {
+        const mudanca = avisarMudanca ? avisoDeMudanca(estadoRef.current, r) : null;
+        aplicarEstado(r);
+        if (mudanca) setAviso(mudanca);
+      } else if (!silencioso) {
+        setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
+      }
+      return r;
+    } catch (erro) {
+      // Rede caiu no meio. O estado que já está na tela vale mais que um painel
+      // em branco, então ele fica como está.
+      if (!silencioso) setAviso({ tipo: 'error', texto: mensagemDeErro() });
+      return null;
+    }
   }, []);
 
   useEffect(() => {
@@ -90,65 +126,111 @@ const App = () => {
     return () => clearInterval(id);
   }, [rodandoAqui, startedAt]);
 
-  const iniciar = async () => {
-    setOcupado(true);
-    setAviso(null);
-    const r = await invoke('iniciarTimer');
+  /**
+   * Defeito 1: este painel não é o único lugar onde o timer é mexido.
+   *
+   * Sem isto, a aba deixada aberta no item antigo segue mostrando "Running"
+   * para um timer encerrado em outra aba — e o relógio andando é uma afirmação
+   * forte: a pessoa acredita que o tempo está sendo contado.
+   */
+  const intervaloMs = intervaloDeSincronia(estado);
+  useEffect(
+    () =>
+      ligarSincronia({
+        aoSincronizar: () => carregar({ silencioso: true, avisarMudanca: true }),
+        permitido: () => !ocupadoRef.current,
+        intervaloMs,
+        janela: typeof window === 'undefined' ? null : window,
+        documento: typeof document === 'undefined' ? null : document,
+      }),
+    [carregar, intervaloMs]
+  );
 
-    if (!r?.ok) {
-      // Falhou ao fechar o timer anterior: ele continua de pé, no item dele.
-      setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
-    } else if (r.anterior?.gravado) {
-      setAviso({
-        tipo: 'success',
-        texto: textoDoWorklog(
-          r.anterior.worklog,
-          r.anterior.encerrado?.issueKey,
-          r.anterior.jaEstavaGravado
-        ),
-      });
-    } else if (r.anterior?.motivo === 'curto-demais') {
-      setAviso({
-        tipo: 'information',
-        texto: 'Your previous timer ran for under a minute, so nothing was logged.',
-      });
+  const iniciar = async () => {
+    definirOcupado(true);
+    setAviso(null);
+
+    /**
+     * Defeito 2: o relógio começa a andar agora, não quando o resolver
+     * responder — o cold start medido foi de ~20 s. O mesmo carimbo vai para o
+     * servidor, que o adota se for recente, e por isso a confirmação não faz o
+     * relógio pular para trás.
+     */
+    const iniciadoEm = new Date().toISOString();
+    const anteriorNaTela = estado;
+    aplicarEstado(estadoOtimista(estado, iniciadoEm));
+
+    try {
+      const r = await invoke('iniciarTimer', { iniciadoEm });
+
+      if (!r?.ok) {
+        // Falhou ao fechar o timer anterior: ele continua de pé, no item dele.
+        // O relógio otimista some junto — não há timer novo.
+        aplicarEstado(anteriorNaTela);
+        setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
+      } else if (r.anterior?.gravado) {
+        setAviso({
+          tipo: 'success',
+          texto: textoDoWorklog(
+            r.anterior.worklog,
+            r.anterior.encerrado?.issueKey,
+            r.anterior.jaEstavaGravado
+          ),
+        });
+      } else if (r.anterior?.motivo === 'curto-demais') {
+        setAviso({
+          tipo: 'information',
+          texto: 'Your previous timer ran for under a minute, so nothing was logged.',
+        });
+      }
+    } catch (erro) {
+      aplicarEstado(anteriorNaTela);
+      setAviso({ tipo: 'error', texto: mensagemDeErro() });
     }
 
-    await carregar();
-    setOcupado(false);
+    await carregar({ silencioso: true });
+    definirOcupado(false);
   };
 
   const parar = async () => {
-    setOcupado(true);
+    definirOcupado(true);
     setAviso(null);
-    const r = await invoke('pararTimer');
+    try {
+      const r = await invoke('pararTimer');
 
-    if (!r?.ok) {
-      setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
-    } else if (r.gravado) {
-      setAviso({
-        tipo: 'success',
-        texto: textoDoWorklog(r.worklog, r.encerrado?.issueKey, r.jaEstavaGravado),
-      });
-    } else if (r.motivo === 'curto-demais') {
-      setAviso({
-        tipo: 'information',
-        texto: 'That timer ran for under a minute, so nothing was logged.',
-      });
+      if (!r?.ok) {
+        setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
+      } else if (r.gravado) {
+        setAviso({
+          tipo: 'success',
+          texto: textoDoWorklog(r.worklog, r.encerrado?.issueKey, r.jaEstavaGravado),
+        });
+      } else if (r.motivo === 'curto-demais') {
+        setAviso({
+          tipo: 'information',
+          texto: 'That timer ran for under a minute, so nothing was logged.',
+        });
+      }
+    } catch (erro) {
+      setAviso({ tipo: 'error', texto: mensagemDeErro() });
     }
 
-    await carregar();
-    setOcupado(false);
+    await carregar({ silencioso: true });
+    definirOcupado(false);
   };
 
   const descartar = async () => {
-    setOcupado(true);
+    definirOcupado(true);
     setAviso(null);
-    const r = await invoke('descartarTimer');
-    if (r?.ok) setAviso({ tipo: 'information', texto: 'Timer discarded. Nothing was logged.' });
-    else setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
-    await carregar();
-    setOcupado(false);
+    try {
+      const r = await invoke('descartarTimer');
+      if (r?.ok) setAviso({ tipo: 'information', texto: 'Timer discarded. Nothing was logged.' });
+      else setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
+    } catch (erro) {
+      setAviso({ tipo: 'error', texto: mensagemDeErro() });
+    }
+    await carregar({ silencioso: true });
+    definirOcupado(false);
   };
 
   if (!estado && !aviso) return <Spinner label="Loading timer" />;

@@ -488,3 +488,57 @@ describe('descartarTimer', () => {
     expect(storage.tamanho).toBe(0);
   });
 });
+
+/**
+ * O painel manda o instante do clique junto porque o relógio da tela começa a
+ * andar ali, antes de o resolver responder. Se o servidor ignorasse esse
+ * carimbo, a confirmação faria o relógio pular para trás — foi o defeito 2 do
+ * teste manual de 26/08/2026.
+ */
+describe('iniciarTimer com o instante do clique', () => {
+  /** O mesmo contexto do painel, agora com payload — é assim que `invoke` chega. */
+  function comClique(base, iniciadoEm) {
+    return { ...base, payload: { iniciadoEm } };
+  }
+
+  it('o servidor grava o instante do clique, não o da resposta', async () => {
+    const { painel, tempo } = montar();
+    // 20 s de cold start entre o clique e esta execução.
+    tempo.avancar(20);
+
+    const r = await painel.iniciarTimer(comClique(EU, '2026-08-27T09:00:00.000Z'));
+
+    expect(r.ok).toBe(true);
+    // Igual ao que a tela já está mostrando: nada pula para trás.
+    expect(r.timer.startedAt).toBe('2026-08-27T09:00:00.000Z');
+    expect(r.timer.segundos).toBe(20);
+  });
+
+  it('sem payload continua funcionando — nenhuma tela antiga quebra', async () => {
+    const { painel } = montar();
+    const r = await painel.iniciarTimer(EU);
+    expect(r.ok).toBe(true);
+    expect(r.timer.startedAt).toBe('2026-08-27T09:00:00.000Z');
+  });
+
+  it('carimbo fora da tolerância não vira hora apontada', async () => {
+    const { painel } = montar();
+    const r = await painel.iniciarTimer(comClique(EU, '2026-08-27T06:00:00.000Z'));
+    expect(r.timer.startedAt).toBe('2026-08-27T09:00:00.000Z');
+    expect(r.timer.segundos).toBe(0);
+  });
+
+  it('trocar de item: o anterior é gravado e o novo começa no clique', async () => {
+    const { painel, tempo, worklogs } = montar();
+    await painel.iniciarTimer(EU);
+    tempo.avancar(120);
+
+    const r = await painel.iniciarTimer(comClique(EU_OUTRO_ITEM, '2026-08-27T09:02:00.000Z'));
+
+    expect(r.ok).toBe(true);
+    expect(r.anterior.gravado).toBe(true);
+    expect(worklogs.gravados[0].segundos).toBe(120);
+    expect(r.timer.issueId).toBe('10002');
+    expect(r.timer.startedAt).toBe('2026-08-27T09:02:00.000Z');
+  });
+});

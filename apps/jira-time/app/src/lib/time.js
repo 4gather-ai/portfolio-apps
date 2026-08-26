@@ -145,3 +145,38 @@ export function formatarRelogio(segundos) {
   const dd = (n) => String(n).padStart(2, '0');
   return h > 0 ? `${h}:${dd(m)}:${dd(s)}` : `${m}:${dd(s)}`;
 }
+
+/**
+ * Quanto o navegador pode recuar o início de um timer.
+ *
+ * Existe por causa do cold start do Forge: entre o clique em Start e a execução
+ * do resolver passaram-se 20 segundos medidos na instância real. Se o início
+ * fosse sempre o relógio do servidor, esses segundos sumiriam da folha de ponto
+ * de todo mundo, e o relógio da tela — que começa a contar no clique — teria de
+ * pular para trás quando a resposta chegasse.
+ *
+ * Dois minutos cobrem o pior cold start com folga e limitam o estrago de um
+ * relógio de máquina errado. **Não é uma questão de segurança:** quem usa o app
+ * já pode lançar a hora que quiser em seu próprio nome pela tela do Jira — o
+ * `asUser()` não concede nada que a pessoa não tenha.
+ */
+export const TOLERANCIA_INICIO_MS = 120000;
+
+/**
+ * Decide o instante de início de um timer quando o navegador propõe um.
+ *
+ * Aceita a proposta só quando ela está no passado recente. Proposta no futuro
+ * (relógio adiantado), velha demais (relógio atrasado ou aba parada) ou
+ * ilegível caem para o relógio do servidor, que é a fonte confiável.
+ */
+export function inicioDoTimer(propostoISO, agora = new Date(), tolerancia = TOLERANCIA_INICIO_MS) {
+  const agoraMs = agora.getTime();
+  if (typeof propostoISO !== 'string') return new Date(agoraMs);
+
+  const proposto = Date.parse(propostoISO);
+  if (Number.isNaN(proposto)) return new Date(agoraMs);
+
+  const atraso = agoraMs - proposto;
+  if (atraso <= 0 || atraso > tolerancia) return new Date(agoraMs);
+  return new Date(proposto);
+}

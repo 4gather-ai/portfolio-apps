@@ -240,3 +240,53 @@ describe('descartar', () => {
     expect(storage.tamanho).toBe(0);
   });
 });
+
+/**
+ * O instante do clique vem do navegador porque o cold start do Forge chega a
+ * 20 s, e sem isso esses segundos sumiriam do apontamento de todo mundo.
+ * Vem do navegador, então é validado — nunca usado cru.
+ */
+describe('iniciar com o instante do clique', () => {
+  it('adota o clique quando ele é recente — o cold start não come os segundos', async () => {
+    const { timers, tempo, storage } = montar('2026-08-27T09:00:20.000Z');
+
+    const { timer } = await timers.iniciar(EU, { issueId: '10001' }, '2026-08-27T09:00:00.000Z');
+
+    expect(timer.startedAt).toBe('2026-08-27T09:00:00.000Z');
+    // E é isso que fica no KVS: o Stop grava a duração contada do clique.
+    const guardado = await storage.get(chaveDoTimer(EU));
+    expect(guardado.startedAt).toBe('2026-08-27T09:00:00.000Z');
+
+    tempo.avancar(100);
+    expect((await timers.ler(EU)).segundos).toBe(120);
+  });
+
+  it('sem proposta segue como antes: relógio do servidor', async () => {
+    const { timers } = montar('2026-08-27T09:00:20.000Z');
+    const { timer } = await timers.iniciar(EU, { issueId: '10001' });
+    expect(timer.startedAt).toBe('2026-08-27T09:00:20.000Z');
+  });
+
+  it('proposta absurda é ignorada — hora inventada não entra no Jira de ninguém', async () => {
+    const { timers } = montar('2026-08-27T09:00:20.000Z');
+
+    const antiga = await timers.iniciar(EU, { issueId: '10001' }, '2026-08-20T09:00:00.000Z');
+    expect(antiga.timer.startedAt).toBe('2026-08-27T09:00:20.000Z');
+
+    await timers.descartar(EU);
+    const futura = await timers.iniciar(EU, { issueId: '10001' }, '2026-08-27T18:00:00.000Z');
+    expect(futura.timer.startedAt).toBe('2026-08-27T09:00:20.000Z');
+  });
+
+  it('o timer que já rodava neste item não é remarcado pelo clique', async () => {
+    const { timers, tempo } = montar('2026-08-27T09:00:00.000Z');
+    await timers.iniciar(EU, { issueId: '10001' });
+    tempo.avancar(600);
+
+    const r = await timers.iniciar(EU, { issueId: '10001' }, '2026-08-27T09:09:50.000Z');
+
+    expect(r.jaEstavaRodando).toBe(true);
+    expect(r.timer.startedAt).toBe('2026-08-27T09:00:00.000Z');
+    expect(r.timer.segundos).toBe(600);
+  });
+});

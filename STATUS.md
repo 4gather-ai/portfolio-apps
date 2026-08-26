@@ -1,55 +1,99 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-26 (sessão 10) · Dia 1 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
+**Última atualização:** 2026-08-26 (sessão 11) · Dia 1 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
-## ▶️ EM CONSTRUÇÃO — Nativelog · **D3 de 14 concluído**
+## 🟢 A CUNHA ESTÁ PROVADA NO PRODUTO, NÃO SÓ NO SPIKE
 
-Plano aprovado, nome confirmado, domínio registrado. **Nenhuma decisão sua está bloqueando o código agora.**
+**Você apontou tempo e o worklog nasceu com o seu nome.** 2 minutos gravados como **Amarildo Pereira** ao trocar de ticket, na `northstack-dev`, pelo app — não pelo spike. Era o único critério do D3 que eu não conseguia fechar sozinho, e o mais importante do produto inteiro: **é isso que faz `worklogAuthor = currentUser()` achar as horas.** Se tivesse aparecido o nome do app, o plano mudava por inteiro. Não apareceu.
+
+---
+
+## ▶️ EM CONSTRUÇÃO — Nativelog · **D3 de 14 concluído e verificado por uso real**
 
 | Dia | Marco | Estado |
 |---|---|---|
 | **D1** · 26/08 | Scaffold Forge, manifest, CI, núcleo de tempo com testes | ✅ |
 | **D2** · 26/08 | Painel do item: timer inicia, para, descarta · **um timer por pessoa** | ✅ |
-| **D3** · 26/08 | **O timer vira worklog nativo do Jira, via `asUser()`, com início retroativo** | ✅ **entregue hoje** · 97 testes |
+| **D3** · 26/08 | O timer vira worklog nativo do Jira, via `asUser()`, com início retroativo | ✅ **verificado por você** |
+| **D3.1** · 26/08 | **Os 2 defeitos que o seu teste achou — corrigidos, testados e no ar** | ✅ **entregue hoje** · 135 testes |
 | **D4** · 29/08 | Apontamento manual: criar, editar e apagar entrada própria | ▶️ próximo |
 
-**Três dias de marco entregues no primeiro dia de calendário.** As datas seguintes ficam como estavam: a compressão para 14 dias tirou todo o amortecedor, e folga vale mais que antecipação.
-
-**Aprovações anteriores, todas resolvidas:** plano ✅ · nome `Nativelog` ✅ · recrutamento do beta na semana 1 ✅ · **`northstackapps.com` registrado no Cloudflare** ✅ — isso **destrava o beta do D14**; falta só publicar as páginas de privacidade e suporte nele.
+**Três dias de marco entregues no primeiro dia de calendário**, mais a rodada de correção. As datas seguintes ficam como estavam: a compressão para 14 dias tirou todo o amortecedor, e folga vale mais que antecipação.
 
 ---
 
-## 🔴 PRECISA DE VOCÊ — 3 itens
+## 🔴 PRECISA DE VOCÊ — 2 itens
 
 | # | O quê | Quando | Bloqueia |
 |---|---|---|---|
 | 1 | **Publicar as 4 respostas técnicas da Atlassian Community** — prontas em [`COMMUNITY.md`](apps/jira-time/COMMUNITY.md), uma por dia, D2–D5 | **começa amanhã** | O beta (canal 1 de prioridade) |
-| 2 | **Fechar o critério do D3: apontar tempo e ver o worklog com o SEU nome** — 2 minutos, roteiro abaixo | **hoje ou amanhã** | Confiança no D4 |
-| 3 | Definir a tabela de faixas de preço no Developer Console | D11 · 05/09 | Billing |
+| 2 | Definir a tabela de faixas de preço no Developer Console | D11 · 05/09 | Billing |
 
-### ⚠️ O critério do D3 é o único que eu não consigo fechar sozinho
-
-O Chrome continua sem chegar até mim: **esta sessão não recebeu nenhuma ferramenta de navegador** (o `/chrome` não devolve nada, não há servidor MCP registrado). E o `asUser()` só existe quando **uma pessoa** clica no painel — não há como invocá-lo do terminal. Procurei um token de API do Jira para conferir por fora: não existe nenhum no repositório, e o do Forge CLI não serve para isso.
-
-**Então o critério do D3 — "apontar e ver no worklog nativo com o nome certo" — fica aberto até você clicar.**
-
-**O que já é evidência forte:** o spike de 26/08 fez exatamente este POST, nesta instância, e voltou **HTTP 201 com autor = Amarildo Pereira** e `started` retroativo. O corpo que o D3 envia é o mesmo (`timeSpentSeconds`, `started` com offset numérico, `comment` em ADF) e está sob teste. O que muda no D3 é a **orquestração** — e é ela que tem 97 testes em cima.
-
-**Roteiro de 2 minutos** (app no ar na `northstack-dev`, versão 2.5.0):
-1. Abrir um item em `northstack-dev.atlassian.net`, painel **Nativelog** → **Start timer**.
-2. Esperar **mais de um minuto** — abaixo disso o app não grava de propósito, ver decisão abaixo.
-3. **Stop** → tem que aparecer `Logged 1m to NL-x as Amarildo Pereira`.
-4. **Abrir a aba Work log do item, no Jira** → a entrada tem que estar lá **com o seu nome, não com o nome do app**. Este passo é o critério inteiro do D3, e é a cunha do produto.
-5. Bônus: rodar `worklogAuthor = currentUser()` num filtro e ver o item aparecer *(pode levar ~6 s — o índice de busca atrasa, medido no spike)*.
-
-Se o passo 4 mostrar o nome do app em vez do seu, **me avisa na hora**: a cunha estaria morta e o plano inteiro muda.
+**Saiu da lista:** o critério do D3 — você fechou. Nada mais está bloqueando o código.
 
 ---
 
-## 📄 Entregue nesta sessão (10)
+## 🐞 Sessão 11 — os dois defeitos do seu teste
+
+Testar de verdade achou o que 97 testes automatizados não achavam: **os dois eram defeitos de estado da tela**, não de servidor. Nenhum dos dois aparece numa dev store com uma aba só.
+
+### 1. O painel mentia — "Running" para um timer já encerrado
+
+A aba deixada aberta no ticket antigo continuava com o relógio andando depois de o timer ter sido encerrado em outra aba. **É o pior tipo de mentira para este app:** relógio andando é uma afirmação de que o tempo está sendo contado, e a pessoa confia nela.
+
+A causa é de arquitetura, não de descuido: **o painel não é dono da verdade.** O mesmo timer é mexido em outra aba, no celular, ou pelo próprio Jira — então tem que reconsultar. Agora reconsulta por três gatilhos, porque nenhum é garantido sozinho:
+
+- **volta do foco da janela** e **a aba voltando ao primeiro plano** (`visibilitychange`) — o caso que você viveu;
+- **a cada 30 s**, e só enquanto há relógio na tela — é o único que funciona com duas janelas visíveis lado a lado, e a rede de segurança caso o sandbox do UI Kit não entregue os eventos.
+
+Quando a reconsulta descobre que o timer sumiu, a tela **diz isso** em vez de o relógio evaporar sem explicação: *"This timer is no longer running here — it was stopped, discarded or moved somewhere else."* A frase é deliberadamente neutra — a aba antiga não tem como saber se virou worklog, foi descartado ou mudou de item.
+
+**Dois cuidados que estão no código e valem registro:** a reconsulta **não roda durante uma operação** (Stop no ar + leitura no meio do caminho = mostrar o estado velho depois do certo), e **falha de reconsulta não apaga a confirmação de gravação da tela** nem pisca erro que você não provocou.
+
+### 2. O relógio demorava ~20 s para começar — cold start
+
+Você clicou em Start e a tela ficou idêntica a antes do clique por 20 segundos. **Um cronômetro que não se move ao clicar em Start parece quebrado**, e é o primeiro segundo do produto que a pessoa vê.
+
+O relógio agora começa a andar **no instante do clique**, sem esperar o resolver. E aqui estava a parte não óbvia: **mostrar otimista sozinho teria criado um defeito pior.** O servidor marcava o início na hora em que *ele* executava — 20 s depois — então a confirmação faria o relógio **pular para trás**, de 0:20 para 0:00, bem no momento em que a pessoa está olhando. E, calado, esse mesmo atraso **comia os primeiros 20 segundos do apontamento de todo mundo**.
+
+Corrigido dos dois lados: **o navegador manda o instante do clique junto**, e o servidor o adota — mas só depois de validar. Proposta no futuro (relógio adiantado), velha demais ou ilegível cai para o relógio do servidor. A tolerância é de **2 minutos**, que cobre o pior cold start medido com folga.
+
+> **Por que aceitar um carimbo do navegador não é brecha:** quem usa o app **já pode lançar a hora que quiser em seu próprio nome pela tela do Jira**. O `asUser()` não concede nada que a pessoa não tenha. O que a validação protege é contra **relógio de máquina errado**, não contra o usuário.
+
+### Verificado no navegador, não só em teste
+
+Primeira sessão em que o Chrome chegou até mim — nas anteriores não havia ferramenta de navegador, e foi por isso que o D3 ficou dependendo de você. Rodei os dois casos na `northstack-dev`, no SCRUM-1:
+
+| Caso | Resultado |
+|---|---|
+| Clicar Start com o resolver frio | **`Running 0:02`** dois segundos após o clique — antes eram ~20 s |
+| Deixar 10 s correndo | **`0:24`**, contando para a frente — **a confirmação do servidor não fez o relógio pular para trás** |
+| Descartar o timer numa 2ª aba e olhar a 1ª | A aba antiga **se corrigiu sozinha**, com a frase de explicação — e **sem nunca receber foco**: quem pegou foi o intervalo |
+
+### O que mudou no código
+
+| Arquivo | O que é |
+|---|---|
+| `src/frontend/estado.js` | **Novo.** Toda a lógica de tela que não depende de React: relógio otimista, quando reconsultar, o que dizer quando o estado mudou por fora |
+| `src/frontend/index.jsx` | Passa a ser só a árvore de componentes e a fiação |
+| `src/lib/time.js` | `inicioDoTimer` — a validação do carimbo do navegador |
+| `src/lib/timer.js` · `resolvers/painel.js` | O instante do clique atravessa até o KVS |
+| + testes | **135 testes** (eram 97) · `forge lint` limpo · deploy **2.6.0**, ainda elegível a Runs on Atlassian |
+
+**Por que um arquivo novo em vez de arrumar o `index.jsx`:** defeito de estado de tela sem teste volta. `estado.js` não importa `@forge/react` nem `@forge/bridge`, então os dois defeitos ficaram cobertos por teste de verdade — inclusive o registro e a remoção dos ouvintes de evento, e o caso do sandbox do Forge não oferecer `window` nem `document`.
+
+### Uma lição de método, e ela é sobre a regra 16
+
+**Nenhum dos dois defeitos era invisível — eram invisíveis para mim.** Os 97 testes cobriam o servidor, que estava certo; o navegador é que mentia. Bastou **uma pessoa usando duas abas** para achar os dois em minutos.
+
+É exatamente o argumento da **regra 16** (beta com 5–10 instâncias reais), agora com evidência própria em vez de princípio: dev store com uma aba só não mostra o que uso real mostra. Reforça a prioridade de recrutar o beta desde já.
+
+---
+
+## 📄 Entregue na sessão 10 — D3
 
 ### D3 — o timer vira worklog nativo
 

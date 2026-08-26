@@ -8,6 +8,8 @@ import {
   chaveDoDia,
   agruparPorDia,
   formatarRelogio,
+  inicioDoTimer,
+  TOLERANCIA_INICIO_MS,
 } from './time.js';
 
 describe('paraDataJira', () => {
@@ -176,5 +178,55 @@ describe('formatarRelogio', () => {
     expect(formatarRelogio(-10)).toBe('0:00');
     expect(formatarRelogio(NaN)).toBe('0:00');
     expect(formatarRelogio(undefined)).toBe('0:00');
+  });
+});
+
+describe('inicioDoTimer', () => {
+  const AGORA = new Date('2026-08-27T09:00:20.000Z');
+
+  it('sem proposta: o relógio do servidor manda', () => {
+    expect(inicioDoTimer(undefined, AGORA).toISOString()).toBe('2026-08-27T09:00:20.000Z');
+    expect(inicioDoTimer(null, AGORA).toISOString()).toBe('2026-08-27T09:00:20.000Z');
+  });
+
+  it('cold start de 20 s: os segundos do clique não somem da folha de ponto', () => {
+    const clique = '2026-08-27T09:00:00.000Z';
+    expect(inicioDoTimer(clique, AGORA).toISOString()).toBe(clique);
+  });
+
+  it('relógio da máquina adiantado: cai para o servidor em vez de contar tempo futuro', () => {
+    const futuro = '2026-08-27T09:05:00.000Z';
+    expect(inicioDoTimer(futuro, AGORA).toISOString()).toBe('2026-08-27T09:00:20.000Z');
+  });
+
+  it('proposta velha demais é recusada: relógio errado não vira hora inventada', () => {
+    const muitoAntes = '2026-08-27T08:00:00.000Z';
+    expect(inicioDoTimer(muitoAntes, AGORA).toISOString()).toBe('2026-08-27T09:00:20.000Z');
+  });
+
+  it('a borda da tolerância é fechada de um lado só', () => {
+    const agora = new Date('2026-08-27T09:02:00.000Z');
+    // Exatamente no limite: ainda aceito.
+    expect(inicioDoTimer('2026-08-27T09:00:00.000Z', agora, 120000).toISOString()).toBe(
+      '2026-08-27T09:00:00.000Z'
+    );
+    // Um milissegundo além: recusado.
+    expect(inicioDoTimer('2026-08-27T08:59:59.999Z', agora, 120000).toISOString()).toBe(
+      '2026-08-27T09:02:00.000Z'
+    );
+    // Mesmo instante que o servidor: não há o que recuar.
+    expect(inicioDoTimer('2026-08-27T09:02:00.000Z', agora, 120000).toISOString()).toBe(
+      '2026-08-27T09:02:00.000Z'
+    );
+  });
+
+  it('lixo no lugar da data não derruba o resolver', () => {
+    expect(inicioDoTimer('ontem à noite', AGORA).toISOString()).toBe('2026-08-27T09:00:20.000Z');
+    expect(inicioDoTimer(12345, AGORA).toISOString()).toBe('2026-08-27T09:00:20.000Z');
+    expect(inicioDoTimer({ hora: 9 }, AGORA).toISOString()).toBe('2026-08-27T09:00:20.000Z');
+  });
+
+  it('a tolerância padrão cobre o pior cold start medido', () => {
+    expect(TOLERANCIA_INICIO_MS).toBeGreaterThanOrEqual(20000);
   });
 });

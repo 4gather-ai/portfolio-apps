@@ -157,6 +157,11 @@ export function criarPainel({ timers, worklogs }) {
     iniciarTimer: seguro(async (req) => {
       const accountId = quemEstaPedindo(req);
       const item = itemDoPainel(req);
+      // Instante do clique, medido no navegador. O cold start do Forge chega a
+      // 20 s: sem isso, esses segundos sumiriam do apontamento e o relógio da
+      // tela pularia para trás quando a resposta chegasse. `timers.iniciar`
+      // valida antes de confiar — ver `inicioDoTimer` em `lib/time.js`.
+      const iniciadoEm = req?.payload?.iniciadoEm;
       const atual = await timers.ler(accountId);
 
       // Clicar de novo no mesmo item não reinicia nada.
@@ -180,7 +185,7 @@ export function criarPainel({ timers, worklogs }) {
         anterior = fechamento;
       }
 
-      const { timer } = await timers.iniciar(accountId, item);
+      const { timer } = await timers.iniciar(accountId, item, iniciadoEm);
       return { timer: paraPainel(timer), anterior, jaEstavaRodando: false };
     }),
 

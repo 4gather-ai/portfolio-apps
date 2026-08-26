@@ -11,7 +11,7 @@
  * verdade, sem mock do Forge.
  */
 
-import { duracaoDoTimer } from './time.js';
+import { duracaoDoTimer, inicioDoTimer } from './time.js';
 
 /** Uma chave por pessoa. É ela que garante um timer por pessoa. */
 export function chaveDoTimer(accountId) {
@@ -52,8 +52,12 @@ export function criarTimers({ storage, agora = () => new Date() }) {
    *
    * Iniciar de novo no mesmo item é no-op: dois cliques não viram um worklog
    * de dois segundos.
+   *
+   * `inicioProposto` é o instante do clique, medido pelo navegador. Serve para
+   * o cold start do Forge não comer os primeiros segundos do timer; só é aceito
+   * se `inicioDoTimer` aprovar, e nunca é usado cru.
    */
-  async function iniciar(accountId, { issueId, issueKey }) {
+  async function iniciar(accountId, { issueId, issueKey }, inicioProposto) {
     if (!issueId) throw new TypeError('iniciar exige o issueId');
 
     const emAndamento = await ler(accountId);
@@ -67,7 +71,7 @@ export function criarTimers({ storage, agora = () => new Date() }) {
     const timer = {
       issueId: String(issueId),
       issueKey: issueKey || null,
-      startedAt: agora().toISOString(),
+      startedAt: inicioDoTimer(inicioProposto, agora()).toISOString(),
     };
     await storage.set(chaveDoTimer(accountId), timer);
 
