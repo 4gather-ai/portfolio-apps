@@ -1,6 +1,6 @@
 # Nativelog — Plano da v1
 
-> **✅ Aprovado pelo Amarildo em 26/08/2026.** Em construção — **D1, D2 e D3 concluídos**, D4 é o próximo.
+> **✅ Aprovado pelo Amarildo em 26/08/2026.** Em construção — **D1, D2, D3 e D4 concluídos**, D5 é o próximo.
 > Base: cunha provada no spike de 26/08/2026 (`STATUS.md`). Escopo fechado em `PESQUISA.md`, rodada 5.
 
 ---
@@ -88,9 +88,9 @@ permissions:
 |---|---|---|---|
 | ~~**D1**~~ ✅ | 26/08 | Scaffold Forge no repo, manifest e escopos, CI (lint + Vitest), biblioteca de duração/data com testes | — |
 | ~~**D2**~~ ✅ | **26/08** *(adiantado)* | `issuePanel`: timer inicia, para e é descartado; estado no KVS; um timer por pessoa. 60 testes | — |
-| ~~**D3**~~ ✅ | **26/08** *(adiantado)* | Gravação do worklog no "parar", `started` retroativo, via `asUser()`. 97 testes | **Critério em aberto: apontar e conferir o nome na aba Work log** — só uma pessoa clicando fecha isso |
-| **D4** ▶️ | 29/08 | Apontamento manual, editar e apagar entrada própria | — |
-| **D5** | 30/08 | Erros do núcleo: permissão negada, item apagado, timer órfão, fuso | — |
+| ~~**D3**~~ ✅ | **26/08** *(adiantado)* | Gravação do worklog no "parar", `started` retroativo, via `asUser()`. 97 testes | ✅ **Critério fechado em 26/08:** worklog gravado com o nome do Amarildo, conferido na aba Work log |
+| ~~**D4**~~ ✅ | **26/08** *(adiantado)* | Apontamento manual, editar e apagar entrada própria. 231 testes. **Só a própria entrada, conferido no servidor** | — |
+| **D5** ▶️ | 30/08 | Erros do núcleo: permissão negada, item apagado, timer órfão, fuso | — |
 | **D6** | 31/08 | `globalPage` "Minha semana": leitura via `/issue/{key}/worklog`, totais por dia | — |
 | **D7** | 01/09 | Navegação de semanas, edição a partir da folha | — |
 | **D8** | 02/09 | Exportação CSV com incluir/**excluir** projetos. **Critério de "pronto" da rodada 5 completo** | — |

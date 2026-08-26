@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { criarWorklogs, paraADF, motivoDoErro } from './worklog.js';
+import { criarWorklogs, paraADF, deADF, motivoDoErro } from './worklog.js';
 
 /** Resposta no formato que o `requestJira` do Forge devolve. */
 function resposta(status, corpo) {
@@ -212,5 +212,251 @@ describe('jaExiste', () => {
 describe('criarWorklogs', () => {
   it('exige a função pedir — sem ela não há para onde escrever', () => {
     expect(() => criarWorklogs({})).toThrow(TypeError);
+  });
+});
+
+// ── D4: ler, corrigir e apagar apontamento ───────────────────────────────────
+
+const EU = '712020:9b4086b1';
+const OUTRA_PESSOA = '712020:aaaaaaaa';
+
+const DE_OUTRA_PESSOA = {
+  id: '10502',
+  started: '2026-08-26T14:00:00.000+0000',
+  timeSpentSeconds: 3600,
+  author: { accountId: OUTRA_PESSOA, displayName: 'Outra Pessoa' },
+};
+
+describe('deADF', () => {
+  it('desfaz o que paraADF faz — ida e volta preserva o texto', () => {
+    expect(deADF(paraADF('revisão do PR'))).toBe('revisão do PR');
+  });
+
+  it('lê comentário escrito na tela do Jira, com vários parágrafos', () => {
+    const doc = {
+      type: 'doc',
+      version: 1,
+      content: [
+        { type: 'paragraph', content: [{ type: 'text', text: 'primeira linha' }] },
+        { type: 'paragraph', content: [{ type: 'text', text: 'segunda linha' }] },
+      ],
+    };
+    expect(deADF(doc)).toBe('primeira linha\nsegunda linha');
+  });
+
+  it('não cola a lista inteira numa frase só', () => {
+    const doc = {
+      type: 'doc',
+      content: [
+        {
+          type: 'bulletList',
+          content: [
+            {
+              type: 'listItem',
+              content: [{ type: 'paragraph', content: [{ type: 'text', text: 'um' }] }],
+            },
+            {
+              type: 'listItem',
+              content: [{ type: 'paragraph', content: [{ type: 'text', text: 'dois' }] }],
+            },
+          ],
+        },
+      ],
+    };
+    expect(deADF(doc)).toBe('um\ndois');
+  });
+
+  it('comentário ausente vira texto vazio, não "undefined" no campo de edição', () => {
+    expect(deADF(undefined)).toBe('');
+    expect(deADF(null)).toBe('');
+    expect(deADF('texto solto')).toBe('');
+  });
+});
+
+describe('listar', () => {
+  it('marca o que é meu — é a regra do produto num campo só', async () => {
+    const { pedir } = espiao(() =>
+      resposta(200, { total: 2, worklogs: [WORKLOG_CRIADO, DE_OUTRA_PESSOA] })
+    );
+    const r = await criarWorklogs({ pedir }).listar({ issueId: '10001', accountId: EU });
+
+    expect(r.ok).toBe(true);
+    expect(r.worklogs[0].meu).toBe(true);
+    expect(r.worklogs[1].meu).toBe(false);
+  });
+
+  it('mais recente primeiro: é o que a pessoa acabou de lançar', async () => {
+    const antigo = { ...DE_OUTRA_PESSOA, id: '1', started: '2026-08-01T09:00:00.000+0000' };
+    const novo = { ...WORKLOG_CRIADO, id: '2', started: '2026-08-27T09:00:00.000+0000' };
+    const { pedir } = espiao(() => resposta(200, { total: 2, worklogs: [antigo, novo] }));
+
+    const r = await criarWorklogs({ pedir }).listar({ issueId: '10001', accountId: EU });
+    expect(r.worklogs.map((w) => w.id)).toEqual(['2', '1']);
+  });
+
+  it('lê pelo endpoint do item, nunca por JQL — o índice do Jira atrasa ~5,7 s', async () => {
+    const { pedir, chamadas } = espiao(() => resposta(200, { total: 0, worklogs: [] }));
+    await criarWorklogs({ pedir }).listar({ issueId: '10001', accountId: EU });
+
+    expect(chamadas[0].caminho).toContain('/rest/api/3/issue/10001/worklog');
+    expect(chamadas[0].caminho).not.toContain('search');
+    expect(chamadas[0].opcoes.method).toBe('GET');
+  });
+
+  it('avisa quando o Jira cortou a lista, em vez de dar soma incompleta como completa', async () => {
+    const { pedir } = espiao(() => resposta(200, { total: 5000, worklogs: [WORKLOG_CRIADO] }));
+    const r = await criarWorklogs({ pedir }).listar({ issueId: '10001', accountId: EU });
+    expect(r.completo).toBe(false);
+  });
+
+  it('item sem apontamento não é erro', async () => {
+    const { pedir } = espiao(() => resposta(200, { total: 0, worklogs: [] }));
+    const r = await criarWorklogs({ pedir }).listar({ issueId: '10001', accountId: EU });
+    expect(r).toMatchObject({ ok: true, worklogs: [], completo: true });
+  });
+
+  it('erro do Jira vira motivo, não exceção', async () => {
+    const { pedir } = espiao(() => resposta(403, {}));
+    const r = await criarWorklogs({ pedir }).listar({ issueId: '10001', accountId: EU });
+    expect(r).toMatchObject({ ok: false, motivo: 'sem-permissao' });
+  });
+});
+
+describe('lerUm', () => {
+  it('devolve o apontamento sabendo se é meu', async () => {
+    const { pedir, chamadas } = espiao(() => resposta(200, WORKLOG_CRIADO));
+    const r = await criarWorklogs({ pedir }).lerUm({
+      issueId: '10001',
+      worklogId: '10501',
+      accountId: EU,
+    });
+
+    expect(r.ok).toBe(true);
+    expect(r.worklog.meu).toBe(true);
+    expect(chamadas[0].caminho).toBe('/rest/api/3/issue/10001/worklog/10501');
+  });
+
+  it('worklog de outra pessoa vem marcado como não-meu', async () => {
+    const { pedir } = espiao(() => resposta(200, DE_OUTRA_PESSOA));
+    const r = await criarWorklogs({ pedir }).lerUm({
+      issueId: '10001',
+      worklogId: '10502',
+      accountId: EU,
+    });
+    expect(r.worklog.meu).toBe(false);
+  });
+
+  it('404 tem motivo próprio: sumiu o apontamento, não o item', async () => {
+    const { pedir } = espiao(() => resposta(404, {}));
+    const r = await criarWorklogs({ pedir }).lerUm({
+      issueId: '10001',
+      worklogId: '999',
+      accountId: EU,
+    });
+    expect(r).toMatchObject({ ok: false, motivo: 'apontamento-nao-encontrado' });
+  });
+});
+
+describe('atualizar', () => {
+  it('manda duração, início e comentário juntos — o PUT do Jira substitui o corpo', async () => {
+    const { pedir, chamadas } = espiao(() =>
+      resposta(200, { ...WORKLOG_CRIADO, timeSpentSeconds: 7200 })
+    );
+
+    const r = await criarWorklogs({ pedir }).atualizar({
+      issueId: '10001',
+      worklogId: '10501',
+      startedAt: '2026-08-27T09:00:00.000Z',
+      segundos: 7200,
+      comentario: 'corrigido',
+    });
+
+    expect(r.ok).toBe(true);
+    expect(chamadas[0].opcoes.method).toBe('PUT');
+    expect(chamadas[0].caminho).toBe('/rest/api/3/issue/10001/worklog/10501');
+    expect(chamadas[0].corpo.timeSpentSeconds).toBe(7200);
+    expect(chamadas[0].corpo.comment).toEqual(paraADF('corrigido'));
+    // Offset numérico, não 'Z' — o Jira rejeita ISO puro.
+    expect(chamadas[0].corpo.started).toContain('+0000');
+  });
+
+  it('apagar a descrição manda null, não omite o campo', async () => {
+    const { pedir, chamadas } = espiao(() => resposta(200, WORKLOG_CRIADO));
+    await criarWorklogs({ pedir }).atualizar({
+      issueId: '10001',
+      worklogId: '10501',
+      startedAt: '2026-08-27T09:00:00.000Z',
+      segundos: 3600,
+      comentario: '',
+    });
+
+    // `undefined` sumiria do JSON e deixaria a descrição antiga no lugar.
+    expect('comment' in chamadas[0].corpo).toBe(true);
+    expect(chamadas[0].corpo.comment).toBeNull();
+  });
+
+  it('recusa duração inválida antes de falar com o Jira', async () => {
+    const { pedir, chamadas } = espiao(() => resposta(200, WORKLOG_CRIADO));
+    const r = await criarWorklogs({ pedir }).atualizar({
+      issueId: '10001',
+      worklogId: '10501',
+      startedAt: '2026-08-27T09:00:00.000Z',
+      segundos: 0,
+    });
+    expect(r).toEqual({ ok: false, motivo: 'duracao-invalida' });
+    expect(chamadas).toHaveLength(0);
+  });
+
+  it('erro do Jira vira motivo', async () => {
+    const { pedir } = espiao(() => resposta(403, 'sem permissao'));
+    const r = await criarWorklogs({ pedir }).atualizar({
+      issueId: '10001',
+      worklogId: '10501',
+      startedAt: '2026-08-27T09:00:00.000Z',
+      segundos: 3600,
+    });
+    expect(r).toMatchObject({ ok: false, motivo: 'sem-permissao' });
+  });
+
+  it('rede caindo não vira exceção', async () => {
+    const pedir = async () => {
+      throw new Error('socket hang up');
+    };
+    const r = await criarWorklogs({ pedir }).atualizar({
+      issueId: '10001',
+      worklogId: '10501',
+      startedAt: '2026-08-27T09:00:00.000Z',
+      segundos: 3600,
+    });
+    expect(r).toMatchObject({ ok: false, motivo: 'rede' });
+  });
+});
+
+describe('apagar', () => {
+  it('apaga de verdade — não há lixeira nossa', async () => {
+    const { pedir, chamadas } = espiao(() => resposta(204, ''));
+    const r = await criarWorklogs({ pedir }).apagar({ issueId: '10001', worklogId: '10501' });
+
+    expect(r).toMatchObject({ ok: true, jaNaoExistia: false });
+    expect(chamadas[0].opcoes.method).toBe('DELETE');
+    expect(chamadas[0].caminho).toBe('/rest/api/3/issue/10001/worklog/10501');
+  });
+
+  it('404 é sucesso: alguém já apagou e o objetivo era não existir', async () => {
+    const { pedir } = espiao(() => resposta(404, {}));
+    const r = await criarWorklogs({ pedir }).apagar({ issueId: '10001', worklogId: '999' });
+    expect(r).toMatchObject({ ok: true, jaNaoExistia: true });
+  });
+
+  it('403 não é sucesso', async () => {
+    const { pedir } = espiao(() => resposta(403, {}));
+    const r = await criarWorklogs({ pedir }).apagar({ issueId: '10001', worklogId: '10501' });
+    expect(r).toMatchObject({ ok: false, motivo: 'sem-permissao' });
+  });
+
+  it('id do apontamento é escapado no caminho', async () => {
+    const { pedir, chamadas } = espiao(() => resposta(204, ''));
+    await criarWorklogs({ pedir }).apagar({ issueId: '10 001', worklogId: 'a/b' });
+    expect(chamadas[0].caminho).toBe('/rest/api/3/issue/10%20001/worklog/a%2Fb');
   });
 });

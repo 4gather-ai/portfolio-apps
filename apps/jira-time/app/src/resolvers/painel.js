@@ -8,6 +8,7 @@
  */
 
 import { formatarDuracao, formatarRelogio } from '../lib/time.js';
+import { validarApontamento } from '../lib/apontamento.js';
 
 /**
  * Abaixo disso não vira worklog.
@@ -54,6 +55,22 @@ export function paraPainel(timer) {
 }
 
 /**
+ * Um apontamento já gravado, no formato da lista do painel.
+ * O `autorNome` fica fora de propósito: a lista é só do dono, e repetir o
+ * próprio nome em toda linha é ruído.
+ */
+export function paraLinha(worklog) {
+  return {
+    id: worklog.id,
+    started: worklog.started,
+    segundos: worklog.segundos,
+    duracao: formatarDuracao(worklog.segundos),
+    comentario: worklog.comentario || '',
+    meu: Boolean(worklog.meu),
+  };
+}
+
+/**
  * Envelopa a operação: erro vira resposta com motivo, nunca uma exceção crua
  * subindo para o painel. O painel do item não pode ficar em branco.
  */
@@ -68,7 +85,24 @@ function seguro(fn) {
   };
 }
 
-export function criarPainel({ timers, worklogs }) {
+export function criarPainel({ timers, worklogs, agora = () => new Date() }) {
+  /**
+   * **A guarda do D4: só a própria entrada.**
+   *
+   * Lê o apontamento antes de mexer nele e confere o autor. Roda no servidor
+   * porque a tela não é lugar de guardar regra: o `worklogId` vem do navegador
+   * e um pedido montado à mão poderia apontar para a entrada de outra pessoa.
+   *
+   * A permissão do Jira **não** cobre isto: quem tem "editar worklog de
+   * qualquer um" passaria direto. A regra do app é mais estreita de propósito.
+   */
+  async function conferirAutoria({ issueId, worklogId, accountId }) {
+    const leitura = await worklogs.lerUm({ issueId, worklogId, accountId });
+    if (!leitura.ok) return { ok: false, motivo: leitura.motivo };
+    if (!leitura.worklog.meu) return { ok: false, motivo: 'apontamento-de-outra-pessoa' };
+    return { ok: true, worklog: leitura.worklog };
+  }
+
   /**
    * O coração do D3: transformar o timer parado em worklog nativo do Jira.
    *
@@ -200,6 +234,94 @@ export function criarPainel({ timers, worklogs }) {
       const accountId = quemEstaPedindo(req);
       const descartado = await timers.descartar(accountId);
       return { descartado: paraPainel(descartado) };
+    }),
+
+    /** Os apontamentos do item, para a pessoa ver e corrigir os dela. */
+    meusApontamentos: seguro(async (req) => {
+      const accountId = quemEstaPedindo(req);
+      const { issueId } = itemDoPainel(req);
+
+      const lista = await worklogs.listar({ issueId, accountId });
+      if (!lista.ok) throw new Error(lista.motivo);
+
+      const meus = lista.worklogs.filter((w) => w.meu);
+      return {
+        apontamentos: meus.map(paraLinha),
+        // Total só do que é meu. Somar o item inteiro numa tela que se chama
+        // "meus apontamentos" seria um número certo respondendo à pergunta
+        // errada.
+        totalSegundos: meus.reduce((soma, w) => soma + (w.segundos || 0), 0),
+        completo: lista.completo,
+      };
+    }),
+
+    /**
+     * Apontamento manual: a pessoa digita o que o cronômetro não mediu.
+     *
+     * O caminho mais usado de um app de apontamento não é o timer — é a
+     * segunda-feira em que alguém lança a sexta que esqueceu.
+     */
+    apontarManual: seguro(async (req) => {
+      const accountId = quemEstaPedindo(req);
+      const { issueId, issueKey } = itemDoPainel(req);
+
+      const valido = validarApontamento(req?.payload, agora());
+      if (!valido.ok) return { ok: false, motivo: valido.motivo };
+
+      const escrita = await worklogs.gravar({
+        issueId,
+        startedAt: valido.startedAt,
+        segundos: valido.segundos,
+        comentario: valido.comentario,
+      });
+      if (!escrita.ok) throw new Error(escrita.motivo);
+
+      // Nada de timer envolvido: este caminho não toca no KVS. Se tocasse,
+      // lançar a sexta esquecida mataria o cronômetro que está rodando agora.
+      return {
+        gravado: true,
+        issueKey,
+        worklog: { ...escrita.worklog, duracao: formatarDuracao(escrita.worklog.segundos) },
+      };
+    }),
+
+    editarApontamento: seguro(async (req) => {
+      const accountId = quemEstaPedindo(req);
+      const { issueId } = itemDoPainel(req);
+      const worklogId = req?.payload?.worklogId;
+      if (!worklogId) throw new Error('sem-apontamento');
+
+      const dono = await conferirAutoria({ issueId, worklogId, accountId });
+      if (!dono.ok) return dono;
+
+      const valido = validarApontamento(req?.payload, agora());
+      if (!valido.ok) return { ok: false, motivo: valido.motivo };
+
+      const escrita = await worklogs.atualizar({
+        issueId,
+        worklogId,
+        startedAt: valido.startedAt,
+        segundos: valido.segundos,
+        comentario: valido.comentario,
+      });
+      if (!escrita.ok) throw new Error(escrita.motivo);
+
+      return { editado: true, worklog: paraLinha({ ...escrita.worklog, meu: true }) };
+    }),
+
+    apagarApontamento: seguro(async (req) => {
+      const accountId = quemEstaPedindo(req);
+      const { issueId } = itemDoPainel(req);
+      const worklogId = req?.payload?.worklogId;
+      if (!worklogId) throw new Error('sem-apontamento');
+
+      const dono = await conferirAutoria({ issueId, worklogId, accountId });
+      if (!dono.ok) return dono;
+
+      const remocao = await worklogs.apagar({ issueId, worklogId });
+      if (!remocao.ok) throw new Error(remocao.motivo);
+
+      return { apagado: true, jaNaoExistia: Boolean(remocao.jaNaoExistia) };
     }),
   };
 }

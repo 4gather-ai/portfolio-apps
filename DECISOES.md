@@ -502,6 +502,39 @@ Iniciar um timer em outro item grava o worklog do anterior primeiro. **Se essa g
 
 ---
 
+## 2026-08-26 — Editar e apagar: só a própria entrada, e a guarda é do servidor
+
+**Decisão:** o Nativelog só edita e apaga worklog **de quem está usando**. Antes de qualquer `PUT` ou `DELETE`, o resolver lê o apontamento e confere o autor. Quem precisa mexer na hora de outra pessoa faz isso na tela do Jira, e o app diz isso na frase de recusa.
+**Motivo:** o `worklogId` vem do navegador; guarda na tela não é guarda. E **a permissão do Jira não cobre esta regra** — quem tem "editar worklog de qualquer um" passaria direto por ela. A nossa regra é mais estreita que a do Jira **de propósito**: o produto é a folha de ponto de quem está olhando, não uma ferramenta de administrar hora alheia. Entra aqui, e não é decisão técnica, porque **define o que o produto é** — e a versão de equipe do D9 vai reencostar nisto.
+**Reversível?** Sim, mas com cuidado: relaxar isso muda o escopo do produto, não só o código.
+
+---
+
+## 2026-08-26 — Um apontamento não passa de 24 horas
+
+**Decisão:** uma entrada só é recusada acima de 24 h, mesmo o Jira aceitando.
+**Motivo:** quem digita "8" querendo 8 horas e vê a interface ler "8d" acabou de lançar uma semana de trabalho num dia. Recusar custa um aviso; deixar passar custa a confiança na folha de ponto, que é o produto inteiro. Quem trabalhou 30 h lança em dois dias — que é onde o trabalho aconteceu.
+**Reversível?** Sim: `MAXIMO_SEGUNDOS` em `lib/apontamento.js`. **Marcado para revisitar no beta** junto com o mínimo de 1 minuto.
+
+---
+
+## 2026-08-26 — UI Kit 2: campo de texto controlado perde o que se digita
+
+**Decisão:** todo formulário do app usa `useForm` do `@forge/react`, com campos **não-controlados**. Campo controlado (`value` + `setState` por tecla) está proibido no projeto.
+**Motivo:** na primeira versão do formulário do D4, **só a última letra do que se digitava sobrevivia** — `45m` virava `m`. No UI Kit 2 o componente é desenhado pelo Jira, do outro lado de uma ponte assíncrona: o `value` do re-render volta **depois** da tecla seguinte e sobrescreve o que a pessoa escreveu. Passou por 231 testes e pelo `forge lint` sem um arranhão, porque não é defeito de lógica, é de plataforma.
+**Reversível?** Não deveria ser revertido. Está registrado como regra do projeto, não como escolha de estilo.
+
+---
+
+## 2026-08-26 — Abrir o app no navegador ao fim de cada marco
+
+**Decisão:** todo marco termina com o app aberto no navegador, na `northstack-dev`, executando o caminho principal — e não apenas com testes verdes.
+**Motivo:** em 26/08 o Chrome chegou ao Claude Code pela primeira vez, e **três defeitos apareceram no mesmo dia que 231 testes automatizados não pegavam**: a aba que mentia "Running", o relógio que só andava 20 s depois do clique, e o campo de texto que engolia o que se digitava. Os três têm a mesma assinatura: **a nossa lógica estava certa e a plataforma se comporta diferente.** Teste automatizado cobre o que escrevemos; só o navegador cobre onde o código roda.
+**Efeito colateral bom:** é também a evidência mais forte a favor da **regra 16** (beta com 5–10 instâncias reais). Dev store com uma aba só não mostra o que uso real mostra.
+**Reversível?** Sim, mas custaria caro.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: em construção.** D1 e D2 entregues. Nenhuma decisão em aberto bloqueia o código.

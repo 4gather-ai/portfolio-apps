@@ -11,17 +11,20 @@
 
 ---
 
-## ▶️ EM CONSTRUÇÃO — Nativelog · **D3 de 14 concluído e verificado por uso real**
+## ▶️ EM CONSTRUÇÃO — Nativelog · **D4 de 14 concluído**
 
 | Dia | Marco | Estado |
 |---|---|---|
 | **D1** · 26/08 | Scaffold Forge, manifest, CI, núcleo de tempo com testes | ✅ |
 | **D2** · 26/08 | Painel do item: timer inicia, para, descarta · **um timer por pessoa** | ✅ |
 | **D3** · 26/08 | O timer vira worklog nativo do Jira, via `asUser()`, com início retroativo | ✅ **verificado por você** |
-| **D3.1** · 26/08 | **Os 2 defeitos que o seu teste achou — corrigidos, testados e no ar** | ✅ **entregue hoje** · 135 testes |
-| **D4** · 29/08 | Apontamento manual: criar, editar e apagar entrada própria | ▶️ próximo |
+| **D3.1** · 26/08 | Os 2 defeitos que o seu teste achou — corrigidos e verificados no navegador | ✅ |
+| **D4** · 26/08 | **Apontamento manual: criar, corrigir e apagar a própria entrada** | ✅ **entregue hoje** · 231 testes |
+| **D5** · 30/08 | Erros do núcleo: permissão negada, item apagado, timer órfão, fuso | ▶️ próximo |
 
-**Três dias de marco entregues no primeiro dia de calendário**, mais a rodada de correção. As datas seguintes ficam como estavam: a compressão para 14 dias tirou todo o amortecedor, e folga vale mais que antecipação.
+**Quatro dias de marco entregues no primeiro dia de calendário**, mais uma rodada de correção. As datas seguintes ficam como estavam: a compressão para 14 dias tirou todo o amortecedor, e folga vale mais que antecipação.
+
+**O que mudou de verdade hoje não foi a velocidade — foi o método.** Nesta sessão o Chrome chegou até mim pela primeira vez, e **três defeitos apareceram no navegador que 231 testes automatizados não pegavam**, todos com a mesma assinatura: a nossa lógica estava certa, a plataforma é que se comporta diferente. Passei a abrir o app no navegador ao fim de cada marco.
 
 ---
 
@@ -36,6 +39,42 @@
 
 ---
 
+## ✅ D4 — apontamento manual: criar, corrigir e apagar a própria entrada
+
+Entregue e **verificado no navegador, na `northstack-dev`**, não só em teste. Deploy **2.9.0**, ainda elegível a Runs on Atlassian. **231 testes.**
+
+### O que o painel faz agora
+
+| Ação | Estado |
+|---|---|
+| **Log time manually** — duração, dia, hora e descrição | ✅ gravado como worklog nativo, no seu nome |
+| **Lista "Your time on this item"** com o total | ✅ lê pelo endpoint do item, nunca por JQL |
+| **Edit** — corrige duração, início e descrição | ✅ a descrição volta para o campo e não se perde |
+| **Delete** — apaga do Jira, com confirmação na própria linha | ✅ |
+
+**Roteiro do navegador, executado inteiro:** lançar `45m` com descrição → aparece na lista, total de 6m vai a 51m → **Edit** para `30m` → total cai para 36m e a descrição continua lá → **Delete** → confirmação → total volta a 6m. Nada ficou pendurado.
+
+### Três decisões que valem ser vistas
+
+**1. A regra "só a própria entrada" é do servidor, não da tela.** O `worklogId` vem do navegador; se a conferência morasse na interface, um pedido montado à mão editaria ou apagaria a hora de um colega. Antes de qualquer PUT ou DELETE o app **lê o apontamento e confere o autor**.
+
+E há um detalhe que só aparece quando se olha de perto: **a permissão do Jira não serve de guarda aqui.** Quem tem "editar worklog de qualquer um" passaria direto por ela. A nossa regra é mais estreita que a do Jira **de propósito** — este app é a folha de ponto de quem está olhando, não uma ferramenta de administrar hora alheia. Quem precisa mexer na hora dos outros usa a tela do Jira, e o app diz isso na frase de recusa.
+
+**2. Apontamento manual não encosta no timer.** Lançar a sexta esquecida numa segunda-feira **não mata o cronômetro que está rodando agora** — tem teste em cima disso. O caminho manual não toca no KVS.
+
+**3. Um apontamento não passa de 24 h.** O Jira aceita; a gente não. Quem digita "8" querendo 8 horas e vê a interface ler "8d" acabou de lançar uma semana num dia. Recusar custa um aviso; deixar passar custa a confiança na folha de ponto, que é o produto. Quem trabalhou 30 h lança em dois dias — que é onde o trabalho aconteceu.
+
+### 🐞 O navegador achou mais um, e esse era grave
+
+**Na primeira versão do formulário, só a última letra do que se digitava sobrevivia.** Digitar `45m` deixava `m` no campo. Passou por 231 testes e pelo `forge lint` sem um arranhão — porque não é um defeito de lógica, é de plataforma.
+
+**Causa:** os campos estavam *controlados* (`value` + `setState` a cada tecla). No UI Kit 2 o componente é desenhado pelo Jira, do outro lado de uma ponte assíncrona: o `value` que volta do re-render chega **depois** da tecla seguinte e sobrescreve o que a pessoa acabou de escrever.
+
+**Correção:** `useForm`, do próprio `@forge/react`, que registra os campos como **não-controlados** — o valor mora no formulário, digitar não provoca re-render, nada é sobrescrito. É o caminho que a Atlassian expõe exatamente para isso.
+
+**A lição é a mesma da sessão de manhã, e agora são três defeitos seguidos com a mesma assinatura:** *teste automatizado cobre a nossa lógica; só o navegador cobre a plataforma.* Passei a abrir o app no navegador ao fim de cada marco, e não apenas quando algo parece errado.
+
+---
 ## 🐞 Sessão 11 — os dois defeitos do seu teste
 
 Testar de verdade achou o que 97 testes automatizados não achavam: **os dois eram defeitos de estado da tela**, não de servidor. Nenhum dos dois aparece numa dev store com uma aba só.

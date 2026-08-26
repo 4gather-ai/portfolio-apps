@@ -542,3 +542,332 @@ describe('iniciarTimer com o instante do clique', () => {
     expect(r.timer.startedAt).toBe('2026-08-27T09:02:00.000Z');
   });
 });
+
+// ── D4: apontamento manual, edição e exclusão ────────────────────────────────
+
+/**
+ * O que estes testes protegem, em uma frase: **a hora de outra pessoa.**
+ *
+ * O `worklogId` vem do navegador. Se a conferência de autoria morasse na tela,
+ * um pedido montado à mão editaria ou apagaria o apontamento de um colega — e a
+ * permissão do Jira não pegaria, porque quem tem "editar worklog de qualquer
+ * um" passa por ela. A guarda é do servidor, e é isto que a cobre.
+ */
+
+const MEU_WORKLOG = {
+  id: '10501',
+  issueId: '10001',
+  started: '2026-08-26T09:00:00.000Z',
+  segundos: 3600,
+  comentario: 'revisão do PR',
+  autorId: 'conta-eu',
+  autorNome: 'Amarildo Pereira',
+  meu: true,
+};
+
+const WORKLOG_ALHEIO = {
+  ...MEU_WORKLOG,
+  id: '10502',
+  autorId: 'conta-outra',
+  autorNome: 'Outra Pessoa',
+  meu: false,
+};
+
+/** Worklogs falsos com as operações do D4, guardando o que foi pedido. */
+function worklogsD4({ lista, umPorId, aoAtualizar, aoApagar, aoGravar } = {}) {
+  const gravados = [];
+  const chamadas = [];
+  return {
+    gravados,
+    chamadas,
+    async gravar(alvo) {
+      chamadas.push({ op: 'gravar', alvo });
+      const roteiro = aoGravar?.();
+      if (roteiro) return roteiro;
+      const wl = { id: 'novo-1', issueId: alvo.issueId, started: alvo.startedAt, segundos: alvo.segundos, autorNome: 'Amarildo Pereira' };
+      gravados.push({ ...wl, comentario: alvo.comentario });
+      return { ok: true, worklog: wl };
+    },
+    async jaExiste() {
+      return { ok: true, encontrado: false };
+    },
+    async listar() {
+      chamadas.push({ op: 'listar' });
+      return lista || { ok: true, worklogs: [], completo: true };
+    },
+    async lerUm({ worklogId }) {
+      chamadas.push({ op: 'lerUm', worklogId });
+      if (umPorId) return umPorId(worklogId);
+      return { ok: true, worklog: MEU_WORKLOG };
+    },
+    async atualizar(alvo) {
+      chamadas.push({ op: 'atualizar', alvo });
+      return aoAtualizar?.() || { ok: true, worklog: { ...MEU_WORKLOG, segundos: alvo.segundos } };
+    },
+    async apagar(alvo) {
+      chamadas.push({ op: 'apagar', alvo });
+      return aoApagar?.() || { ok: true, jaNaoExistia: false };
+    },
+  };
+}
+
+function montarD4(opcoes = {}) {
+  const storage = storageDeMemoria();
+  const tempo = relogio('2026-08-27T09:00:00.000Z');
+  const timers = criarTimers({ storage, agora: tempo.agora });
+  const worklogs = worklogsD4(opcoes);
+  return {
+    storage,
+    tempo,
+    timers,
+    worklogs,
+    painel: criarPainel({ timers, worklogs, agora: tempo.agora }),
+  };
+}
+
+/** O contexto do painel com payload — é assim que `invoke(nome, payload)` chega. */
+function comPayload(base, payload) {
+  return { ...base, payload };
+}
+
+describe('meusApontamentos', () => {
+  it('mostra só os meus, mesmo com o item cheio de horas de outras pessoas', async () => {
+    const { painel } = montarD4({
+      lista: { ok: true, worklogs: [MEU_WORKLOG, WORKLOG_ALHEIO], completo: true },
+    });
+
+    const r = await painel.meusApontamentos(EU);
+
+    expect(r.ok).toBe(true);
+    expect(r.apontamentos).toHaveLength(1);
+    expect(r.apontamentos[0].id).toBe('10501');
+  });
+
+  it('o total é só do que é meu — a tela se chama "seu tempo neste item"', async () => {
+    const outroMeu = { ...MEU_WORKLOG, id: '10503', segundos: 1800 };
+    const { painel } = montarD4({
+      lista: { ok: true, worklogs: [MEU_WORKLOG, WORKLOG_ALHEIO, outroMeu], completo: true },
+    });
+
+    const r = await painel.meusApontamentos(EU);
+    expect(r.totalSegundos).toBe(5400);
+  });
+
+  it('traz a duração já formatada e a descrição, para a lista e para a edição', async () => {
+    const { painel } = montarD4({ lista: { ok: true, worklogs: [MEU_WORKLOG], completo: true } });
+    const r = await painel.meusApontamentos(EU);
+
+    expect(r.apontamentos[0]).toMatchObject({
+      duracao: '1h',
+      comentario: 'revisão do PR',
+      started: '2026-08-26T09:00:00.000Z',
+    });
+  });
+
+  it('item sem nada meu devolve lista vazia, não erro', async () => {
+    const { painel } = montarD4({ lista: { ok: true, worklogs: [WORKLOG_ALHEIO], completo: true } });
+    const r = await painel.meusApontamentos(EU);
+    expect(r).toMatchObject({ ok: true, apontamentos: [], totalSegundos: 0 });
+  });
+
+  it('repassa o aviso de lista cortada — soma parcial não pode parecer completa', async () => {
+    const { painel } = montarD4({ lista: { ok: true, worklogs: [MEU_WORKLOG], completo: false } });
+    expect((await painel.meusApontamentos(EU)).completo).toBe(false);
+  });
+
+  it('erro do Jira vira motivo, não painel em branco', async () => {
+    const { painel } = montarD4({ lista: { ok: false, motivo: 'sem-permissao' } });
+    expect(await painel.meusApontamentos(EU)).toMatchObject({ ok: false, motivo: 'sem-permissao' });
+  });
+});
+
+describe('apontarManual', () => {
+  it('grava o que a pessoa digitou, com o início que ela escolheu', async () => {
+    const { painel, worklogs } = montarD4();
+
+    const r = await painel.apontarManual(
+      comPayload(EU, {
+        duracao: '1h 30m',
+        iniciadoEm: '2026-08-26T14:00:00.000Z',
+        comentario: 'revisão do PR',
+      })
+    );
+
+    expect(r).toMatchObject({ ok: true, gravado: true, issueKey: 'NL-1' });
+    expect(r.worklog.duracao).toBe('1h 30m');
+    expect(worklogs.gravados[0]).toMatchObject({
+      issueId: '10001',
+      segundos: 5400,
+      started: '2026-08-26T14:00:00.000Z',
+      comentario: 'revisão do PR',
+    });
+  });
+
+  it('**não toca no timer** — lançar a sexta esquecida não mata o cronômetro de hoje', async () => {
+    const { painel, storage, timers } = montarD4();
+    await painel.iniciarTimer(EU);
+    expect(await timers.ler('conta-eu')).not.toBeNull();
+
+    await painel.apontarManual(
+      comPayload(EU, { duracao: '2h', iniciadoEm: '2026-08-21T14:00:00.000Z' })
+    );
+
+    const aindaRodando = await timers.ler('conta-eu');
+    expect(aindaRodando).not.toBeNull();
+    expect(aindaRodando.issueId).toBe('10001');
+    expect(storage.tamanho).toBe(1);
+  });
+
+  it('o que não passa na validação não chega ao Jira', async () => {
+    const { painel, worklogs } = montarD4();
+
+    const r = await painel.apontarManual(comPayload(EU, { duracao: 'umas horas' }));
+
+    expect(r).toMatchObject({ ok: false, motivo: 'duracao-invalida' });
+    expect(worklogs.gravados).toHaveLength(0);
+  });
+
+  it('recusa apontar trabalho que ainda não aconteceu', async () => {
+    const { painel } = montarD4();
+    const r = await painel.apontarManual(
+      comPayload(EU, { duracao: '2h', iniciadoEm: '2026-08-28T09:00:00.000Z' })
+    );
+    expect(r).toMatchObject({ ok: false, motivo: 'inicio-no-futuro' });
+  });
+
+  it('erro do Jira vira motivo que o painel sabe explicar', async () => {
+    const { painel } = montarD4({ aoGravar: () => ({ ok: false, motivo: 'sem-permissao' }) });
+    const r = await painel.apontarManual(
+      comPayload(EU, { duracao: '2h', iniciadoEm: '2026-08-26T09:00:00.000Z' })
+    );
+    expect(r).toMatchObject({ ok: false, motivo: 'sem-permissao' });
+  });
+
+  it('sem identidade, não grava nada', async () => {
+    const { painel, worklogs } = montarD4();
+    const semUsuario = { context: { extension: { issue: { id: '10001', key: 'NL-1' } } } };
+    const r = await painel.apontarManual(
+      comPayload(semUsuario, { duracao: '2h', iniciadoEm: '2026-08-26T09:00:00.000Z' })
+    );
+    expect(r).toMatchObject({ ok: false, motivo: 'sem-usuario' });
+    expect(worklogs.gravados).toHaveLength(0);
+  });
+});
+
+describe('editarApontamento', () => {
+  it('corrige duração, início e descrição de uma vez', async () => {
+    const { painel, worklogs } = montarD4();
+
+    const r = await painel.editarApontamento(
+      comPayload(EU, {
+        worklogId: '10501',
+        duracao: '45m',
+        iniciadoEm: '2026-08-26T10:00:00.000Z',
+        comentario: 'corrigido',
+      })
+    );
+
+    expect(r).toMatchObject({ ok: true, editado: true });
+    const atualizacao = worklogs.chamadas.find((c) => c.op === 'atualizar');
+    expect(atualizacao.alvo).toMatchObject({
+      worklogId: '10501',
+      segundos: 2700,
+      startedAt: '2026-08-26T10:00:00.000Z',
+      comentario: 'corrigido',
+    });
+  });
+
+  it('**apontamento de outra pessoa não é editável, nem com o id certo na mão**', async () => {
+    const { painel, worklogs } = montarD4({
+      umPorId: () => ({ ok: true, worklog: WORKLOG_ALHEIO }),
+    });
+
+    const r = await painel.editarApontamento(
+      comPayload(EU, { worklogId: '10502', duracao: '99h', iniciadoEm: '2026-08-26T10:00:00.000Z' })
+    );
+
+    expect(r).toMatchObject({ ok: false, motivo: 'apontamento-de-outra-pessoa' });
+    expect(worklogs.chamadas.find((c) => c.op === 'atualizar')).toBeUndefined();
+  });
+
+  it('confere a autoria ANTES de validar — nada sobre a entrada alheia é revelado', async () => {
+    const { painel, worklogs } = montarD4({
+      umPorId: () => ({ ok: true, worklog: WORKLOG_ALHEIO }),
+    });
+
+    // Payload inválido de propósito: mesmo assim o motivo é a autoria.
+    const r = await painel.editarApontamento(comPayload(EU, { worklogId: '10502', duracao: 'xx' }));
+    expect(r.motivo).toBe('apontamento-de-outra-pessoa');
+    expect(worklogs.chamadas.filter((c) => c.op === 'lerUm')).toHaveLength(1);
+  });
+
+  it('apontamento que sumiu não vira erro genérico', async () => {
+    const { painel } = montarD4({
+      umPorId: () => ({ ok: false, motivo: 'apontamento-nao-encontrado' }),
+    });
+    const r = await painel.editarApontamento(
+      comPayload(EU, { worklogId: '999', duracao: '1h', iniciadoEm: '2026-08-26T10:00:00.000Z' })
+    );
+    expect(r).toMatchObject({ ok: false, motivo: 'apontamento-nao-encontrado' });
+  });
+
+  it('sem worklogId não tenta adivinhar qual entrada era', async () => {
+    const { painel, worklogs } = montarD4();
+    const r = await painel.editarApontamento(comPayload(EU, { duracao: '1h' }));
+    expect(r).toMatchObject({ ok: false, motivo: 'sem-apontamento' });
+    expect(worklogs.chamadas).toHaveLength(0);
+  });
+
+  it('edição inválida não chega ao Jira', async () => {
+    const { painel, worklogs } = montarD4();
+    const r = await painel.editarApontamento(
+      comPayload(EU, { worklogId: '10501', duracao: '30d', iniciadoEm: '2026-08-26T10:00:00.000Z' })
+    );
+    expect(r).toMatchObject({ ok: false, motivo: 'longo-demais' });
+    expect(worklogs.chamadas.find((c) => c.op === 'atualizar')).toBeUndefined();
+  });
+});
+
+describe('apagarApontamento', () => {
+  it('apaga a própria entrada', async () => {
+    const { painel, worklogs } = montarD4();
+
+    const r = await painel.apagarApontamento(comPayload(EU, { worklogId: '10501' }));
+
+    expect(r).toMatchObject({ ok: true, apagado: true, jaNaoExistia: false });
+    expect(worklogs.chamadas.find((c) => c.op === 'apagar').alvo).toMatchObject({
+      issueId: '10001',
+      worklogId: '10501',
+    });
+  });
+
+  it('**não apaga a entrada de outra pessoa**', async () => {
+    const { painel, worklogs } = montarD4({
+      umPorId: () => ({ ok: true, worklog: WORKLOG_ALHEIO }),
+    });
+
+    const r = await painel.apagarApontamento(comPayload(EU, { worklogId: '10502' }));
+
+    expect(r).toMatchObject({ ok: false, motivo: 'apontamento-de-outra-pessoa' });
+    expect(worklogs.chamadas.find((c) => c.op === 'apagar')).toBeUndefined();
+  });
+
+  it('entrada já apagada em outro lugar é sucesso — o objetivo era não existir', async () => {
+    const { painel } = montarD4({ aoApagar: () => ({ ok: true, jaNaoExistia: true }) });
+    const r = await painel.apagarApontamento(comPayload(EU, { worklogId: '10501' }));
+    expect(r).toMatchObject({ ok: true, apagado: true, jaNaoExistia: true });
+  });
+
+  it('sem worklogId não apaga nada', async () => {
+    const { painel, worklogs } = montarD4();
+    const r = await painel.apagarApontamento(comPayload(EU, {}));
+    expect(r).toMatchObject({ ok: false, motivo: 'sem-apontamento' });
+    expect(worklogs.chamadas).toHaveLength(0);
+  });
+
+  it('falha do Jira vira motivo, e a entrada continua lá', async () => {
+    const { painel } = montarD4({ aoApagar: () => ({ ok: false, motivo: 'jira-indisponivel' }) });
+    const r = await painel.apagarApontamento(comPayload(EU, { worklogId: '10501' }));
+    expect(r).toMatchObject({ ok: false, motivo: 'jira-indisponivel' });
+  });
+});
