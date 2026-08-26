@@ -7,6 +7,7 @@ import {
   limitesDaSemana,
   chaveDoDia,
   agruparPorDia,
+  formatarRelogio,
 } from './time.js';
 
 describe('paraDataJira', () => {
@@ -155,5 +156,25 @@ describe('agruparPorDia', () => {
     expect(agruparPorDia(null, eu).total).toBe(0);
     const semSegundos = [{ author: { accountId: eu }, started: '2026-08-26T09:00:00.000+0000' }];
     expect(agruparPorDia(semSegundos, eu).total).toBe(0);
+  });
+});
+
+describe('formatarRelogio', () => {
+  it('mostra segundos — timer sem segundos parece travado', () => {
+    expect(formatarRelogio(0)).toBe('0:00');
+    expect(formatarRelogio(45)).toBe('0:45');
+    expect(formatarRelogio(125)).toBe('2:05');
+  });
+
+  it('só mostra hora quando existe hora', () => {
+    expect(formatarRelogio(3600)).toBe('1:00:00');
+    expect(formatarRelogio(5025)).toBe('1:23:45');
+    expect(formatarRelogio(3599)).toBe('59:59');
+  });
+
+  it('não vira NaN com entrada estragada', () => {
+    expect(formatarRelogio(-10)).toBe('0:00');
+    expect(formatarRelogio(NaN)).toBe('0:00');
+    expect(formatarRelogio(undefined)).toBe('0:00');
   });
 });

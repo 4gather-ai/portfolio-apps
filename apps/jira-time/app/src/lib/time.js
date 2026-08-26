@@ -131,3 +131,17 @@ export function agruparPorDia(worklogs, accountId) {
   }
   return { porDia, total };
 }
+
+/**
+ * Relógio para o timer em andamento: "1:23:45" ou "23:45".
+ * `formatarDuracao` é a notação do Jira e serve para o que já foi apontado;
+ * um timer correndo precisa de segundos, senão parece travado.
+ */
+export function formatarRelogio(segundos) {
+  const total = Number.isFinite(segundos) && segundos > 0 ? Math.floor(segundos) : 0;
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  const dd = (n) => String(n).padStart(2, '0');
+  return h > 0 ? `${h}:${dd(m)}:${dd(s)}` : `${m}:${dd(s)}`;
+}

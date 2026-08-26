@@ -30,6 +30,7 @@ permissions:
     - read:jira-user # identificar quem está apontando
     - read:jira-work # ler worklogs, itens e projetos
     - write:jira-work # criar, editar e apagar worklog do próprio usuário
+    - storage:app # KVS: só o timer em andamento e preferências (PLANO-V1, seção 4)
 # Módulos dos dias seguintes, mantidos aqui como contrato do plano:
 #   D6  jira:globalPage nativelog-week  — minha semana + CSV
 #   D9  jira:globalPage nativelog-team  — visão de equipe (Pro)
