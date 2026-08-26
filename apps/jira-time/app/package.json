@@ -18,9 +18,9 @@
   },
   "dependencies": {
     "@forge/api": "^5.2.0",
-    "@forge/bridge": "6.3.0-next.5",
+    "@forge/bridge": "^6.3.0",
     "@forge/kvs": "^2.0.4",
-    "@forge/react": "12.1.2-next.4",
+    "@forge/react": "^12.1.2",
     "@forge/resolver": "2.0.0",
     "react": "^18.2.0"
   }

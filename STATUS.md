@@ -62,7 +62,15 @@ Se qualquer passo falhar, me manda o que apareceu.
 2. **Trocar de item encerra o timer anterior e o devolve fechado**, com o tempo dele, para o D3 gravar como worklog. Timer órfão acumulando é reclamação registrada da categoria.
 3. **A identidade vem do contexto do Forge, nunca do frontend.** Tem teste que manda um payload pedindo o timer de outra conta e confirma que é ignorado.
 
-**Uma correção de rota:** o `forge lint` avisou que o `storage` do `@forge/api` está **deprecado**. Migrei para `@forge/kvs` no mesmo dia. Custou 10 minutos agora; custaria uma rodada de revisão da Atlassian depois. Deploy confirmou: **2.2.0, ainda elegível a Runs on Atlassian**.
+**Duas correções de rota:**
+
+**1. `storage` deprecado.** O `forge lint` avisou que o `storage` do `@forge/api` está deprecado. Migrei para `@forge/kvs` no mesmo dia. Custou 10 minutos agora; custaria uma rodada de revisão da Atlassian depois.
+
+**2. O CI pegou uma que eu tinha deixado passar.** O primeiro push do D2 **falhou no GitHub Actions**: o template do Forge tinha trazido `@forge/react` e `@forge/bridge` em versão **prerelease `-next`**. Na minha máquina funcionavam — já estavam baixadas. Num runner limpo o `npm ci` deu 404, porque a Atlassian rotaciona esses tarballs. Trocado por versões estáveis; `npm ci` do zero agora reproduz.
+
+Isso contraria a **regra 12** do `CLAUDE.md` ("nada de beta como dependência central") e eu deixei passar por confiar no scaffold oficial. Fica a lição registrada em `DECISOES.md`: **o que o template gera não está isento das regras do repositório.** E o CI se pagou no segundo dia de vida — sem ele, isso apareceria só na submissão.
+
+Deploy atual: **2.3.0, ainda elegível a Runs on Atlassian**.
 
 ### Recrutamento do beta — canal 1 descartado
 

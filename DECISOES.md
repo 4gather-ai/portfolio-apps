@@ -440,6 +440,18 @@ O `forge lint` marcou o `storage` do `@forge/api` como **deprecado** no D2. Migr
 
 ---
 
+## 2026-08-26 — Fora das prereleases `-next` do Forge (regra 12)
+
+**O CI quebrou e o motivo importa.** O template do `shopify`… não: o template do **Forge** trouxe `@forge/react@12.1.2-next.4` e `@forge/bridge@6.3.0-next.5` — **prereleases**. Elas funcionavam na minha máquina porque já estavam no `node_modules`. Num runner limpo, o `npm ci` deu **404**: a Atlassian rotaciona os tarballs `-next` e aquele já não existia.
+
+Trocado por `^12.1.2` e `^6.3.0`, ambos estáveis. `npm ci` do zero reproduz, `forge lint` limpo, deploy 2.3.0 ainda elegível a Runs on Atlassian.
+
+**A regra 12 do `CLAUDE.md` já dizia isso** — "nada de beta como dependência central" — e eu deixei passar por vir do scaffold oficial. **Vale generalizar: o que o template gera não está isento das regras do repositório.** Conferir as dependências do scaffold é parte do D1, não uma descoberta do D2.
+
+**E o CI provou o próprio valor no segundo dia.** Sem ele, isso só apareceria quando outra máquina — ou o pipeline de submissão da Atlassian — tentasse instalar do zero.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: em construção.** D1 e D2 entregues. Nenhuma decisão em aberto bloqueia o código.
