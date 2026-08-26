@@ -825,3 +825,197 @@ Fonte oficial. Exige participação em três frentes:
 | **Test management** | Sem nativo nenhum; incumbentes em 3.8–4.3 com 61 mil instalações somadas | Qualidade e distribuição descorrelacionadas — AIO Tests tem 4.9 e 7x menos instalações que o Xray de 4.3 |
 
 **Nenhum dos dois está aprovado.** Ambos precisam do que ficou faltando nesta rodada: **verificação da funcionalidade nativa em fonte oficial** e **leitura sistemática das negativas** — que aqui foi por varredura manual, não por filtro.
+
+---
+
+# RODADA 5 — time tracking para Jira Cloud, verificação profunda
+
+Consultada em **25/08/2026**. App 1 definido: **time tracking para Jira Cloud**. Test management vira App 2 no backlog. Forge confirmado; alvo Runs on Atlassian, não Cloud Fortified.
+
+## ✅ A lacuna de método da rodada 4 foi fechada
+
+Encontrei a **API pública do Marketplace** (`/rest/2/addons/{key}/reviews`), que devolve `stars` e texto por avaliação. Isso restaura o rigor das rodadas 1–3: dá para filtrar por nota em vez de varrer o fluxo à mão.
+
+**Corpus lido: 1.174 avaliações** em 6 apps — muito acima do mínimo de 30 por app.
+
+> ⚠️ **Ressalva sobre as notas antigas:** a Atlassian migrou de escala de 4 para 5 estrelas em **25/05/2026** e converteu as notas antigas linearmente. Por isso a distribuição do Tempo mostra 301 avaliações de "4★" e só 6 de "5★" — a maioria dos "4" é nota máxima da escala antiga. **Estrelas de períodos diferentes não são comparáveis**; ponderei o conteúdo, não só o número.
+
+---
+
+## (a) Cobertura nativa do Jira Cloud para tempo — fonte oficial Atlassian
+
+### O que o Jira já faz, sem app
+
+| Recurso | Existe? | Detalhe (fonte: support.atlassian.com) |
+|---|---|---|
+| Registro de tempo (worklog) | **Sim** | "Log work" no work item; editar exige permissão *Edit own work logs* / *Edit all work logs* |
+| Campo de estimativa | **Sim** | *Original estimate*, *Remaining estimate*; alternativas: *Work item count*, *Story points*, método customizado |
+| Unidades e formato | **Sim** | Entrada em `w/d/h/m` (ex.: `3w`, `2d 4h 30m`); admin define horas por dia, dias por semana, formato e unidade padrão |
+| Painel de tempo no item | **Sim** | Barras de tempo gasto × restante no painel de detalhes |
+| Permissão de apontamento | **Sim** | *Work On Work Items* por esquema de permissão |
+| Relatório de tempo por espaço | **Sim** | Compara estimativa original × atual dentro do espaço |
+| **Folha de ponto por pessoa (timesheet)** | **Não** | — |
+| **Aprovação de horas** | **Não** | — |
+| **Taxas de faturamento / custo** | **Não** | — |
+| **Relatório de utilização por pessoa** | **Não** | — |
+
+**Limite nativo relevante:** itens com **mais de 100 filhos não entram no rollup** de time tracking.
+
+**Relatórios nativos** (lista oficial): burndown, burnup, gráfico de controle, diagrama de fluxo cumulativo, epic burndown, epic report, velocity, version report, sprint report, release burndown, deployment frequency. **São todos ágeis/de sprint.** Nenhum é por pessoa, por período ou por cliente.
+
+### O que Premium e Enterprise acrescentam para tempo: **nada**
+
+Preços oficiais do Jira Cloud: **Free** (até 10 usuários, US$ 0) · **Standard US$ 7,91/usuário** · **Premium US$ 14,54/usuário** · **Enterprise** (anual, sob consulta).
+
+**A página de preços do Jira não menciona "time tracking" uma única vez.** O Premium acrescenta planejamento entre times e gestão de dependências, aprovações customizáveis, limites de automação por usuário, armazenamento ilimitado, SLA de 99,9%. O Enterprise acrescenta Atlassian Analytics e Data Lake.
+
+> **Esta é a diferença decisiva frente à categoria de roadmaps** (rodada 4, categoria 5), onde o Advanced Roadmaps nativo vem no Premium e ameaça o app. **Em time tracking, o teto do nativo não sobe com o plano do cliente.** O cliente que paga Enterprise tem exatamente o mesmo time tracking do cliente Free. A única exceção parcial é o Data Lake do Enterprise, que permite montar relatório próprio — mas isso é ferramenta de BI, não de apontamento.
+
+**Referência de preço:** o Jira Standard custa US$ 7,91/usuário. O Tempo custa de US$ 1 a US$ 5 por usuário. Um app de tempo custa entre **8% e 65% do preço da própria plataforma** — há espaço, mas o teto é real.
+
+---
+
+## (b) Negativas a fundo — 1.174 avaliações lidas, 200 negativas classificadas
+
+| App | Avaliações lidas | Negativas (≤3★ com texto) | Distribuição |
+|---|---|---|---|
+| **Tempo Timesheets** | **400** | **93** | 1★:37 · 2★:13 · 3★:43 |
+| **Harvest (oficial)** | **145** | **66** | 1★:66 · 2★:37 · 3★:15 |
+| **Cappsule Timesheet Tracking** | **251** | **26** | 1★:21 · 2★:17 · 3★:30 |
+| **Clockify** | **127** | **25** | 1★:22 · 2★:13 · 3★:16 |
+| **Clockwork Pro** | **139** | **16** | 1★:10 · 2★:1 · 3★:14 |
+| **Clockwork Lite** | **112** | **9** | 1★:8 · 2★:2 · 3★:7 |
+
+### Dores classificadas por tipo e frequência
+
+| # | Tipo de dor | Ocorrências | Distribuição por app |
+|---|---|---|---|
+| 1 | **Relatórios e exportação** | **36** | Tempo 17 · Harvest 8 · Cappsule 7 · Clockwork Pro 3 · Clockify 1 |
+| 2 | Suporte | 31 | Tempo 12 · Harvest 11 · Cappsule 4 · Clockwork 3 · Clockify 1 |
+| 3 | **Integração / JQL / fidelidade do dado** | **25** | Harvest 12 · Clockify 5 · Tempo 3 · Clockwork Pro 3 · Cappsule 2 |
+| 4 | Bug / instabilidade | 24 | Tempo 11 · Clockwork Pro 4 · Harvest 4 · Cappsule 3 · Clockify 2 |
+| 5 | Permissão / admin | 15 | Tempo 7 · Harvest 4 · Cappsule 2 · Clockify 1 · Clockwork Lite 1 |
+| 6 | Preço / licenciamento | 13 | Tempo 6 · Cappsule 2 · Harvest 2 · demais 1 cada |
+| 7 | Desempenho | 11 | Tempo 5 · Clockwork Lite 3 · Clockify 2 · Clockwork Pro 1 |
+| 8 | UX | 6 | Tempo 4 · Cappsule 1 · Harvest 1 |
+| 9 | Mobile | 5 | Harvest 3 · Tempo 2 |
+| 10 | Aprovação / fluxo | 2 | Tempo 1 · Cappsule 1 |
+
+**Os temas 1 e 3, somados, são a maior dor da categoria — e são o mesmo problema visto de dois ângulos.**
+
+### As citações que sustentam a tese
+
+**O dado não fica no Jira, fica no app:**
+- **Tempo, 2★, 10/06/2026** — *"breaking any JQL queries on worklog authors, because on jira side each worklog gets loged **asApp and not asUser**, so every worklog on JQL side is done by Tempo Service. This could be easily avoided by using asUser."*
+- **Harvest, 1★, 01/05/2024** — *"**Does not integrate with JIRA time tracking fields and features.**"*
+- **Harvest, 1★, 29/09/2023** (ES) — *"No logea horas en el ticket de JIRA al iniciar timer desde JIRA. Tampoco logea horas... Tampoco tiene sincronización de horas logeadas de Harvest a Jira."*
+- **Harvest, 1★, 20/03/2025** — *"Does not even allow you to record time against a JIRA ticket on a different date."*
+- **Clockwork Pro, 3★, 03/06/2025** — *"one recurring issue for me and my team is the **delay in time logs appearing in Jira** and in the timesheet. Time may be logged but not reflected in..."*
+
+**O relatório não dá conta:**
+- **Tempo, 3★, 23/01/2025** — *"I would like to see more reporting capabilities, like the ability to **exclude some projects when filtering instead of selecting one by one** (when you have 50+ projects)."*
+- **Cappsule, 1★, 29/04/2026** — *"They just ruined my day by **merging ticket number with title in the issues export**... I had to extract the list of tickets from the filter html."*
+- **Clockwork Pro, 3★, 01/07/2025** — *"the **REST API documentation** could use some updates, especially around listing all available endpoints."*
+
+**Permissão e acesso:**
+- **Tempo, 1★, 23/07/2026** — *"After the latest update... I'm greeted with 'Choose which apps you would like on your Jira instance.' As a regular user, I don't manage Jira apps, so I'm **effectively locked out**."*
+
+### Leitura
+
+O **Harvest tem 66 negativas em 145 avaliações** e o motivo é único e consistente: as horas apontadas no Harvest **nunca chegam ao worklog do Jira**. O app é uma ponte que não atravessa. É o pior app da categoria e mostra o modo de falha extremo.
+
+O **Tempo**, líder com 27,2 mil instalações, sofre da versão elegante do mesmo problema: as horas chegam ao Jira, mas **com a identidade errada** — gravadas como o app, não como a pessoa. O efeito prático é que `worklogAuthor = currentUser()` devolve zero, e com ele quebram JQL, automações, dashboards nativos e qualquer filtro salvo que dependa de autoria.
+
+**Nenhum concorrente resolveu isso**, e um dos reclamantes chega a apontar a correção (`asUser`). É a dor técnica repetida entre vários concorrentes que o critério nº 5 pede.
+
+---
+
+## (c) Preço por assento nas quatro faixas
+
+Valores mensais, cobrança mensal, medidos no estimador oficial de cada app em 25/08/2026.
+
+| App | 10 usuários | 50 usuários | 250 usuários | 1.000 usuários |
+|---|---|---|---|---|
+| **Tempo Timesheets** (4.1) | US$ 10,00 · $1,00/u | **US$ 260,50** · $5,21/u | **US$ 1.070,00** · $4,28/u | **US$ 2.427,50** · $2,43/u |
+| **Clockwork Pro** (4.6) | **Grátis** | US$ 65,00 · $1,30/u | US$ 295,00 · $1,18/u | US$ 610,00 · $0,61/u |
+| **Cappsule — Standard** (4.4) | **Grátis** | US$ 42,50 · $0,85/u | US$ 193,00 · $0,77/u | US$ 530,50 · $0,53/u |
+| **Cappsule — Advanced** | — | — | — | US$ 1.972,50 · $1,97/u |
+| **Harvest (oficial)** (2.5) | **App grátis** | grátis | grátis | grátis — cobra no Harvest |
+| **Clockify** (3.9) | **App grátis** | grátis | grátis | grátis — cobra no Clockify |
+
+### Três leituras
+
+1. **O líder é 3 a 4 vezes mais caro que o desafiante mais bem avaliado.** A 250 usuários, o Tempo cobra US$ 1.070 e o Clockwork Pro US$ 295 — e o Clockwork tem nota **4.6** contra 4.1. O mercado está pagando prêmio por incumbência, não por qualidade.
+2. **O piso de 10 usuários é quase sempre grátis.** Clockwork Pro e Cappsule são gratuitos até 10; o Tempo cobra US$ 10. Receita real começa depois disso — o cliente pequeno não paga a conta em nenhum cenário.
+3. **Harvest e Clockify são apps gratuitos no Marketplace** porque monetizam no próprio SaaS. São os dois piores avaliados da categoria (2.5 e 3.9) — a ponte é um acessório para eles, não o produto. **Não são concorrentes de receita; são concorrentes de instalação.**
+
+### O que isso significa para a meta de US$ 15.000/mês
+
+| Cenário de preço | Clientes de 250 usuários necessários |
+|---|---|
+| Preço do Tempo (US$ 1.070) | **14** |
+| Preço do Clockwork Pro (US$ 295) | **51** |
+| Preço da Cappsule Standard (US$ 193) | 78 |
+
+Mesmo no cenário conservador, **51 clientes** contra os ~790 lojistas que a Shopify exigiria. Descontando os 16% do Forge, o cenário Clockwork exige ~61 clientes.
+
+---
+
+## 🎯 A cunha do produto, em uma frase
+
+> **Um time tracker para Jira cujo dado É o worklog nativo do Jira — gravado como a própria pessoa, na hora — para que JQL, automações, dashboards e relatórios nativos simplesmente funcionem.**
+
+**Por que essa cunha:** todo concorrente guarda as horas na própria base e devolve ao Jira uma sombra — ou nada (Harvest), ou com atraso (Clockwork), ou com a identidade errada (Tempo). O cliente descobre tarde, quando a primeira JQL por autor volta vazia. Um app que escreve worklog nativo com a identidade do usuário devolve **todo o ecossistema Jira de graça**: filtros salvos, automação, gadgets, exportação, API — nada disso precisa ser reimplementado por nós, e nenhum concorrente entrega.
+
+É também a resposta às duas maiores dores medidas: **relatórios (36 ocorrências)** deixa de ser problema nosso quando o dado está no lugar certo, porque o cliente usa o relatório nativo, o eazyBI ou o que quiser; e **fidelidade do dado (25 ocorrências)** é o próprio produto.
+
+**Vantagem de framework:** o Forge tem `asUser()`, e o repasse é 84%.
+
+### ⚠️ O risco técnico que precisa ser verificado ANTES de escrever código
+
+**A cunha inteira depende de o Forge conseguir criar worklog no Jira com a identidade do usuário.** Três perguntas em aberto, todas verificáveis numa dev instance em algumas horas:
+
+1. `api.asUser()` do Forge permite **criar** worklog (`POST /rest/api/3/issue/{id}/worklog`), ou só ler?
+2. O que acontece com um **timer em execução** quando o usuário fecha o navegador? Escrita `asUser` normalmente exige contexto de requisição do usuário — se o timer precisar de escrita assíncrona, ela cairia para `asApp` e reintroduziria exatamente o defeito do Tempo.
+3. Escrita `asUser` invalida o selo **Runs on Atlassian**? *(A princípio não — o selo trata de egress e hospedagem, não de identidade — mas precisa ser confirmado.)*
+
+**Se a resposta à pergunta 1 for "não", a cunha morre e o App 1 precisa ser repensado.** Este é o primeiro item da próxima sessão, antes de qualquer listagem.
+
+---
+
+## Escopo proposto da v1
+
+**Faz, de ponta a ponta:**
+1. **Apontar tempo a partir do item** — timer e entrada manual, incluindo data retroativa *(o Harvest perde 1★ por não permitir isso)*
+2. **Gravação como worklog nativo do Jira, com a identidade do usuário** — a cunha
+3. **Folha de ponto semanal da própria pessoa**, construída lendo worklog nativo
+4. **Visão de equipe para o gestor**, por grupo ou projeto, somente leitura
+5. **Exportação CSV com filtro de incluir/excluir projetos** *(a dor exata do Tempo 3★: "exclude some projects instead of selecting one by one when you have 50+")*
+6. **Preço:** grátis até 10 usuários, como manda o padrão da categoria
+
+**Fica de fora da v1, explicitamente:**
+- Aprovação de horas e fluxo de submissão *(só 2 ocorrências nas 200 negativas — não é dor)*
+- Taxas de faturamento, custo, orçamento e faturamento a cliente
+- Planejamento de capacidade e alocação de recursos
+- Previsão e cenários
+- Integrações externas (Google Calendar, Slack, Outlook)
+- App mobile *(5 ocorrências — real, mas não é a cunha)*
+- Suporte a Data Center
+- Cloud Fortified *(exige bug bounty pago e plantão de 24 h — ver rodada 4)*
+- Rollup em hierarquias com mais de 100 filhos *(limite do próprio Jira)*
+
+**Critério de "pronto":** numa dev instance, uma pessoa aponta 3 horas pelo app; `worklogAuthor = currentUser()` no JQL nativo retorna aquele item; o painel de tempo nativo do Jira mostra as 3 horas; e o CSV exportado exclui um projeto escolhido. Se esses quatro passos funcionarem, o produto existe.
+
+---
+
+## Situação nos 5 critérios
+
+| # | Critério | Time tracking Jira |
+|---|---|---|
+| 1 | Dor com data recente | ⚪ Neutro — dor antiga e estável, não datada |
+| 2 | Regulação com prazo | ⚪ Não se aplica |
+| 3 | **Sem líder grátis com selo** | ✅ **Passa** — Harvest e Clockify são grátis mas têm 2.5 e 3.9; nenhum líder grátis bem avaliado |
+| 4 | Categoria entre ~500 e ~5.000 avaliações | ✅ **Passa** — ~1.700 avaliações somadas, 70+ mil instalações |
+| 5 | **Dor técnica repetida em vários concorrentes** | ✅ **Passa com folga** — fidelidade do dado aparece em 4 dos 6 apps, com citação explícita da correção |
+
+**Três critérios aplicáveis, três aprovados.** É o primeiro candidato em cinco rodadas nessa situação — e continua condicionado à verificação do `asUser` no Forge.

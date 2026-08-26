@@ -295,13 +295,67 @@ O `CLAUDE.md` justifica o App 1 com três premissas. As três foram verificadas 
 
 ---
 
+## 2026-08-25 — App 1 definido: time tracking para Jira Cloud
+
+**Decisão do Amarildo:** Forge confirmado; mirar **Runs on Atlassian**, não Cloud Fortified na v1. **App 1 = time tracking para Jira Cloud.** Test management vira App 2 no backlog. Shopify em espera.
+**Reversível?** Sim, até o código começar — e há um risco técnico que pode forçar a revisão (abaixo).
+
+---
+
+## 2026-08-25 — A cunha do produto
+
+> **Um time tracker para Jira cujo dado É o worklog nativo do Jira — gravado como a própria pessoa, na hora — para que JQL, automações, dashboards e relatórios nativos simplesmente funcionem.**
+
+**Motivo, com evidência de 1.174 avaliações lidas e 200 negativas classificadas:** as duas maiores dores da categoria são **relatórios/exportação (36 ocorrências)** e **integração/fidelidade do dado (25)** — e são o mesmo problema. Todo concorrente guarda as horas na própria base e devolve ao Jira uma sombra: nada (Harvest, 66 negativas em 145), com atraso (Clockwork) ou com identidade errada (Tempo — worklog gravado `asApp`, quebrando `worklogAuthor = currentUser()`). Um reclamante do Tempo chega a apontar a correção: `asUser`.
+
+**Consequência estratégica:** com o dado no lugar certo, relatório deixa de ser problema nosso — o cliente usa o nativo, o eazyBI ou o que quiser. Não reimplementamos ecossistema; devolvemos o que já existe.
+
+---
+
+## 2026-08-25 — Por que o nativo do Jira não ameaça esta categoria
+
+**Fato apurado em fonte oficial:** o Jira tem worklog, estimativas, unidades e painel de tempo; **não tem** folha de ponto por pessoa, aprovação, taxas de faturamento nem relatório de utilização. Os 11 relatórios nativos são todos ágeis/de sprint.
+
+**E a página oficial de preços do Jira não menciona "time tracking" uma única vez.** Free, Standard (US$ 7,91/u), Premium (US$ 14,54/u) e Enterprise têm o mesmo time tracking.
+
+**Interpretação:** o teto do nativo **não sobe com o plano do cliente** — ao contrário de roadmaps, onde o Advanced Roadmaps vem no Premium. Foi exatamente isso que reprovou a categoria de roadmaps na rodada 4 e aprova esta.
+
+---
+
+## 2026-08-25 — Posicionamento de preço
+
+**Fato medido:** a 250 usuários, o Tempo (nota 4.1) cobra **US$ 1.070/mês** e o Clockwork Pro (nota **4.6**) cobra **US$ 295/mês**. Clockwork Pro e Cappsule são **grátis até 10 usuários**; o Tempo cobra US$ 10.
+**Interpretação:** o mercado paga prêmio por incumbência, não por qualidade. Harvest e Clockify são apps gratuitos no Marketplace porque monetizam no próprio SaaS — são concorrentes de instalação, não de receita.
+**Proposta (pendente de confirmação):** grátis até 10 usuários e mirar a faixa do Clockwork Pro. **Para US$ 15k/mês seriam ~51 clientes de 250 usuários** (61 descontando os 16% do Forge), contra ~790 lojistas na Shopify.
+
+---
+
+## 2026-08-25 — ⚠️ Risco técnico que pode matar a cunha
+
+**A cunha inteira depende de o Forge conseguir criar worklog no Jira com a identidade do usuário.** Três perguntas abertas, verificáveis numa dev instance em algumas horas:
+
+1. `api.asUser()` do Forge permite **criar** worklog (`POST /rest/api/3/issue/{id}/worklog`), ou só ler?
+2. E o **timer em execução** quando o usuário fecha o navegador? Escrita `asUser` normalmente exige contexto de requisição do usuário — se a escrita assíncrona cair para `asApp`, reintroduz exatamente o defeito do Tempo.
+3. Escrita `asUser` invalida o selo **Runs on Atlassian**? *(A princípio não — o selo trata de egress e hospedagem, não de identidade — mas precisa ser confirmado.)*
+
+**Se a resposta à pergunta 1 for "não", a cunha morre e o App 1 precisa ser repensado.** Por isso o pedido de autorização para testar **antes** de escrever a listagem.
+
+---
+
+## 2026-08-25 — Método: API pública do Marketplace
+
+**Fato:** encontrei `/rest/2/addons/{key}/reviews`, que devolve nota e texto por avaliação. Isso **fecha a lacuna de método da rodada 4** (o Atlassian não tem filtro por estrelas na interface) e restaura o rigor das rodadas 1–3.
+**Ressalva registrada:** a Atlassian migrou de escala de 4 para 5 estrelas em **25/05/2026**, convertendo notas antigas linearmente. Por isso o Tempo mostra 301 avaliações de "4★" e só 6 de "5★". **Estrelas de períodos diferentes não são comparáveis** — ponderei conteúdo, não só número.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: parado, aguardando retorno.** Nenhum trabalho em andamento; nenhum bloqueio técnico.
 
 | # | Tema | Pergunta | Bloqueia |
 |---|---|---|---|
-| 1 | **Próximo passo** | Rodada 5 curta (verificar nativo do Jira em fonte oficial + ler negativas a fundo dos 2 sobreviventes), ou decidir já entre **time tracking** e **test management**? | **Todo o trabalho** |
-| 2 | **Framework** | Confirma **Forge**? 84% de repasse contra 80%, sem infraestrutura nossa | Arquitetura |
-| 3 | **Selos** | Confirma mirar **Runs on Atlassian** (automático, grátis) e **não** Cloud Fortified na v1? | Escopo da v1 |
-| 4 | Shopify | Fica em espera indefinida ou é abandonada de vez? Muda o que fica no repositório | Organização do repo |
+| 1 | **Teste do `asUser`** | Autoriza escrever código de teste descartável numa dev instance para verificar se o Forge cria worklog com identidade do usuário? Algumas horas, sem listagem | **Todo o resto** |
+| 2 | **Ordem de trabalho** | Se funcionar, escrevo o `LISTING.md` na sequência ou o chat revisa a cunha antes? | Próxima sessão |
+| 3 | **Preço** | Confirma grátis até 10 usuários e faixa do Clockwork Pro (US$ 295 a 250 usuários), não a do Tempo (US$ 1.070)? | Modelo de receita |
+| 4 | Shopify | Espera indefinida ou abandono? Muda o que fica no repositório | Organização do repo |
