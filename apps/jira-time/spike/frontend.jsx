@@ -1,8 +1,6 @@
 // SPIKE — código descartável.
-// Substitui o conteúdo de src/frontend/index.jsx do template jira-issue-panel.
-
 import React, { useState } from 'react';
-import ForgeReconciler, { Button, Text, Stack, Strong, Inline, Lozenge } from '@forge/react';
+import ForgeReconciler, { Text, Button, Strong } from '@forge/react';
 import { invoke } from '@forge/bridge';
 
 const App = () => {
@@ -12,7 +10,8 @@ const App = () => {
   const run = async () => {
     setBusy(true);
     try {
-      setRows(await invoke('runSpike'));
+      const r = await invoke('runSpike');
+      setRows(r);
     } catch (e) {
       setRows([{ name: 'falha na invocação', ok: false, detail: e.message }]);
     }
@@ -20,24 +19,21 @@ const App = () => {
   };
 
   return (
-    <Stack space="space.150">
+    <>
       <Text>
-        <Strong>Spike asUser</Strong> — cria um worklog de 3h com início 2h atrás, confere autor,
-        JQL nativo e painel de tempo, e apaga o worklog no fim.
+        <Strong>Spike asUser</Strong> — cria worklog de 3h com início 2h atrás, confere autor, JQL
+        nativo e painel de tempo, e apaga no fim.
       </Text>
       <Button appearance="primary" isDisabled={busy} onClick={run}>
-        {busy ? 'Rodando…' : 'Rodar spike'}
+        {busy ? 'Rodando...' : 'Rodar spike'}
       </Button>
       {rows &&
         rows.map((r, i) => (
-          <Inline key={i} space="space.100" alignBlock="center">
-            <Lozenge appearance={r.ok ? 'success' : 'removed'}>{r.ok ? 'OK' : 'FALHOU'}</Lozenge>
-            <Text>
-              <Strong>{r.name}</Strong> — {r.detail}
-            </Text>
-          </Inline>
+          <Text key={i}>
+            {r.ok ? '[OK]' : '[FALHOU]'} <Strong>{r.name}</Strong> — {r.detail}
+          </Text>
         ))}
-    </Stack>
+    </>
   );
 };
 

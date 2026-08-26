@@ -5,7 +5,54 @@
 
 ---
 
-## 🔴 PRECISA DE VOCÊ — criar o Developer Space (1 comando interativo)
+## 🔴 PRECISA DE VOCÊ — clicar um botão no Jira (1 minuto)
+
+O spike está **implantado e instalado**. Falta só rodar, e isso acontece dentro do navegador logado na sua conta Atlassian — sessão que eu não tenho.
+
+1. Abra **qualquer item** do projeto SCRUM: https://northstack-dev.atlassian.net/browse/SCRUM-1
+2. No item, procure o painel **"asUser Spike"** (pode estar mais abaixo, na área de painéis do item)
+3. Clique em **"Rodar spike"**
+4. Me mande as linhas que aparecerem — são 7, cada uma começando com `[OK]` ou `[FALHOU]`
+
+> Não precisa ser o SCRUM-1: o resolver pega a chave do item pelo contexto do painel. Qualquer item do projeto serve.
+
+O spike cria um worklog de 3 h com início 2 h atrás, confere quatro coisas e **apaga o worklog no fim** — não deixa lixo. Se o passo 5 falhar, ele informa o id para apagar à mão.
+
+**Se os passos 1, 2 e 3 vierem `[OK]`, a cunha está provada e eu escrevo o `LISTING.md` na sequência**, como você decidiu.
+
+---
+
+## ✅ Spike implantado — e uma pergunta de risco já respondida
+
+| Etapa | Resultado |
+|---|---|
+| `forge deploy` | ✅ **asuser-spike 2.0.0** no ambiente `development` |
+| `forge install` | ✅ Instalado em `northstack-dev.atlassian.net` (Jira) |
+| Escopos | `read:jira-user`, `read:jira-work`, `write:jira-work` |
+| Lint | Limpo |
+
+### A terceira pergunta de risco caiu sozinha
+
+O próprio deploy respondeu:
+
+> *"The version of your app [2.0.0] that was just deployed to [development] is **eligible for the Runs on Atlassian program**."*
+
+**Escrever worklog via `asUser` não invalida o selo Runs on Atlassian** — confirmado empiricamente, não por dedução. Das três perguntas de risco da rodada 5, **duas foram respondidas pela documentação e a terceira pelo deploy**. Resta a central: o worklog nasce com a identidade da pessoa?
+
+### O que foi implementado
+
+- `src/resolvers/index.js` — os 6 passos do spike, todos via `api.asUser()`; a chave do item vem do contexto do painel
+- `src/frontend/index.jsx` — botão e resultado linha a linha
+- `manifest.yml` — escopos adicionados, título do painel
+- `@forge/api` adicionado às dependências (não vem no template)
+
+Código em `C:\Pessoal\Projeto\PortfolioApps\spike-asuser\asuser-spike` (fora do repositório — é descartável). A versão de referência está em `apps/jira-time/spike/`.
+
+> **Nota:** o `forge install` avisou que estamos instalando um app de desenvolvimento num site de produção. É esperado — a `northstack-dev` é um site Atlassian real no free tier, que é como toda dev instance do Forge funciona.
+
+---
+
+## ~~PRECISA DE VOCÊ — criar o Developer Space~~ ✅ resolvido
 
 ✅ `forge login` funcionou — **Amarildo Pereira (amrldprr@gmail.com)**, account ID `712020:9b4086b1-…`.
 

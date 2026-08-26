@@ -1,0 +1,26 @@
+modules:
+  jira:issuePanel:
+    - key: asuser-spike-hello-world-issue-panel
+      resource: main
+      resolver:
+        function: resolver
+      render: native
+      title: asUser Spike
+      icon: https://developer.atlassian.com/platform/forge/images/icons/issue-panel-icon.svg
+  function:
+    - key: resolver
+      handler: index.handler
+resources:
+  - key: main
+    path: src/frontend/index.jsx
+app:
+  runtime:
+    name: nodejs24.x
+    memoryMB: 256
+    architecture: arm64
+  id: ari:cloud:ecosystem::app/f4d8ec57-3fe7-4066-b589-56b7492506dd
+permissions:
+  scopes:
+    - read:jira-user
+    - read:jira-work
+    - write:jira-work
