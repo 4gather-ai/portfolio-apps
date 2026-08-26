@@ -15,6 +15,38 @@ const adf = (text) => ({
 // Jira exige started no formato yyyy-MM-dd'T'HH:mm:ss.SSSZ com offset numérico.
 const jiraDate = (d) => d.toISOString().replace('Z', '+0000');
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Conta itens que o JQL nativo devolve para "eu apontei tempo aqui".
+async function jqlCount(issueKey) {
+  try {
+    const jql = `issue = ${issueKey} AND worklogAuthor = currentUser()`;
+    const r = await api.asUser().requestJira(route`/rest/api/3/search/jql`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ jql, maxResults: 5, fields: ['key'] }),
+    });
+    const body = await r.text();
+    if (!r.ok) return { erro: `HTTP ${r.status} — ${body.slice(0, 200)}` };
+    const issues = JSON.parse(body).issues || [];
+    return { n: issues.length, keys: issues.map((i) => i.key).join(', ') || 'vazio' };
+  } catch (e) {
+    return { erro: `exceção: ${e.message}` };
+  }
+}
+
+async function apagar(issueKey, worklogId, step) {
+  try {
+    const r = await api.asUser().requestJira(
+      route`/rest/api/3/issue/${issueKey}/worklog/${worklogId}`,
+      { method: 'DELETE' }
+    );
+    step('Limpeza (DELETE worklog)', r.ok, `HTTP ${r.status}`);
+  } catch (e) {
+    step('Limpeza (DELETE worklog)', false, `exceção: ${e.message} — apagar à mão o worklog ${worklogId}`);
+  }
+}
+
 resolver.define('runSpike', async (req) => {
   const out = [];
   const step = (name, ok, detail) => out.push({ name, ok, detail: String(detail) });
@@ -81,28 +113,35 @@ resolver.define('runSpike', async (req) => {
       : `worklog=${authorAccountId} vs usuário=${me.accountId} — CUNHA MORTA`
   );
 
-  // ── 3. O JQL nativo enxerga?
-  try {
-    const jql = `issue = ${issueKey} AND worklogAuthor = currentUser()`;
-    const r = await api.asUser().requestJira(route`/rest/api/3/search/jql`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ jql, maxResults: 5, fields: ['key'] }),
-    });
-    const body = await r.text();
-    if (!r.ok) {
-      step('3. JQL worklogAuthor = currentUser()', false, `HTTP ${r.status} — ${body.slice(0, 250)}`);
-    } else {
-      const j = JSON.parse(body);
-      const issues = j.issues || [];
+  // ── 3. O JQL nativo enxerga? Com retentativa: o JQL depende do índice de
+  // busca do Jira, que é assíncrono. Uma leitura imediata pode vir vazia
+  // mesmo com o dado correto — é isso que queremos distinguir.
+  const t0 = Date.now();
+  let jqlOk = false;
+  for (let tentativa = 1; tentativa <= 5; tentativa++) {
+    const r2 = await jqlCount(issueKey);
+    if (r2.erro) {
+      step('3. JQL worklogAuthor = currentUser()', false, `tentativa ${tentativa}: ${r2.erro}`);
+      break;
+    }
+    if (r2.n > 0) {
+      jqlOk = true;
       step(
         '3. JQL worklogAuthor = currentUser()',
-        issues.length > 0,
-        `${issues.length} item(ns) — ${issues.map((i) => i.key).join(', ') || 'vazio'}`
+        true,
+        `achou na tentativa ${tentativa}, após ${Math.round((Date.now() - t0) / 100) / 10}s — ${r2.keys}`
       );
+      break;
     }
-  } catch (e) {
-    step('3. JQL worklogAuthor = currentUser()', false, `exceção: ${e.message}`);
+    if (tentativa === 5) {
+      step(
+        '3. JQL worklogAuthor = currentUser()',
+        false,
+        `0 itens após 5 tentativas em ${Math.round((Date.now() - t0) / 100) / 10}s — índice ainda não pegou`
+      );
+    } else {
+      await sleep(2500);
+    }
   }
 
   // ── 4. O painel de tempo nativo reflete?
@@ -121,20 +160,47 @@ resolver.define('runSpike', async (req) => {
     step('4. Painel nativo (timespent)', false, `exceção: ${e.message}`);
   }
 
-  // ── 5. Limpeza — não deixar lixo na dev instance.
-  if (worklogId) {
-    try {
-      const r = await api.asUser().requestJira(
-        route`/rest/api/3/issue/${issueKey}/worklog/${worklogId}`,
-        { method: 'DELETE' }
-      );
-      step('5. Limpeza (DELETE worklog)', r.ok, `HTTP ${r.status}`);
-    } catch (e) {
-      step('5. Limpeza (DELETE worklog)', false, `exceção: ${e.message} — apagar à mão o worklog ${worklogId}`);
-    }
+  // ── 5. Limpeza. Se o JQL ainda não achou, NÃO apaga: deixa o worklog vivo
+  // para a segunda fase confirmar se era só atraso de índice.
+  if (worklogId && jqlOk) {
+    await apagar(issueKey, worklogId, step);
+  } else if (worklogId) {
+    step(
+      '5. Limpeza adiada',
+      true,
+      `worklog ${worklogId} mantido de propósito — use "Verificar de novo e limpar"`
+    );
   }
 
-  return out;
+  return { rows: out, worklogId, issueKey, jqlOk };
+});
+
+// Segunda fase: roda o JQL de novo (agora com o índice tendo tido tempo) e
+// só então apaga o worklog.
+resolver.define('recheck', async (req) => {
+  const out = [];
+  const step = (name, ok, detail) => out.push({ name, ok, detail: String(detail) });
+  const { worklogId, issueKey } = req.payload || {};
+  if (!worklogId || !issueKey) {
+    step('recheck', false, 'sem worklogId/issueKey — rode o spike primeiro');
+    return { rows: out };
+  }
+
+  const r = await jqlCount(issueKey);
+  if (r.erro) {
+    step('3b. JQL (segunda passada)', false, r.erro);
+  } else {
+    step(
+      '3b. JQL (segunda passada)',
+      r.n > 0,
+      r.n > 0
+        ? `${r.n} item(ns) — ${r.keys} · era atraso de índice, o dado está certo`
+        : '0 itens — NÃO é atraso de índice; investigar'
+    );
+  }
+
+  await apagar(issueKey, worklogId, step);
+  return { rows: out };
 });
 
 export const handler = resolver.getDefinitions();

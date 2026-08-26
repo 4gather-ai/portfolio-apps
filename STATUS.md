@@ -5,20 +5,50 @@
 
 ---
 
-## 🔴 PRECISA DE VOCÊ — clicar um botão no Jira (1 minuto)
+## 🟢 A CUNHA ESTÁ PROVADA — spike rodado em 26/08/2026
 
-O spike está **implantado e instalado**. Falta só rodar, e isso acontece dentro do navegador logado na sua conta Atlassian — sessão que eu não tenho.
+Resultado real no `SCRUM-1` da `northstack-dev`:
 
-1. Abra **qualquer item** do projeto SCRUM: https://northstack-dev.atlassian.net/browse/SCRUM-1
-2. No item, procure o painel **"asUser Spike"** (pode estar mais abaixo, na área de painéis do item)
-3. Clique em **"Rodar spike"**
-4. Me mande as linhas que aparecerem — são 7, cada uma começando com `[OK]` ou `[FALHOU]`
+| Passo | Resultado |
+|---|---|
+| contexto | `[OK]` item = SCRUM-1 |
+| 0. `asUser() /myself` | `[OK]` Amarildo Pereira · `712020:9b4086b1-…` |
+| **1. `POST` worklog `asUser`** | **`[OK]` HTTP 201** · id=10000 · started=`2026-08-26T07:48:16.331-0400` · **autor=Amarildo Pereira** |
+| **2. Autor == usuário real** | **`[OK]`** `712020:9b4086b1-…` — **o worklog é da pessoa, não do app** |
+| 3. JQL `worklogAuthor = currentUser()` | `[FALHOU]` 0 itens — **ver diagnóstico** |
+| 4. Painel nativo | `[OK]` `timespent=10800s` · `timeSpent: "3h"` |
+| 5. Limpeza | `[OK]` HTTP 204 |
 
-> Não precisa ser o SCRUM-1: o resolver pega a chave do item pelo contexto do painel. Qualquer item do projeto serve.
+### O que isso decide
 
-O spike cria um worklog de 3 h com início 2 h atrás, confere quatro coisas e **apaga o worklog no fim** — não deixa lixo. Se o passo 5 falhar, ele informa o id para apagar à mão.
+**Os dois passos que podiam matar o produto passaram.** O Forge cria worklog nativo via `asUser()`, com **início retroativo** (2 h antes) e com a **identidade da pessoa** — exatamente o que o Tempo não faz e pelo que perde avaliações. O painel de tempo nativo do Jira reflete as 3 h sem nenhum app envolvido.
 
-**Se os passos 1, 2 e 3 vierem `[OK]`, a cunha está provada e eu escrevo o `LISTING.md` na sequência**, como você decidiu.
+**A cunha da rodada 5 se sustenta em produção, não só no papel.**
+
+### O passo 3 e por que quase certamente não é o que parece
+
+Diagnóstico: **latência do índice de busca**. O passo 4 leu o item **direto pela REST** e viu `timespent=10800s`; o passo 3 usa **JQL**, que depende do índice assíncrono do Jira. Um worklog criado milissegundos antes ainda não está indexado. O dado está certo — a busca é que não o enxergou ainda.
+
+**Não estou tratando isso como suposição.** Redeployei o spike (**2.1.0**) com:
+- **retentativa no passo 3** — 5 tentativas em ~12 s, informando em qual tentativa achou e quanto tempo levou;
+- **limpeza adiada** — se o JQL não achar, o worklog **não é apagado**, e aparece um segundo botão **"Verificar de novo e limpar"** para consultar depois de 30–60 s.
+
+Se a segunda passada achar, era índice. Se não achar, é problema real e eu investigo.
+
+### 🔴 Preciso de você — rodar de novo (2 minutos)
+
+1. Recarregue o `SCRUM-1` (F5, para pegar a versão 2.1.0)
+2. **"Rodar spike"**
+3. Se o passo 3 falhar de novo, **espere 30–60 s** e clique em **"Verificar de novo e limpar"**
+4. Me mande as linhas
+
+> Não precisa reinstalar: o deploy 2.1.0 não mudou escopos.
+
+### ⚠️ E isso já é um achado de produto, não só de teste
+
+Se o índice do Jira atrasa, **qualquer app que monte folha de ponto via JQL mostra dado velho** logo após o apontamento — e isso explica a reclamação do Clockwork Pro: *"delay in time logs appearing in Jira and in the timesheet"*.
+
+**Consequência de arquitetura para a v1:** ler worklog pelo endpoint REST do item (`/issue/{key}/worklog`), que não passa pelo índice, e usar JQL só para busca ampla. Registrado antes de escrever a primeira linha do produto.
 
 ---
 
