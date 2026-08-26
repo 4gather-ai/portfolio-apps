@@ -1,6 +1,6 @@
 # Nativelog — Plano da v1
 
-> **Não começar antes da aprovação do Amarildo.** Este documento é a proposta; o código só sai depois do "ok".
+> **✅ Aprovado pelo Amarildo em 26/08/2026.** Em construção — **D1 e D2 concluídos**, D3 é o próximo.
 > Base: cunha provada no spike de 26/08/2026 (`STATUS.md`). Escopo fechado em `PESQUISA.md`, rodada 5.
 
 ---
@@ -51,6 +51,7 @@ permissions:
     - read:jira-user     # identificar o usuário e montar a folha
     - read:jira-work     # ler worklogs, itens e projetos
     - write:jira-work    # criar, editar e apagar worklog do próprio usuário
+    - storage:app        # KVS — exigido pela API de armazenamento do Forge (D2)
 ```
 
 **Sem impersonação offline.** Como o timer grava só o início e o worklog nasce no "parar", em contexto de usuário, não precisamos de `asUser(accountId)` nem dos escopos e restrições que ele traz.
@@ -72,6 +73,7 @@ permissions:
 **Regras duras:**
 - **Um timer por pessoa.** Iniciar outro fecha o anterior — sem timers órfãos acumulando.
 - **Nada de hora apontada no KVS.** Se está apontado, é worklog.
+- **API: `@forge/kvs`**, não o `storage` do `@forge/api` — este último está deprecado e o `forge lint` reprova (constatado no D2)
 - **Escrita em KVS é a linha cara do Forge** (US$ 1,09/GB). Esses três registros são minúsculos e mudam pouco: fica muito dentro da franquia gratuita.
 - **Desinstalar não perde nada.** O KVS some, os worklogs ficam. É argumento de venda e é verdade.
 
@@ -83,9 +85,9 @@ permissions:
 
 | Dia | Data | Marco | Precisa do humano |
 |---|---|---|---|
-| **D1** | 26/08 | Scaffold Forge no repo, manifest com os 4 módulos e escopos, CI (lint + Vitest), biblioteca de duração/data com testes | — |
-| **D2** | 27/08 | `issuePanel`: timer inicia e para, estado no KVS, um timer por pessoa | — |
-| **D3** | 28/08 | Gravação do worklog no "parar", `started` retroativo, via `asUser()`. **Critério: apontar 3 h e ver no worklog nativo com o nome certo** | — |
+| ~~**D1**~~ ✅ | 26/08 | Scaffold Forge no repo, manifest e escopos, CI (lint + Vitest), biblioteca de duração/data com testes | — |
+| ~~**D2**~~ ✅ | **26/08** *(adiantado)* | `issuePanel`: timer inicia, para e é descartado; estado no KVS; um timer por pessoa. 60 testes | — |
+| **D3** ▶️ | 28/08 | Gravação do worklog no "parar", `started` retroativo, via `asUser()`. **Critério: apontar 3 h e ver no worklog nativo com o nome certo** | — |
 | **D4** | 29/08 | Apontamento manual, editar e apagar entrada própria | — |
 | **D5** | 30/08 | Erros do núcleo: permissão negada, item apagado, timer órfão, fuso | — |
 | **D6** | 31/08 | `globalPage` "Minha semana": leitura via `/issue/{key}/worklog`, totais por dia | — |
@@ -97,6 +99,8 @@ permissions:
 | **D12** | 06/09 | Instância grande: 50+ projetos, muitos worklogs, paginação, desempenho | — |
 | **D13** | 07/09 | Acessibilidade, revisão de UI, textos finais | — |
 | **D14** | 08/09 | Empacotar para o beta: link privado, `BETA.md`, instruções de instalação | **Privacidade e suporte no ar** em `northstackapps.com` |
+
+> **Um dia de folga recuperado.** O D2 saiu em 26/08, no dia do D1. As datas seguintes ficam como estavam de propósito: o aviso abaixo diz que a compressão para 14 dias tirou todo o amortecedor, então o dia ganho vale mais como folga do que como antecipação.
 
 **Dias 15–35 — beta privado (regra 16):** 5–10 instâncias reais por 2–3 semanas, correções em ciclo curto, tudo registrado em `BETA.md`.
 **Precisa do humano:** **recrutar os participantes** — ver `BETA-RECRUTAMENTO.md`. **Começa no D1, não no D15.**
@@ -124,9 +128,10 @@ permissions:
 | Quando | O quê | Bloqueia |
 |---|---|---|
 | ~~Agora~~ | ~~Aprovar este plano~~ | ✅ aprovado em 26/08 |
-| **D1 em diante** | **Recrutar 5–10 instâncias reais** — ver `BETA-RECRUTAMENTO.md` | **Dia 15**. É o caminho crítico |
+| **D2–D5** | **Publicar as 4 respostas técnicas** — prontas em `COMMUNITY.md` | O canal de recrutamento nº 1 |
+| **D1 em diante** | **Recrutar 5–10 instâncias reais** — ver `BETA-RECRUTAMENTO.md`. **Canal 1 descartado em 26/08**; prioridade agora é Community → r/jira → Solution Partners | **Dia 15**. É o caminho crítico |
 | D11 (05/09) | Definir a tabela de faixas de preço | Billing |
-| D14 (08/09) | Privacidade e suporte no ar em `northstackapps.com` *(domínio em compra em 26/08)* | **Beta** |
+| D14 (08/09) | Privacidade e suporte no ar em `northstackapps.com` *(domínio **registrado no Cloudflare** em 26/08)* | **Beta** |
 | ~D36 | Submeter e aceitar termos | Publicação |
 
 ### O recrutamento do beta é o risco real do plano

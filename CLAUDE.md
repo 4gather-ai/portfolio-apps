@@ -64,7 +64,7 @@ packages/shared/   código comum
 
 ## Portfólio (ordem de construção)
 
-> **Estado em 25/08/2026:** o App 1 (`restock`) foi **CANCELADO** e os candidatos a substituto foram verificados — nenhum aprovado ainda. Ver `PESQUISA.md` e `STATUS.md`. A descrição abaixo fica como registro histórico do que foi cancelado e por quê.
+> **Estado em 26/08/2026:** o App 1 (`restock`) foi **CANCELADO**. Depois de cinco rodadas de verificação, o app escolhido é o **`Nativelog`** (time tracking para Jira Cloud, `apps/jira-time/`) — primeiro produto fora da Shopify. Tudo abaixo é registro histórico dos candidatos reprovados; o raciocínio completo está em `PESQUISA.md`.
 
 ### ~~App 1 — `restock`~~ — CANCELADO em 25/08/2026
 
@@ -117,15 +117,22 @@ Pós-compra por micro-segmento, outros marketplaces (WordPress, Chrome, Atlassia
 - Política de privacidade e página de suporte publicadas.
 - Checklist de revisão da Shopify conferido item a item.
 
-## Estado atual (atualizado em 25/08/2026)
+## Estado atual (atualizado em 26/08/2026)
 
-Estrutura, `STATUS.md`, `CUSTOS.md`, `DECISOES.md` e `PESQUISA.md` criados. App 1 cancelado. Quatro candidatos verificados, um único com espaço possível (etiquetas de código de barras) e ainda sem aprovação.
+**App em construção: `Nativelog`** — apontamento de horas para Jira Cloud, em `apps/jira-time/`. Regra 8 cumprida na rodada 5 do `PESQUISA.md`, cunha provada em instância real, plano aprovado. **D1 e D2 de 14 concluídos; o próximo é o D3.**
 
-**Bloqueio atual: escolher o próximo app.** Nenhum candidato passou a regra 8 com folga. Não escrever listagem nem código antes dessa decisão — ler `STATUS.md` e `PESQUISA.md`.
+Ler nesta ordem: `STATUS.md` → `apps/jira-time/PLANO-V1.md` (marcos por dia) → `apps/jira-time/STATUS.md` se existir.
+
+**O risco aberto não é técnico, é o beta (regra 16):** achar 5–10 instâncias reais. O recrutamento roda em paralelo ao código desde o D1 — ver `apps/jira-time/BETA-RECRUTAMENTO.md` e `apps/jira-time/COMMUNITY.md`.
+
+~~**Bloqueio: escolher o próximo app.**~~ Resolvido em 26/08/2026. O histórico dos candidatos reprovados fica em `PESQUISA.md`.
 
 ### Ambiente já resolvido (não repetir investigação)
 - Node **v24.19.0** e npm **11.17.0** em `C:\Program Files\nodejs` — **fora do PATH**, usar caminho completo
 - Shopify CLI autenticado. Organização **Northstack Apps**, org ID **232549161**. Dev store: **northstack-dev**
 - `shopify app init` exige `--organization-id` **e** `--flavor` em terminal não interativo; `--template` aceita `reactRouter` (não mais `remix`); recusa diretório não vazio
 - `shopify organization list` devolve o org ID — não é preciso pedir ao humano
-- Hospedagem decidida: **Railway**. Domínio: **northstackapps.com**
+- Hospedagem decidida: **Railway** — **não se aplica ao Nativelog**, que roda em Forge e é hospedado pela Atlassian
+- Domínio **northstackapps.com** registrado no **Cloudflare** (26/08/2026)
+- Forge: usar **`@forge/kvs`**, não o `storage` do `@forge/api` — deprecado, o `forge lint` reprova
+- `forge deploy`/`forge install` funcionam sem TTY com `--non-interactive`; o `install` precisa de `--site` e `--product`

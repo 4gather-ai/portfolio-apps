@@ -1,20 +1,91 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-26 (sessão 9) · Dia 1 de 365 · **Gasto: R$ 0,00**
+**Última atualização:** 2026-08-26 (sessão 10) · Dia 1 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
-## ⏸️ AGUARDANDO SUA APROVAÇÃO DO PLANO
+## ▶️ EM CONSTRUÇÃO — Nativelog · **D2 de 14 concluído**
 
-A cunha está provada em produção. **Listagem e plano escritos. Não começo o produto sem seu "ok"** no [PLANO-V1.md](apps/jira-time/PLANO-V1.md).
+Plano aprovado, nome confirmado, domínio registrado. **Nenhuma decisão sua está bloqueando o código agora.**
 
-| # | Decisão | Bloqueia |
+| Dia | Marco | Estado |
 |---|---|---|
-| 1 | **Aprovar o `PLANO-V1.md`** — arquitetura, módulos, dados, marcos | **Todo o código** |
-| 2 | Confirmar o nome **`Nativelog`** (livre na busca da Marketplace) | Registro no Developer Console |
-| 3 | Aceitar começar o **recrutamento do beta já na semana 1** | Semanas 5–7 |
-| 4 | Comprar **`northstackapps.com`** — agora bloqueia o **beta** (semana 4), não só a submissão | Beta |
+| **D1** · 26/08 | Scaffold Forge, manifest, CI, núcleo de tempo com testes | ✅ |
+| **D2** · 26/08 | Painel do item: timer inicia, para, descarta · **um timer por pessoa** | ✅ **entregue hoje, adiantado** |
+| **D3** · 27/08 | Gravar o worklog nativo no "parar", via `asUser()` | ▶️ próximo |
+
+**Aprovações anteriores, todas resolvidas:** plano ✅ · nome `Nativelog` ✅ · recrutamento do beta na semana 1 ✅ · **`northstackapps.com` registrado no Cloudflare** ✅ — isso **destrava o beta do D14**; falta só publicar as páginas de privacidade e suporte nele.
+
+---
+
+## 🔴 PRECISA DE VOCÊ — 3 itens
+
+| # | O quê | Quando | Bloqueia |
+|---|---|---|---|
+| 1 | **Publicar as 4 respostas técnicas da Atlassian Community** — prontas em [`COMMUNITY.md`](apps/jira-time/COMMUNITY.md), uma por dia, D2–D5 | **começa amanhã** | O beta (canal 1 de prioridade) |
+| 2 | **Testar o painel do timer na `northstack-dev`** — 5 minutos, instruções abaixo | quando puder | Confiança no D3 |
+| 3 | Definir a tabela de faixas de preço no Developer Console | D11 · 05/09 | Billing |
+
+### ⚠️ O Chrome não chegou até mim
+
+Você disse que o Chrome está autorizado e conectado, mas **esta sessão não recebeu nenhuma ferramenta de navegador** — o `/chrome` não devolveu nada e não há servidor MCP registrado. Então **não testei o painel no navegador**, e não vou dizer que testei.
+
+**O que fiz para cobrir o buraco:** movi toda a lógica que um clique dispara para `src/resolvers/painel.js` e escrevi **17 testes** em cima dela — identidade vinda do contexto, item vindo do contexto, timer em outro item, KVS fora do ar, clique duplo. É a camada que o navegador exercitaria. **O que continua sem verificação é só a renderização React do painel.**
+
+**Como conferir em 5 minutos** (o app já está instalado e no ar na `northstack-dev`):
+1. Abrir qualquer item em `northstack-dev.atlassian.net` e achar o painel **Nativelog**.
+2. **Start timer** → o relógio tem que andar de segundo em segundo.
+3. Abrir **outro** item → o painel avisa que já existe timer no primeiro e o botão vira **Start here**.
+4. Clicar **Start here** → aparece o aviso de que o timer anterior foi encerrado, com o total.
+5. **Stop** → o total aparece. *(O worklog ainda não é gravado — isso é o D3, amanhã. A tela diz isso.)*
+
+Se qualquer passo falhar, me manda o que apareceu.
+
+---
+
+## 📄 Entregue nesta sessão (10)
+
+### D2 — o timer do painel do item
+
+| Arquivo | O que é |
+|---|---|
+| `src/lib/timer.js` | Máquina de estados do timer, com o armazenamento **injetado** — a regra "um timer por pessoa" é testada de verdade, não simulada |
+| `src/resolvers/painel.js` | As 4 operações do painel: estado, iniciar, parar, descartar |
+| `src/resolvers/index.js` | Só fiação: liga o KVS de verdade nas operações acima |
+| `src/frontend/index.jsx` | O painel: relógio andando, Start / Stop / Discard, e os avisos |
+| + 3 arquivos de teste | **60 testes**, todos passando · `forge lint` limpo |
+
+**Três decisões que valem ser vistas:**
+
+1. **Clicar "Start" duas vezes no mesmo item não faz nada.** Sem isso, um clique duplo viraria um worklog de 2 segundos no Jira de alguém. É o tipo de sujeira que a gente catalogou nas avaliações dos concorrentes.
+2. **Trocar de item encerra o timer anterior e o devolve fechado**, com o tempo dele, para o D3 gravar como worklog. Timer órfão acumulando é reclamação registrada da categoria.
+3. **A identidade vem do contexto do Forge, nunca do frontend.** Tem teste que manda um payload pedindo o timer de outra conta e confirma que é ignorado.
+
+**Uma correção de rota:** o `forge lint` avisou que o `storage` do `@forge/api` está **deprecado**. Migrei para `@forge/kvs` no mesmo dia. Custou 10 minutos agora; custaria uma rodada de revisão da Atlassian depois. Deploy confirmou: **2.2.0, ainda elegível a Runs on Atlassian**.
+
+### Recrutamento do beta — canal 1 descartado
+
+Registrado em [`BETA-RECRUTAMENTO.md`](apps/jira-time/BETA-RECRUTAMENTO.md). Nova ordem: **Atlassian Community → r/jira → Solution Partners**, mais o **fórum de desenvolvedores** (`community.developer.atlassian.com`) como canal novo.
+
+**O que isso custa, e eu prefiro dizer agora:** o canal 1 era o único de público quente e o de maior conversão. Sem ele, **todos os canais restantes dependem de estranhos confiarem num app desconhecido**, e as duas ou três primeiras instâncias — as que destravam as outras — ficam mais caras. O ponto de decisão do D14 fica mais provável de bater. Se bater, a primeira coisa a reconsiderar é reabrir o canal 1.
+
+**Sobre o fórum de desenvolvedores:** é um público de **construtores, não de compradores** — quase ninguém ali administra a instância que queremos no beta. Entra por três motivos indiretos: é onde a medição dos 5,7 s de atraso do índice interessa de verdade, é onde os desenvolvedores dos Solution Partners leem, e é onde vamos ter que perguntar sobre `asUser` e revisão da Marketplace de qualquer jeito. **Com um cuidado registrado:** é o único público que consegue copiar a cunha a partir da descrição dela. Lá a gente compartilha **a medição, não a solução** — nada de código do `asUser`, nada do desenho do KVS.
+
+### Atlassian Community — 4 respostas prontas para publicar
+
+[`apps/jira-time/COMMUNITY.md`](apps/jira-time/COMMUNITY.md). Quatro perguntas reais, **três delas sem resposta aceita**, com o texto pronto:
+
+| Pergunta | Data | Por que essa |
+|---|---|---|
+| [logged time > remaining time](https://community.atlassian.com/forums/Jira-questions/JIRA-Time-Tracking-How-to-filter-Issues-where-logged-time-gt/qaq-p/3193664) | 18/02/2026 | 4 respostas existentes, todas "compre o app X". **Existe solução nativa** e ninguém deu |
+| [worklog per month](https://community.atlassian.com/forums/Jira-questions/worklog-per-month-time-tracking/qaq-p/3173461) | 10/01/2026 | A resposta aceita resolve comprando. Ninguém explicou **por que** o JQL não devolve o número |
+| [Automation sum worklogs](https://community.atlassian.com/forums/Jira-Service-Management/Help-with-Automation-and-JQL-Query-for-Author-Worklogs/qaq-p/3091426) | 18/08/2025 | Todo mundo discutiu *como* somar. **Ninguém viu que a abordagem falha justo no caso que ele quer pegar** |
+| [worklog gadget](https://community.atlassian.com/forums/Jira-questions/why-am-i-not-seeing-worklog-as-a-gadget-to-include-on-my/qaq-p/3011120) | 01/05/2025 | Pergunta de iniciante, resposta curta. Serve para variar o tom |
+
+**Regras que segui:** nenhum link para o Nativelog, nenhum concorrente pelo nome, e **uma resposta por dia** — quatro no mesmo dia, numa conta nova, parecem exatamente o que não queremos parecer.
+
+**Três das quatro têm um "⚠️ conferir antes de postar".** A da resposta 1 é a que importa: a solução se apoia numa identidade algébrica (`workratio > 50`) que **eu deduzi e não medi**. O arquivo traz os 4 passos para conferir na `northstack-dev` em 5 minutos. **Se não bater, não postar** — errar numa resposta técnica custa mais reputação do que quatro acertos ganham.
 
 ---
 
@@ -44,7 +115,7 @@ Aqueles 5,7 s explicam a reclamação que eu tinha catalogado do Clockwork Pro �
 
 ---
 
-## 📄 Entregue nesta sessão
+## 📄 Entregue na sessão 9 — histórico
 
 - **[apps/jira-time/LISTING.md](apps/jira-time/LISTING.md)** — nome, tagline, highlights, descrição, 3 editions com faixas de preço e 3 screenshots descritos
 - **[apps/jira-time/PLANO-V1.md](apps/jira-time/PLANO-V1.md)** — arquitetura Forge, módulos, modelo de dados, 8 semanas de marcos e o que precisa de você em cada um
@@ -54,7 +125,7 @@ Aqueles 5,7 s explicam a reclamação que eu tinha catalogado do Clockwork Pro �
 
 Busca na Marketplace em 26/08/2026: **zero apps** com esse nome ou parecido. `Loggd` também livre; `Worklogic`, `Truelog` e `Nativa` colidem. O nome diz a cunha — *native* + *worklog*.
 
-### ⚠️ Dois pontos que eu quero que você veja antes de aprovar
+### ⚠️ Dois pontos levantados antes da aprovação — ambos aceitos
 
 **1. Desviei da regra 10 de propósito.** Ela descreve 3 planos fixos de US$ 19–79, que é o modelo da Shopify. A Atlassian cobra **por assento com faixas** e o padrão da categoria é **grátis até 10 usuários** — preço fixo não existe lá. Mantive o espírito (3 níveis, núcleo sem paywall) na forma da plataforma. Se preferir seguir a regra à risca, me diga e eu refaço.
 
@@ -126,7 +197,7 @@ Quando chegarmos lá, as opções são: **(a)** você abre `SCRUM-1`, clica em "
 
 ---
 
-## ✅ Feito nesta sessão
+## ✅ Feito na sessão 9 — histórico
 
 | Item | Estado |
 |---|---|
@@ -365,7 +436,7 @@ E o app oficial da **Harvest sustenta 2,5 mil instalações com nota 2.5**.
 
 ---
 
-## 🔴 ÚNICO BLOQUEIO — escolher o próximo app
+## ~~🔴 ÚNICO BLOQUEIO — escolher o próximo app~~ ✅ resolvido na rodada 5 (Nativelog)
 
 **Três rodadas, quinze categorias, nenhum candidato aprovado.** Evidência completa em [PESQUISA.md](PESQUISA.md).
 

@@ -3,6 +3,10 @@
 **Meta: 5 a 10 instâncias reais usando de verdade** por 2–3 semanas (regra 16).
 **Começa no D1 (26/08/2026), em paralelo com o código** — não no D15. É o caminho crítico do projeto.
 
+> **Atualizado em 26/08/2026 (D1).** O Amarildo **descartou o canal 1 (rede pessoal)**. A ordem de prioridade passa a ser **2 → 3 → 5**, com o **canal 6 (fórum de desenvolvedores)** somado. A numeração dos canais foi mantida para não quebrar as referências no `COMMUNITY.md`.
+>
+> **O que isso custa, dito claramente:** o canal 1 era o de maior conversão e o único que não dependia de estranhos confiarem num app desconhecido. Sem ele, as primeiras duas ou três instâncias — as que destravam a confiança para as outras — ficam mais caras e mais lentas. Os canais restantes são todos de público frio. **O ponto de decisão do D14 fica mais provável de bater**, e a resposta continua sendo trocar de canal, não encurtar o beta.
+
 ---
 
 ## ⚠️ Uma coisa que eu não vou fazer, e por quê
@@ -35,37 +39,48 @@ Do corpus de 1.174 avaliações lidas na rodada 5, as palavras que os insatisfei
 
 ## Canais, em ordem de custo e eficácia
 
-### 1. Rede pessoal e clientes (D1–D3) — o de maior conversão
-**Alvo:** qualquer empresa que o Amarildo conheça e que use Jira. Não precisa ser grande — precisa apontar horas.
-**Por que primeiro:** conversão muito maior, e as duas ou três primeiras instâncias destravam a confiança para as outras.
-**O humano faz:** listar 10 nomes e mandar a mensagem curta. **Só o Amarildo tem essa lista.**
+### ~~1. Rede pessoal e clientes~~ — **DESCARTADO pelo Amarildo em 26/08/2026**
+Decisão dele, e é dele para tomar. Fica registrado o que se perde: era o canal de maior conversão e o único de público quente. Se em D14 faltarem candidatos, este é o primeiro lugar para reabrir a conversa.
 
-### 2. Atlassian Community (D2–D5) — o mais qualificado dos públicos
+### 2. Atlassian Community (D2–D5) — **PRIORIDADE 1** · o mais qualificado dos públicos
 **Onde:** `community.atlassian.com`, tags `jira-cloud`, `time-tracking`, `worklogs`, `forge`.
 **Como:** responder perguntas reais sobre worklog e JQL **primeiro**, sem vender. Depois de 3–4 respostas úteis, um post no espaço de apps anunciando o beta.
-**O humano faz:** criar a conta e postar. Eu escrevo os rascunhos e, se você quiser, também os textos das respostas técnicas.
+**O humano faz:** criar a conta e postar. **As 4 respostas técnicas estão escritas e prontas em [`COMMUNITY.md`](COMMUNITY.md)** — uma por dia, D2 a D5, com o que conferir antes de cada uma.
 **Cuidado:** a comunidade tem regras contra autopromoção. Postar direto vira remoção e queima o canal — daí a ordem "ajudar antes de pedir".
 
-### 3. r/jira (D3–D7)
+### 3. r/jira (D3–D7) — **PRIORIDADE 2**
 **Onde:** `reddit.com/r/jira`, ~40 mil membros, tolerante a "estou construindo isto, querem testar?" quando é honesto.
 **Como:** post único, primeira pessoa, sem link de vendas — só o convite e um e-mail de contato.
 **O humano faz:** postar de uma conta com algum histórico. **Conta nova postando link é removida por spam.** Se não tiver conta antiga, pular este canal.
 
-### 4. LinkedIn (D5–D10)
+### 4. LinkedIn (D5–D10) — prioridade menor
 **Onde:** post do Amarildo + grupos de Atlassian.
 **Como:** post curto contando o achado técnico (o worklog `asApp` que quebra JQL). Conteúdo técnico honesto circula; anúncio não.
 **O humano faz:** publicar. É o canal mais dependente de você — é a sua rede.
 
-### 5. Solution Partners pequenos (D7–D14) — o de maior alavancagem
+### 5. Solution Partners pequenos (D7–D14) — **PRIORIDADE 3** · o de maior alavancagem
 **Onde:** `partnerdirectory.atlassian.com`, filtrando por parceiros pequenos e regionais.
 **Por quê:** um parceiro atende várias instâncias. Um "sim" pode virar 3–5 betas de uma vez, e vira canal de venda depois.
 **O humano faz:** escrever para 10 parceiros. Resposta é lenta (dias), por isso começar cedo.
+
+### 6. Atlassian Developer Community (D4–D10) — **NOVO em 26/08/2026** · canal de credibilidade, não de volume
+**Onde:** `community.developer.atlassian.com`, categorias `Jira Cloud` e `Forge`.
+**Quem está lá:** desenvolvedores de app, vendors da Marketplace e o time de plataforma da própria Atlassian. **Quase ninguém ali administra a instância que a gente quer no beta** — é um público de construtores, não de compradores.
+
+**Então por que entrar:**
+- **É onde o achado do spike interessa de verdade.** "Medi ~5,7 s de atraso do índice de busca entre gravar um worklog e o JQL enxergá-lo" é um dado que aquele público usa no mesmo dia. Contribuição real, não conteúdo de marketing.
+- **Os desenvolvedores dos Solution Partners leem esse fórum.** É o caminho mais barato até o canal 5, que é o de maior alavancagem.
+- **Os engenheiros da Atlassian respondem lá.** É onde se pergunta sobre `asUser`, limites do KVS e revisão da Marketplace — coisas que vamos precisar perguntar de qualquer forma entre o D11 e a submissão.
+
+**⚠️ O risco deste canal, dito antes de usá-lo.** É o único público que consegue **copiar a cunha a partir da descrição dela**. Um admin que lê "grava worklog nativo com a identidade da pessoa" fica interessado; um vendor concorrente que lê a mesma frase com detalhe de implementação ganha uma tarde de trabalho. A tese já é pública (está na listagem e nas mensagens dos outros canais) — o que **não** publicamos aqui é o *como*: nada de trecho de código do `asUser`, nada do desenho do KVS, nada da regra de ler pelo endpoint do item em vez de JQL. **Compartilhar a medição, não a solução.**
+
+**O humano faz:** criar a conta (é separada da `community.atlassian.com`) e postar. Eu escrevo os textos quando chegar a hora — **não no D1**: este canal vem depois das respostas do canal 2, porque a mesma regra vale, ajudar antes de pedir.
 
 ---
 
 ## Mensagens
 
-### Canal 1 e 5 — e-mail direto (EN)
+### Canal 5 — e-mail direto a Solution Partners (EN)
 
 > **Subject:** Beta testers wanted — Jira time tracking that writes real worklogs
 >
@@ -83,7 +98,7 @@ Do corpus de 1.174 avaliações lidas na rodada 5, as palavras que os insatisfei
 >
 > Amarildo — Northstack Apps
 
-### Canal 1 e 5 — e-mail direto (pt-BR)
+### Canal 5 — e-mail direto a Solution Partners (pt-BR)
 
 > **Assunto:** Procuro times para testar um app de apontamento de horas no Jira
 >
@@ -137,15 +152,16 @@ Do corpus de 1.174 avaliações lidas na rodada 5, as palavras que os insatisfei
 
 ## Controle
 
-| Canal | Responsável | Início | Meta | Status |
-|---|---|---|---|---|
-| Rede pessoal | Amarildo | D1 | 10 contatos → 3 sins | ⬜ |
-| Atlassian Community | Amarildo (textos meus) | D2 | 4 respostas + 1 post | ⬜ |
-| r/jira | Amarildo | D3 | 1 post | ⬜ |
-| LinkedIn | Amarildo | D5 | 1 post + 5 DMs | ⬜ |
-| Solution Partners | Amarildo (textos meus) | D7 | 10 contatos → 2 sins | ⬜ |
+| Prio | Canal | Responsável | Início | Meta | Status |
+|---|---|---|---|---|---|
+| — | ~~Rede pessoal~~ | — | — | — | 🚫 descartado em 26/08 |
+| **1** | Atlassian Community | Amarildo (textos prontos em `COMMUNITY.md`) | D2 | 4 respostas + 1 post | ⬜ |
+| **2** | r/jira | Amarildo | D3 | 1 post | ⬜ |
+| **3** | Solution Partners | Amarildo (textos meus) | D7 | 10 contatos → 2 sins | ⬜ |
+| 4 | Developer Community | Amarildo (textos meus) | D4 | 1 contribuição técnica | ⬜ |
+| 5 | LinkedIn | Amarildo | D5 | 1 post + 5 DMs | ⬜ |
 
-**Ponto de decisão no D14:** se houver menos de 5 confirmados, **o problema é o canal, não o prazo**. Reavaliar a abordagem — não encurtar o beta nem publicar sem ele.
+**Ponto de decisão no D14:** se houver menos de 5 confirmados, **o problema é o canal, não o prazo**. Reavaliar a abordagem — não encurtar o beta nem publicar sem ele. Com o canal 1 fora, a primeira coisa a reconsiderar nesse ponto é justamente reabri-lo.
 
 ## O que eu faço sem você
 

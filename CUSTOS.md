@@ -45,9 +45,16 @@ Estimativas **não confirmadas**. Nenhuma contratação antes de aprovação exp
 | Banco (alt.) | Supabase free tier | 0 | 0 | idem |
 | Envio de e-mail (PO ao fornecedor) | Resend free (3.000 e-mails/mês) | 0 | 0 | Feature do plano Growth |
 | Monitoramento de erro | Sentry free tier | 0 | 0 | Antes de submeter |
-| **Domínio `northstackapps.com` — APROVADO** | Registro anual (Amarildo compra) | ~1 (12/ano) | ~66/ano | **Bloqueante para submeter** — privacidade, suporte e domínio do remetente de e-mail |
+| **Domínio `northstackapps.com` — ✅ REGISTRADO 26/08/2026** | Registro anual no **Cloudflare** (a preço de custo, sem markup) | ~1 (12/ano) | ~66/ano *(valor pago a confirmar)* | Privacidade, suporte e remetente de e-mail. **Deixou de bloquear a submissão e passou a destravar o beta do D14** |
 
 **Estimativa de recorrente na submissão: US$ 5/mês (~R$ 28/mês) + ~R$ 66/ano de domínio.**
+
+> **Revisão de 26/08/2026 — o custo caiu, não subiu.** O app em construção é o **Nativelog**, em **Forge**, que a **Atlassian hospeda**. Some da conta: Railway (US$ 5/mês) e Postgres. Sobra o domínio.
+>
+> **Recorrente real do Nativelog até a submissão: ~R$ 66/ano.** Só isso.
+>
+> **Amarildo: me diga o valor exato pago no domínio** para eu fechar a linha acima. É o primeiro gasto real do projeto e a regra 5 pede o número, não a estimativa.
+
 **Estimativa de gasto até a submissão do App 1: menos de R$ 100.**
 
 ### Por que free tier não cobre tudo

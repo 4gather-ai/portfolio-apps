@@ -399,14 +399,53 @@ O `CLAUDE.md` justifica o App 1 com três premissas. As três foram verificadas 
 
 ---
 
+## 2026-08-26 — Plano da v1 aprovado; construção começou
+
+Amarildo aprovou o `PLANO-V1.md`, confirmou o nome **Nativelog**, aceitou o recrutamento do beta na semana 1 e **registrou `northstackapps.com` no Cloudflare**. As quatro decisões que travavam o código caíram no mesmo dia.
+
+**Consequência imediata:** o domínio deixa de bloquear o beta do D14. Falta só publicar as páginas de privacidade e suporte nele.
+
+---
+
+## 2026-08-26 — Canal 1 do beta (rede pessoal) descartado
+
+**Decisão do Amarildo.** Nova ordem de prioridade do recrutamento: **Atlassian Community → r/jira → Solution Partners**, com o **fórum de desenvolvedores** (`community.developer.atlassian.com`) somado como canal novo.
+
+**O que isso custa, registrado para não ser esquecido em D14:** o canal 1 era o de maior conversão e **o único de público quente**. Todos os canais restantes dependem de estranhos confiarem num app desconhecido de um desenvolvedor sem histórico na plataforma. As duas ou três primeiras instâncias — as que destravam as demais — ficam mais caras e mais lentas de conseguir.
+
+**Isso não muda a regra 16.** O ponto de decisão do D14 continua sendo "menos de 5 confirmados ⇒ trocar de canal", nunca "encurtar o beta". Se bater, a primeira coisa a reconsiderar é justamente reabrir o canal 1.
+
+**Sobre o fórum de desenvolvedores, com uma ressalva.** É público de construtores, não de compradores: quase ninguém ali administra a instância que queremos. Entra por motivos indiretos — é onde a medição dos 5,7 s interessa, é onde os desenvolvedores dos Solution Partners leem, e é onde teremos que perguntar sobre `asUser` e revisão da Marketplace de qualquer forma. **Ressalva:** é o único público capaz de copiar a cunha a partir da descrição dela. Regra fixada: **compartilhar a medição, não a solução** — nada de código do `asUser`, nada do desenho do KVS, nada da regra de leitura.
+
+---
+
+## 2026-08-26 — Estratégia da Atlassian Community: responder antes de anunciar
+
+Quatro respostas técnicas escritas em `apps/jira-time/COMMUNITY.md`, para perguntas reais de 2025–2026, **três delas sem resposta aceita**. Uma por dia, D2–D5; o anúncio do beta só depois.
+
+**Três regras fixadas para essas respostas:**
+1. **Nenhum link ou menção ao Nativelog.** A comunidade remove autopromoção, e postar o anúncio direto queima o canal de prioridade nº 1.
+2. **Nenhum concorrente pelo nome.** Onde a resposta toca no worklog gravado pelo app em vez da pessoa, fala do **sintoma** — "confira se o app grava worklog nativo". Quem tem o problema se reconhece.
+3. **Nenhuma afirmação não verificada.** Três das quatro respostas trazem um "⚠️ conferir antes de postar" com os passos exatos. A da resposta 1 se apoia numa identidade algébrica (`timeSpent > remaining` ⟺ `workratio > 50`) que foi **deduzida, não medida** — e por isso está marcada como "não postar se não bater".
+
+**Motivo da regra 3:** numa lista de e-mail comercial, um erro custa uma resposta. Num fórum técnico onde a gente está construindo reputação do zero, **um erro custa mais do que quatro acertos ganham**.
+
+---
+
+## 2026-08-26 — Forge: `@forge/kvs`, não o `storage` do `@forge/api`
+
+O `forge lint` marcou o `storage` do `@forge/api` como **deprecado** no D2. Migrado no mesmo dia, antes de qualquer código depender dele.
+
+**Por que agora e não depois:** dez minutos hoje; uma rodada de revisão da Atlassian se ficasse para a submissão. O `forge deploy` confirmou que a mudança **não afeta a elegibilidade a Runs on Atlassian** (versão 2.2.0). Escopo `storage:app` acrescentado ao manifest.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
-**Estado: parado, aguardando retorno.** Nenhum trabalho em andamento; nenhum bloqueio técnico.
+**Estado: em construção.** D1 e D2 entregues. Nenhuma decisão em aberto bloqueia o código.
 
 | # | Tema | Pergunta | Bloqueia |
 |---|---|---|---|
-| 1 | **Aprovar o `PLANO-V1.md`** | Arquitetura, módulos, modelo de dados e marcos. **Não começo o produto sem isso** | **Todo o código** |
-| 2 | **Nome** | `Nativelog` está livre na busca. Confirma? | Registro no Developer Console |
-| 3 | **Recrutamento do beta** | Aceita começar a procurar as 5–10 instâncias já na semana 1? É o risco real do plano | Semanas 5–7 |
-| 4 | Domínio | Comprar `northstackapps.com` — agora bloqueia o **beta** (semana 4), não só a submissão | Beta |
+| ~~1–4~~ | ~~Plano, nome, beta, domínio~~ | ✅ **Todas resolvidas em 26/08/2026** | — |
 | 5 | Shopify | Espera indefinida ou abandono? Muda o que fica no repositório | Organização do repo |
+| 6 | **Preço** | Tabela de faixas por assento no Developer Console — eu preparo os números | Billing (D11, 05/09) |
