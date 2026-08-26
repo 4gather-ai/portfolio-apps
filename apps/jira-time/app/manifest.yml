@@ -1,0 +1,38 @@
+modules:
+  # Apontamento dentro do item: timer e entrada manual.
+  jira:issuePanel:
+    - key: nativelog-issue
+      resource: main
+      resolver:
+        function: resolver
+      render: native
+      title: Nativelog
+      icon: https://developer.atlassian.com/platform/forge/images/icons/issue-panel-icon.svg
+
+  function:
+    - key: resolver
+      handler: index.handler
+
+resources:
+  - key: main
+    path: src/frontend/index.jsx
+
+app:
+  runtime:
+    name: nodejs24.x
+    memoryMB: 256
+    architecture: arm64
+  id: ari:cloud:ecosystem::app/22d863f1-cb08-4d77-a7b9-bd4098ede2b2
+
+permissions:
+  scopes:
+    # Mínimo necessário. A revisão da Atlassian reprova escopo em excesso.
+    - read:jira-user # identificar quem está apontando
+    - read:jira-work # ler worklogs, itens e projetos
+    - write:jira-work # criar, editar e apagar worklog do próprio usuário
+# Módulos dos dias seguintes, mantidos aqui como contrato do plano:
+#   D6  jira:globalPage nativelog-week  — minha semana + CSV
+#   D9  jira:globalPage nativelog-team  — visão de equipe (Pro)
+#   D11 jira:adminPage  nativelog-admin — grupos da visão de equipe
+# Entram junto com a tela que os usa, não antes: escopo e módulo sem uso
+# atrapalham a revisão.
