@@ -452,6 +452,38 @@ Trocado por `^12.1.2` e `^6.3.0`, ambos estáveis. `npm ci` do zero reproduz, `f
 
 ---
 
+## 2026-08-26 — D3: gravar antes de apagar o timer (ordem invertida)
+
+No D2 o timer era apagado do KVS **antes** da gravação, para eliminar o risco de worklog duplicado. **O D3 inverteu.**
+
+**Por quê.** Com a ordem antiga, um 503 do Jira no momento do "parar" descartava horas que a pessoa cronometrou, sem recurso. Num app de apontamento de horas, esse é o pior desfecho possível — e *"as horas somem"* / *"delay in time logs appearing"* é reclamação já catalogada da categoria (`PESQUISA.md`, rodada 5). Trocamos um risco silencioso e irreversível por um risco visível e corrigível.
+
+**Como a duplicata fica controlada, sem depender de sorte:**
+1. O timer é marcado como "gravação em curso" no KVS **antes** do POST. Isso cobre o caso que um `try/catch` não cobre: a função do Forge morrer no meio da chamada, quando nenhum tratamento de erro chega a rodar.
+2. Toda retentativa **lê os worklogs do item** e procura um equivalente (mesmo autor, mesmo instante ±1 s, mesma duração) antes de escrever.
+3. **Essa leitura é pelo endpoint do item, nunca por JQL** — aplicação direta da regra fixada em 26/08 a partir dos 5,7 s de atraso do índice medidos no spike. É a primeira vez que aquela decisão se paga.
+4. Se a leitura de conferência falhar, **grava mesmo assim**. Duplicata a pessoa vê e apaga; hora perdida não volta.
+
+**Consequência de produto:** quando a gravação falha, o painel não diz "erro" — diz que **o tempo continua correndo e seguro**, e o botão vira *Stop and retry*. A mensagem é parte da decisão, não enfeite.
+
+---
+
+## 2026-08-26 — Timer abaixo de 1 minuto não vira worklog
+
+O Jira trabalha em minutos e um timer de 8 segundos é clique errado, não trabalho. Gravar assim sujaria a folha de ponto de quem confia nela.
+
+**Marcado para revisitar no beta.** É o tipo de regra que parece óbvia para quem escreveu e irrita quem usa. Se aparecer reclamação em `BETA.md`, o número muda ou vira configuração.
+
+---
+
+## 2026-08-26 — Trocar de item trava quando o anterior não grava
+
+Iniciar um timer em outro item grava o worklog do anterior primeiro. **Se essa gravação falhar, o timer novo não começa** e o painel explica por quê.
+
+**Alternativa recusada:** começar o novo e deixar o anterior pendente. Seria mais macio no momento e é exatamente assim que hora apontada some sem ninguém perceber — a pessoa segue trabalhando e só descobre o buraco na sexta-feira. Preferimos travar a atrapalhar.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: em construção.** D1 e D2 entregues. Nenhuma decisão em aberto bloqueia o código.
@@ -460,4 +492,5 @@ Trocado por `^12.1.2` e `^6.3.0`, ambos estáveis. `npm ci` do zero reproduz, `f
 |---|---|---|---|
 | ~~1–4~~ | ~~Plano, nome, beta, domínio~~ | ✅ **Todas resolvidas em 26/08/2026** | — |
 | 5 | Shopify | Espera indefinida ou abandono? Muda o que fica no repositório | Organização do repo |
+| 7 | **Critério do D3** | Apontar na `northstack-dev` e conferir se a aba Work log mostra **o seu nome**. Só uma pessoa clicando fecha isso — o `asUser()` não existe fora do navegador | Confiança no D4 |
 | 6 | **Preço** | Tabela de faixas por assento no Developer Console — eu preparo os números | Billing (D11, 05/09) |

@@ -79,17 +79,62 @@ export function criarTimers({ storage, agora = () => new Date() }) {
   }
 
   /**
-   * Para o timer e devolve o que precisa virar worklog.
+   * Apaga o timer e devolve o que ele era.
    * Devolve null quando não havia timer — parar duas vezes não é erro.
    *
-   * O registro do KVS é apagado ANTES de qualquer gravação no Jira: melhor um
-   * timer perdido do que um timer que grava duas vezes se o usuário insistir.
+   * **Só deve ser chamado depois que o worklog foi gravado.** Quem orquestra
+   * isso é `resolvers/painel.js`: grava primeiro, apaga depois. No D2 a ordem
+   * era a inversa (apagar antes, para não arriscar gravação dupla); o D3
+   * inverteu de propósito, porque perder hora cronometrada é pior que uma
+   * duplicata visível — e a duplicata a gente evita com `jaExiste`.
    */
   async function parar(accountId) {
     const timer = await ler(accountId);
     if (!timer) return null;
     await storage.delete(chaveDoTimer(accountId));
     return timer;
+  }
+
+  /**
+   * Marca que uma gravação vai começar agora.
+   *
+   * Fecha o buraco que `marcarFalha` sozinho não fecha: se a função do Forge
+   * for interrompida no meio do POST (timeout, deploy, o que for), nenhum
+   * tratamento de erro roda e o timer fica com cara de "nunca tentou". A
+   * próxima tentativa gravaria de novo, e o Jira pode já ter recebido a
+   * primeira. Marcando ANTES, qualquer retentativa confere antes de escrever.
+   *
+   * Custa uma escrita minúscula no KVS por "parar" — algumas por dia, por
+   * pessoa. Barato perto de duplicar a hora de alguém.
+   */
+  async function marcarEmCurso(accountId) {
+    const registro = await storage.get(chaveDoTimer(accountId));
+    if (!registro || registro.podeTerGravado) return registro || null;
+    const atualizado = { ...registro, podeTerGravado: true };
+    await storage.set(chaveDoTimer(accountId), atualizado);
+    return atualizado;
+  }
+
+  /**
+   * A gravação do worklog falhou: o timer **continua de pé**.
+   *
+   * Essa é a escolha central do D3. Perder três horas que a pessoa cronometrou
+   * porque o Jira devolveu 503 é pior do que qualquer alternativa — e "as horas
+   * somem" é reclamação catalogada da categoria. Guardamos o motivo e se a
+   * gravação pode ter chegado ao Jira mesmo assim, para a próxima tentativa
+   * conferir antes de escrever de novo.
+   */
+  async function marcarFalha(accountId, motivo, podeTerGravado = false) {
+    const registro = await storage.get(chaveDoTimer(accountId));
+    if (!registro) return null;
+    const atualizado = {
+      ...registro,
+      ultimaFalha: motivo || 'desconhecido',
+      tentativas: (registro.tentativas || 0) + 1,
+      podeTerGravado: Boolean(registro.podeTerGravado || podeTerGravado),
+    };
+    await storage.set(chaveDoTimer(accountId), atualizado);
+    return { ...atualizado, ...duracaoDoTimer(atualizado.startedAt, agora()) };
   }
 
   /** Joga o timer fora sem apontar nada — a saída para o timer esquecido. */
@@ -99,7 +144,7 @@ export function criarTimers({ storage, agora = () => new Date() }) {
     return timer;
   }
 
-  return { ler, iniciar, parar, descartar };
+  return { ler, iniciar, parar, descartar, marcarEmCurso, marcarFalha };
 }
 
 /**

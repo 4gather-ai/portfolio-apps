@@ -119,7 +119,7 @@ Pós-compra por micro-segmento, outros marketplaces (WordPress, Chrome, Atlassia
 
 ## Estado atual (atualizado em 26/08/2026)
 
-**App em construção: `Nativelog`** — apontamento de horas para Jira Cloud, em `apps/jira-time/`. Regra 8 cumprida na rodada 5 do `PESQUISA.md`, cunha provada em instância real, plano aprovado. **D1 e D2 de 14 concluídos; o próximo é o D3.**
+**App em construção: `Nativelog`** — apontamento de horas para Jira Cloud, em `apps/jira-time/`. Regra 8 cumprida na rodada 5 do `PESQUISA.md`, cunha provada em instância real, plano aprovado. **D1, D2 e D3 de 14 concluídos; o próximo é o D4.**
 
 Ler nesta ordem: `STATUS.md` → `apps/jira-time/PLANO-V1.md` (marcos por dia) → `apps/jira-time/STATUS.md` se existir.
 

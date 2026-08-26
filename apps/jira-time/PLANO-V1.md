@@ -1,6 +1,6 @@
 # Nativelog — Plano da v1
 
-> **✅ Aprovado pelo Amarildo em 26/08/2026.** Em construção — **D1 e D2 concluídos**, D3 é o próximo.
+> **✅ Aprovado pelo Amarildo em 26/08/2026.** Em construção — **D1, D2 e D3 concluídos**, D4 é o próximo.
 > Base: cunha provada no spike de 26/08/2026 (`STATUS.md`). Escopo fechado em `PESQUISA.md`, rodada 5.
 
 ---
@@ -66,13 +66,14 @@ permissions:
 
 | Chave | Valor | Por que precisa existir |
 |---|---|---|
-| `timer:{accountId}` | `{ issueId, startedAt }` | Um timer em andamento não é um worklog ainda. Some quando o timer para |
+| `timer:{accountId}` | `{ issueId, issueKey, startedAt, podeTerGravado?, tentativas?, ultimaFalha? }` | Um timer em andamento não é um worklog ainda. Some quando o worklog é gravado. Os três últimos campos só existem quando uma gravação falhou — ver a regra de ordem abaixo |
 | `prefs:{accountId}` | `{ excludedProjects[], lastExportFormat }` | Preferência de exportação, não é dado de trabalho |
 | `admin:config` | `{ teamViewGroups[] }` | Configuração da instância |
 
 **Regras duras:**
 - **Um timer por pessoa.** Iniciar outro fecha o anterior — sem timers órfãos acumulando.
 - **Nada de hora apontada no KVS.** Se está apontado, é worklog.
+- **Grava primeiro, apaga o timer depois** *(invertido no D3)*. Se o Jira falhar no "parar", o timer sobrevive e a pessoa tenta de novo. Perder hora cronometrada é pior que uma duplicata visível — e a duplicata é evitada lendo os worklogs do item antes de reescrever, nunca por JQL.
 - **API: `@forge/kvs`**, não o `storage` do `@forge/api` — este último está deprecado e o `forge lint` reprova (constatado no D2)
 - **Escrita em KVS é a linha cara do Forge** (US$ 1,09/GB). Esses três registros são minúsculos e mudam pouco: fica muito dentro da franquia gratuita.
 - **Desinstalar não perde nada.** O KVS some, os worklogs ficam. É argumento de venda e é verdade.
@@ -87,8 +88,8 @@ permissions:
 |---|---|---|---|
 | ~~**D1**~~ ✅ | 26/08 | Scaffold Forge no repo, manifest e escopos, CI (lint + Vitest), biblioteca de duração/data com testes | — |
 | ~~**D2**~~ ✅ | **26/08** *(adiantado)* | `issuePanel`: timer inicia, para e é descartado; estado no KVS; um timer por pessoa. 60 testes | — |
-| **D3** ▶️ | 28/08 | Gravação do worklog no "parar", `started` retroativo, via `asUser()`. **Critério: apontar 3 h e ver no worklog nativo com o nome certo** | — |
-| **D4** | 29/08 | Apontamento manual, editar e apagar entrada própria | — |
+| ~~**D3**~~ ✅ | **26/08** *(adiantado)* | Gravação do worklog no "parar", `started` retroativo, via `asUser()`. 97 testes | **Critério em aberto: apontar e conferir o nome na aba Work log** — só uma pessoa clicando fecha isso |
+| **D4** ▶️ | 29/08 | Apontamento manual, editar e apagar entrada própria | — |
 | **D5** | 30/08 | Erros do núcleo: permissão negada, item apagado, timer órfão, fuso | — |
 | **D6** | 31/08 | `globalPage` "Minha semana": leitura via `/issue/{key}/worklog`, totais por dia | — |
 | **D7** | 01/09 | Navegação de semanas, edição a partir da folha | — |

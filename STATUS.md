@@ -5,15 +5,18 @@
 
 ---
 
-## ▶️ EM CONSTRUÇÃO — Nativelog · **D2 de 14 concluído**
+## ▶️ EM CONSTRUÇÃO — Nativelog · **D3 de 14 concluído**
 
 Plano aprovado, nome confirmado, domínio registrado. **Nenhuma decisão sua está bloqueando o código agora.**
 
 | Dia | Marco | Estado |
 |---|---|---|
 | **D1** · 26/08 | Scaffold Forge, manifest, CI, núcleo de tempo com testes | ✅ |
-| **D2** · 26/08 | Painel do item: timer inicia, para, descarta · **um timer por pessoa** | ✅ **entregue hoje, adiantado** |
-| **D3** · 27/08 | Gravar o worklog nativo no "parar", via `asUser()` | ▶️ próximo |
+| **D2** · 26/08 | Painel do item: timer inicia, para, descarta · **um timer por pessoa** | ✅ |
+| **D3** · 26/08 | **O timer vira worklog nativo do Jira, via `asUser()`, com início retroativo** | ✅ **entregue hoje** · 97 testes |
+| **D4** · 29/08 | Apontamento manual: criar, editar e apagar entrada própria | ▶️ próximo |
+
+**Três dias de marco entregues no primeiro dia de calendário.** As datas seguintes ficam como estavam: a compressão para 14 dias tirou todo o amortecedor, e folga vale mais que antecipação.
 
 **Aprovações anteriores, todas resolvidas:** plano ✅ · nome `Nativelog` ✅ · recrutamento do beta na semana 1 ✅ · **`northstackapps.com` registrado no Cloudflare** ✅ — isso **destrava o beta do D14**; falta só publicar as páginas de privacidade e suporte nele.
 
@@ -24,27 +27,59 @@ Plano aprovado, nome confirmado, domínio registrado. **Nenhuma decisão sua est
 | # | O quê | Quando | Bloqueia |
 |---|---|---|---|
 | 1 | **Publicar as 4 respostas técnicas da Atlassian Community** — prontas em [`COMMUNITY.md`](apps/jira-time/COMMUNITY.md), uma por dia, D2–D5 | **começa amanhã** | O beta (canal 1 de prioridade) |
-| 2 | **Testar o painel do timer na `northstack-dev`** — 5 minutos, instruções abaixo | quando puder | Confiança no D3 |
+| 2 | **Fechar o critério do D3: apontar tempo e ver o worklog com o SEU nome** — 2 minutos, roteiro abaixo | **hoje ou amanhã** | Confiança no D4 |
 | 3 | Definir a tabela de faixas de preço no Developer Console | D11 · 05/09 | Billing |
 
-### ⚠️ O Chrome não chegou até mim
+### ⚠️ O critério do D3 é o único que eu não consigo fechar sozinho
 
-Você disse que o Chrome está autorizado e conectado, mas **esta sessão não recebeu nenhuma ferramenta de navegador** — o `/chrome` não devolveu nada e não há servidor MCP registrado. Então **não testei o painel no navegador**, e não vou dizer que testei.
+O Chrome continua sem chegar até mim: **esta sessão não recebeu nenhuma ferramenta de navegador** (o `/chrome` não devolve nada, não há servidor MCP registrado). E o `asUser()` só existe quando **uma pessoa** clica no painel — não há como invocá-lo do terminal. Procurei um token de API do Jira para conferir por fora: não existe nenhum no repositório, e o do Forge CLI não serve para isso.
 
-**O que fiz para cobrir o buraco:** movi toda a lógica que um clique dispara para `src/resolvers/painel.js` e escrevi **17 testes** em cima dela — identidade vinda do contexto, item vindo do contexto, timer em outro item, KVS fora do ar, clique duplo. É a camada que o navegador exercitaria. **O que continua sem verificação é só a renderização React do painel.**
+**Então o critério do D3 — "apontar e ver no worklog nativo com o nome certo" — fica aberto até você clicar.**
 
-**Como conferir em 5 minutos** (o app já está instalado e no ar na `northstack-dev`):
-1. Abrir qualquer item em `northstack-dev.atlassian.net` e achar o painel **Nativelog**.
-2. **Start timer** → o relógio tem que andar de segundo em segundo.
-3. Abrir **outro** item → o painel avisa que já existe timer no primeiro e o botão vira **Start here**.
-4. Clicar **Start here** → aparece o aviso de que o timer anterior foi encerrado, com o total.
-5. **Stop** → o total aparece. *(O worklog ainda não é gravado — isso é o D3, amanhã. A tela diz isso.)*
+**O que já é evidência forte:** o spike de 26/08 fez exatamente este POST, nesta instância, e voltou **HTTP 201 com autor = Amarildo Pereira** e `started` retroativo. O corpo que o D3 envia é o mesmo (`timeSpentSeconds`, `started` com offset numérico, `comment` em ADF) e está sob teste. O que muda no D3 é a **orquestração** — e é ela que tem 97 testes em cima.
 
-Se qualquer passo falhar, me manda o que apareceu.
+**Roteiro de 2 minutos** (app no ar na `northstack-dev`, versão 2.5.0):
+1. Abrir um item em `northstack-dev.atlassian.net`, painel **Nativelog** → **Start timer**.
+2. Esperar **mais de um minuto** — abaixo disso o app não grava de propósito, ver decisão abaixo.
+3. **Stop** → tem que aparecer `Logged 1m to NL-x as Amarildo Pereira`.
+4. **Abrir a aba Work log do item, no Jira** → a entrada tem que estar lá **com o seu nome, não com o nome do app**. Este passo é o critério inteiro do D3, e é a cunha do produto.
+5. Bônus: rodar `worklogAuthor = currentUser()` num filtro e ver o item aparecer *(pode levar ~6 s — o índice de busca atrasa, medido no spike)*.
+
+Se o passo 4 mostrar o nome do app em vez do seu, **me avisa na hora**: a cunha estaria morta e o plano inteiro muda.
 
 ---
 
 ## 📄 Entregue nesta sessão (10)
+
+### D3 — o timer vira worklog nativo
+
+| Arquivo | O que é |
+|---|---|
+| `src/lib/worklog.js` | Escrita e leitura do worklog nativo, com `requestJira` injetado |
+| `src/resolvers/index.js` | **É aqui que mora o `asUser()`** — a linha que faz o produto existir |
+| `painel.js` · `timer.js` | Orquestração do "parar": grava, confere, encerra |
+| + testes | **97 testes** · `forge lint` limpo · deploy **2.5.0**, ainda elegível a Runs on Atlassian |
+
+#### A decisão que define o D3: **grava primeiro, apaga o timer depois**
+
+No D2 a ordem era a inversa — apagar o registro antes de gravar, para não arriscar worklog duplicado. **Inverti de propósito.** Se o Jira devolver 503 na hora do "parar", a ordem antiga jogaria fora três horas que a pessoa cronometrou. Num app de apontamento esse é o pior desfecho que existe — e *"as horas somem"* é reclamação catalogada da categoria.
+
+Agora, se a gravação falha: **o timer continua de pé**, o painel diz o motivo em frase clara — *"Your time is safe and still running — press Stop again in a moment"* — e o botão vira **Stop and retry**.
+
+**E a duplicata, que era o medo original?** Resolvida com leitura, não com fé:
+
+- Antes do POST, o timer é marcado como "gravação em curso" no KVS. **Marcar antes, não depois**: se a função do Forge morrer no meio do POST, nenhum tratamento de erro roda, e a marca é a única coisa que sobrevive.
+- Numa retentativa, o app **lê os worklogs do item** e procura um igual — mesmo autor, mesmo instante, mesma duração — antes de escrever. Se acha, não grava de novo e diz *"Already logged"*.
+- **Essa leitura usa o endpoint do item, nunca JQL.** É exatamente a regra de arquitetura que saiu do spike: o índice de busca atrasa ~5,7 s e aqui estamos perguntando sobre algo escrito há segundos. **A decisão do dia 0 pagou a conta no dia 3.**
+
+E se a própria conferência falhar? **Grava assim mesmo.** Uma duplicata a pessoa vê e apaga; três horas perdidas ela não recupera.
+
+#### Duas decisões menores das quais você pode discordar
+
+1. **Timer de menos de 1 minuto não vira worklog.** O Jira trabalha em minutos, e um timer de 8 segundos é clique errado, não trabalho. Marcado para revisitar no beta — se alguém reclamar, o número muda.
+2. **Trocar de item grava o timer anterior antes de começar o novo — e se essa gravação falhar, o novo timer não começa.** Preferi travar a atrapalhar: começar timer novo por cima de hora não gravada é como a hora some sem ninguém perceber.
+
+---
 
 ### D2 — o timer do painel do item
 

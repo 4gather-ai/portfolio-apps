@@ -170,6 +170,51 @@ describe('parar', () => {
   });
 });
 
+describe('marcarEmCurso', () => {
+  it('marca o timer antes da gravação começar', async () => {
+    const { storage, timers } = montar();
+    await timers.iniciar(EU, { issueId: '10001' });
+
+    await timers.marcarEmCurso(EU);
+
+    expect(await storage.get(chaveDoTimer(EU))).toMatchObject({ podeTerGravado: true });
+  });
+
+  it('não mexe em nada se já estava marcado — evita escrita à toa no KVS', async () => {
+    const { storage, timers } = montar();
+    await timers.iniciar(EU, { issueId: '10001' });
+    await timers.marcarEmCurso(EU);
+
+    let escritas = 0;
+    const set = storage.set;
+    storage.set = async (...args) => {
+      escritas += 1;
+      return set(...args);
+    };
+    await timers.marcarEmCurso(EU);
+
+    expect(escritas).toBe(0);
+  });
+
+  it('sem timer não cria registro nenhum', async () => {
+    const { storage, timers } = montar();
+    expect(await timers.marcarEmCurso(EU)).toBeNull();
+    expect(storage.tamanho).toBe(0);
+  });
+
+  it('preserva o início — a marca não pode mexer na hora', async () => {
+    const { timers, tempo } = montar();
+    await timers.iniciar(EU, { issueId: '10001' });
+    tempo.avancar(3600);
+
+    await timers.marcarEmCurso(EU);
+
+    const timer = await timers.ler(EU);
+    expect(timer.startedAt).toBe('2026-08-27T09:00:00.000Z');
+    expect(timer.segundos).toBe(3600);
+  });
+});
+
 describe('descartar', () => {
   it('limpa sem devolver nada para apontar', async () => {
     const { storage, timers, tempo } = montar();
