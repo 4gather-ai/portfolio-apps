@@ -1,58 +1,68 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-25 (sessão 8) · Dia 1 de 365 · **Gasto: R$ 0,00**
+**Última atualização:** 2026-08-26 (sessão 9) · Dia 1 de 365 · **Gasto: R$ 0,00**
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
-## 🟢 A CUNHA ESTÁ PROVADA — spike rodado em 26/08/2026
+## ⏸️ AGUARDANDO SUA APROVAÇÃO DO PLANO
 
-Resultado real no `SCRUM-1` da `northstack-dev`:
+A cunha está provada em produção. **Listagem e plano escritos. Não começo o produto sem seu "ok"** no [PLANO-V1.md](apps/jira-time/PLANO-V1.md).
 
-| Passo | Resultado |
-|---|---|
-| contexto | `[OK]` item = SCRUM-1 |
-| 0. `asUser() /myself` | `[OK]` Amarildo Pereira · `712020:9b4086b1-…` |
-| **1. `POST` worklog `asUser`** | **`[OK]` HTTP 201** · id=10000 · started=`2026-08-26T07:48:16.331-0400` · **autor=Amarildo Pereira** |
-| **2. Autor == usuário real** | **`[OK]`** `712020:9b4086b1-…` — **o worklog é da pessoa, não do app** |
-| 3. JQL `worklogAuthor = currentUser()` | `[FALHOU]` 0 itens — **ver diagnóstico** |
-| 4. Painel nativo | `[OK]` `timespent=10800s` · `timeSpent: "3h"` |
-| 5. Limpeza | `[OK]` HTTP 204 |
-
-### O que isso decide
-
-**Os dois passos que podiam matar o produto passaram.** O Forge cria worklog nativo via `asUser()`, com **início retroativo** (2 h antes) e com a **identidade da pessoa** — exatamente o que o Tempo não faz e pelo que perde avaliações. O painel de tempo nativo do Jira reflete as 3 h sem nenhum app envolvido.
-
-**A cunha da rodada 5 se sustenta em produção, não só no papel.**
-
-### O passo 3 e por que quase certamente não é o que parece
-
-Diagnóstico: **latência do índice de busca**. O passo 4 leu o item **direto pela REST** e viu `timespent=10800s`; o passo 3 usa **JQL**, que depende do índice assíncrono do Jira. Um worklog criado milissegundos antes ainda não está indexado. O dado está certo — a busca é que não o enxergou ainda.
-
-**Não estou tratando isso como suposição.** Redeployei o spike (**2.1.0**) com:
-- **retentativa no passo 3** — 5 tentativas em ~12 s, informando em qual tentativa achou e quanto tempo levou;
-- **limpeza adiada** — se o JQL não achar, o worklog **não é apagado**, e aparece um segundo botão **"Verificar de novo e limpar"** para consultar depois de 30–60 s.
-
-Se a segunda passada achar, era índice. Se não achar, é problema real e eu investigo.
-
-### 🔴 Preciso de você — rodar de novo (2 minutos)
-
-1. Recarregue o `SCRUM-1` (F5, para pegar a versão 2.1.0)
-2. **"Rodar spike"**
-3. Se o passo 3 falhar de novo, **espere 30–60 s** e clique em **"Verificar de novo e limpar"**
-4. Me mande as linhas
-
-> Não precisa reinstalar: o deploy 2.1.0 não mudou escopos.
-
-### ⚠️ E isso já é um achado de produto, não só de teste
-
-Se o índice do Jira atrasa, **qualquer app que monte folha de ponto via JQL mostra dado velho** logo após o apontamento — e isso explica a reclamação do Clockwork Pro: *"delay in time logs appearing in Jira and in the timesheet"*.
-
-**Consequência de arquitetura para a v1:** ler worklog pelo endpoint REST do item (`/issue/{key}/worklog`), que não passa pelo índice, e usar JQL só para busca ampla. Registrado antes de escrever a primeira linha do produto.
+| # | Decisão | Bloqueia |
+|---|---|---|
+| 1 | **Aprovar o `PLANO-V1.md`** — arquitetura, módulos, dados, marcos | **Todo o código** |
+| 2 | Confirmar o nome **`Nativelog`** (livre na busca da Marketplace) | Registro no Developer Console |
+| 3 | Aceitar começar o **recrutamento do beta já na semana 1** | Semanas 5–7 |
+| 4 | Comprar **`northstackapps.com`** — agora bloqueia o **beta** (semana 4), não só a submissão | Beta |
 
 ---
 
-## ✅ Spike implantado — e uma pergunta de risco já respondida
+## 🟢 CUNHA PROVADA — spike 2.1.0, 26/08/2026, 5/5 OK
+
+| Passo | Resultado |
+|---|---|
+| **`POST` worklog `asUser`** | **HTTP 201** · `started` retroativo · **autor = Amarildo Pereira** |
+| **Autor == usuário real** | **`712020:9b4086b1-…`** — o worklog é **da pessoa, não do app** |
+| **JQL `worklogAuthor = currentUser()`** | **Achou na 3ª tentativa, após 5,7 s** |
+| Painel nativo | `timespent=10800s` |
+| Limpeza | HTTP 204 |
+
+**A hipótese estava certa: era latência de índice, não falha de fidelidade.** O dado sempre esteve correto; só a busca demorou a enxergar. Valeu ter medido em vez de supor.
+
+**Bônus confirmado pelo deploy:** escrever worklog via `asUser` **não** invalida a elegibilidade a **Runs on Atlassian**.
+
+### Isso virou regra de arquitetura, antes da primeira linha do produto
+
+> **Ler worklog pelo endpoint do item** (`/issue/{key}/worklog`). **JQL só para busca ampla**, nunca para conferir o que acabou de ser gravado.
+
+Aqueles 5,7 s explicam a reclamação que eu tinha catalogado do Clockwork Pro — *"delay in time logs appearing in Jira and in the timesheet"*. **Um defeito da categoria virou decisão nossa.** Registrado em `DECISOES.md`.
+
+### Spike encerrado
+
+`forge uninstall` executado — a dev instance está limpa. O código fica em `apps/jira-time/spike/` como registro da evidência.
+
+---
+
+## 📄 Entregue nesta sessão
+
+- **[apps/jira-time/LISTING.md](apps/jira-time/LISTING.md)** — nome, tagline, highlights, descrição, 3 editions com faixas de preço e 3 screenshots descritos
+- **[apps/jira-time/PLANO-V1.md](apps/jira-time/PLANO-V1.md)** — arquitetura Forge, módulos, modelo de dados, 8 semanas de marcos e o que precisa de você em cada um
+- **`DECISOES.md`** — cunha provada, regra de leitura, nome, desvio consciente da regra 10
+
+### Nome: `Nativelog`
+
+Busca na Marketplace em 26/08/2026: **zero apps** com esse nome ou parecido. `Loggd` também livre; `Worklogic`, `Truelog` e `Nativa` colidem. O nome diz a cunha — *native* + *worklog*.
+
+### ⚠️ Dois pontos que eu quero que você veja antes de aprovar
+
+**1. Desviei da regra 10 de propósito.** Ela descreve 3 planos fixos de US$ 19–79, que é o modelo da Shopify. A Atlassian cobra **por assento com faixas** e o padrão da categoria é **grátis até 10 usuários** — preço fixo não existe lá. Mantive o espírito (3 níveis, núcleo sem paywall) na forma da plataforma. Se preferir seguir a regra à risca, me diga e eu refaço.
+
+**2. O risco do plano não é técnico, é o beta.** Construir isso é trabalho conhecido. **Achar 5–10 times reais que topem instalar um app novo é o que pode travar semanas** — e a regra 16 não deixa pular. Por isso proponho começar o recrutamento **na semana 1, em paralelo com o código**, e não na semana 5.
+
+---
+
+## ✅ Spike implantado — histórico
 
 | Etapa | Resultado |
 |---|---|

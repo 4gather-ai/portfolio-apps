@@ -349,13 +349,64 @@ O `CLAUDE.md` justifica o App 1 com três premissas. As três foram verificadas 
 
 ---
 
+## 2026-08-26 — ✅ Cunha provada em produção pelo spike
+
+**Fato:** spike `asuser-spike` 2.1.0 rodado no `SCRUM-1` da `northstack-dev`, **5/5 passos OK**.
+
+| Passo | Resultado |
+|---|---|
+| `POST` worklog via `api.asUser()` | **HTTP 201**, `started` retroativo, autor **Amarildo Pereira** |
+| Autor == usuário real | **Sim** — `712020:9b4086b1-…`, não o app |
+| JQL `worklogAuthor = currentUser()` | Achou na **3ª tentativa, após 5,7 s** |
+| Painel nativo | `timespent=10800s` |
+| Limpeza | HTTP 204 |
+
+**Decisão:** cunha aprovada. O App 1 sai do papel.
+**Bônus confirmado no deploy:** escrever worklog via `asUser` **não** invalida a elegibilidade a **Runs on Atlassian**.
+
+---
+
+## 2026-08-26 — Regra de leitura: endpoint do item, JQL só para busca ampla
+
+**Decisão:** **sempre ler worklog pelo endpoint do item** (`/rest/api/3/issue/{key}/worklog`). **JQL serve apenas para busca ampla** — descobrir *quais* itens olhar — **nunca** para conferir o que acabou de ser gravado.
+
+**Motivo, medido e não suposto:** no spike, o JQL levou **5,7 segundos** para enxergar um worklog que já existia. O endpoint do item o devolveu na hora, porque não passa pelo índice de busca assíncrono do Jira.
+
+**Consequência:** qualquer folha de ponto construída sobre JQL mostra dado velho logo após o apontamento. **É exatamente a reclamação do Clockwork Pro** — *"delay in time logs appearing in Jira and in the timesheet"* — e agora sabemos a causa. Esta regra transforma um defeito da categoria em decisão de arquitetura nossa, antes da primeira linha do produto.
+
+---
+
+## 2026-08-26 — Nome público: Nativelog
+
+**Decisão:** **`Nativelog`**, listado como *"Nativelog — Native Time Tracking & Timesheets for Jira"*.
+**Motivo:** busca na Marketplace em 26/08/2026 retorna **zero** apps com esse nome. `Loggd` também estava livre; `Worklogic`, `Truelog` e `Nativa` colidem. O nome diz a cunha — *native* + *worklog*.
+**Reversível?** Sim, até registrar no Developer Console. **Pendente:** confirmar lá, e o domínio.
+
+---
+
+## 2026-08-26 — Desvio consciente da regra 10 (preço)
+
+**Decisão:** a v1 do Nativelog **não** segue "3 planos fixos de US$ 19–79" da regra 10.
+**Motivo:** a regra 10 descreve o modelo da Shopify. A Atlassian cobra **por assento com faixas**, e o padrão da categoria é **grátis até 10 usuários** — preço fixo não existe nesse marketplace. Mantemos o espírito da regra (3 níveis, função central sem paywall) na forma da plataforma: **editions Free / Standard / Pro**, com o núcleo — apontar e gravar worklog nativo — disponível em todas.
+**Faixa alvo:** a do Clockwork Pro (nota 4.6), ~3,6× abaixo do Tempo (nota 4.1). Detalhe em `apps/jira-time/LISTING.md`.
+
+---
+
+## 2026-08-26 — Spike encerrado e removido
+
+**Decisão:** `forge uninstall` executado na `northstack-dev`. O app do spike não polui mais a dev instance.
+**O código fica** em `apps/jira-time/spike/` como registro de como a cunha foi provada — é a evidência por trás da decisão mais importante do projeto até agora.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: parado, aguardando retorno.** Nenhum trabalho em andamento; nenhum bloqueio técnico.
 
 | # | Tema | Pergunta | Bloqueia |
 |---|---|---|---|
-| 1 | **Teste do `asUser`** | Autoriza escrever código de teste descartável numa dev instance para verificar se o Forge cria worklog com identidade do usuário? Algumas horas, sem listagem | **Todo o resto** |
-| 2 | **Ordem de trabalho** | Se funcionar, escrevo o `LISTING.md` na sequência ou o chat revisa a cunha antes? | Próxima sessão |
-| 3 | **Preço** | Confirma grátis até 10 usuários e faixa do Clockwork Pro (US$ 295 a 250 usuários), não a do Tempo (US$ 1.070)? | Modelo de receita |
-| 4 | Shopify | Espera indefinida ou abandono? Muda o que fica no repositório | Organização do repo |
+| 1 | **Aprovar o `PLANO-V1.md`** | Arquitetura, módulos, modelo de dados e marcos. **Não começo o produto sem isso** | **Todo o código** |
+| 2 | **Nome** | `Nativelog` está livre na busca. Confirma? | Registro no Developer Console |
+| 3 | **Recrutamento do beta** | Aceita começar a procurar as 5–10 instâncias já na semana 1? É o risco real do plano | Semanas 5–7 |
+| 4 | Domínio | Comprar `northstackapps.com` — agora bloqueia o **beta** (semana 4), não só a submissão | Beta |
+| 5 | Shopify | Espera indefinida ou abandono? Muda o que fica no repositório | Organização do repo |

@@ -1,0 +1,174 @@
+# Nativelog — Plano da v1
+
+> **Não começar antes da aprovação do Amarildo.** Este documento é a proposta; o código só sai depois do "ok".
+> Base: cunha provada no spike de 26/08/2026 (`STATUS.md`). Escopo fechado em `PESQUISA.md`, rodada 5.
+
+---
+
+## 1. Princípio de arquitetura
+
+> **O worklog do Jira é a fonte de verdade. Não há segunda cópia.**
+
+Tudo que puder ser derivado de worklog nativo **é derivado na hora da leitura**. Nada de espelho, nada de sincronização, nada de job de reconciliação. Foi essa decisão que virou a cunha do produto — e é ela que os concorrentes não conseguem copiar sem reescrever o núcleo.
+
+**Corolário medido no spike:** o índice de busca do Jira **atrasa ~5,7 s** (o JQL só achou o worklog na 3ª tentativa). Portanto:
+
+- **Leitura de dado que o usuário acabou de escrever → endpoint do item** (`/rest/api/3/issue/{key}/worklog`), que não passa pelo índice
+- **JQL só para busca ampla** (achar quais itens olhar), nunca para conferir o que acabou de ser gravado
+- Registrado como regra em `DECISOES.md`
+
+---
+
+## 2. Stack e plataforma
+
+| Item | Escolha | Motivo |
+|---|---|---|
+| Framework | **Forge** | Repasse 84% (vs 80% Connect); sem infraestrutura nossa; elegível a Runs on Atlassian |
+| Runtime | `nodejs24.x`, arm64, 256 MB | Padrão do template; suficiente |
+| UI | **UI Kit** (`render: native`) | Renderiza no Atlassian; nada de iframe; melhor desempenho e acessibilidade de graça |
+| Armazenamento | **Forge KVS, mínimo** | Ver seção 4 |
+| Selo alvo | **Runs on Atlassian** | Automático e gratuito. **Cloud Fortified fica fora da v1** — exige bug bounty pago e plantão de 24 h |
+| Hospedagem/banco | **Nenhum** | A Atlassian hospeda. Railway e Postgres saem do orçamento |
+
+**Confirmado no spike:** escrever worklog via `asUser` **não** invalida a elegibilidade a Runs on Atlassian.
+
+---
+
+## 3. Módulos do manifest
+
+| Módulo | Chave | O que faz |
+|---|---|---|
+| `jira:issuePanel` | `nativelog-issue` | Timer e apontamento manual dentro do item |
+| `jira:globalPage` | `nativelog-week` | Minha semana + exportação CSV |
+| `jira:globalPage` | `nativelog-team` | Visão de equipe (Pro) |
+| `jira:adminPage` | `nativelog-admin` | Configuração mínima: grupos que enxergam a visão de equipe |
+
+**Escopos** (mínimo necessário — a revisão da Atlassian reprova excesso):
+
+```yaml
+permissions:
+  scopes:
+    - read:jira-user     # identificar o usuário e montar a folha
+    - read:jira-work     # ler worklogs, itens e projetos
+    - write:jira-work    # criar, editar e apagar worklog do próprio usuário
+```
+
+**Sem impersonação offline.** Como o timer grava só o início e o worklog nasce no "parar", em contexto de usuário, não precisamos de `asUser(accountId)` nem dos escopos e restrições que ele traz.
+
+---
+
+## 4. Modelo de dados — o mínimo possível
+
+**No Jira (fonte de verdade), nada nosso:** o worklog nativo, com `author`, `started`, `timeSpentSeconds` e `comment`.
+
+**No Forge KVS, só o que o Jira não tem onde guardar:**
+
+| Chave | Valor | Por que precisa existir |
+|---|---|---|
+| `timer:{accountId}` | `{ issueId, startedAt }` | Um timer em andamento não é um worklog ainda. Some quando o timer para |
+| `prefs:{accountId}` | `{ excludedProjects[], lastExportFormat }` | Preferência de exportação, não é dado de trabalho |
+| `admin:config` | `{ teamViewGroups[] }` | Configuração da instância |
+
+**Regras duras:**
+- **Um timer por pessoa.** Iniciar outro fecha o anterior — sem timers órfãos acumulando.
+- **Nada de hora apontada no KVS.** Se está apontado, é worklog.
+- **Escrita em KVS é a linha cara do Forge** (US$ 1,09/GB). Esses três registros são minúsculos e mudam pouco: fica muito dentro da franquia gratuita.
+- **Desinstalar não perde nada.** O KVS some, os worklogs ficam. É argumento de venda e é verdade.
+
+---
+
+## 5. Marcos semanais
+
+Estimativas de trabalho meu; os itens de humano são o caminho crítico real.
+
+### Semana 1 — o núcleo que já foi provado
+- Scaffold Forge, manifest, escopos, CI (lint + Vitest)
+- `jira:issuePanel`: timer (início no KVS) e apontamento manual
+- Gravação do worklog no "parar", com `started` retroativo, via `asUser()`
+- Testes: formato de data, fuso, timer órfão, permissão negada
+- **Entrega:** apontar 3 h pelo app e ver no worklog nativo com o nome certo
+- **Precisa do humano:** nada
+
+### Semana 2 — a semana da pessoa
+- `globalPage` "Minha semana": leitura por `/issue/{key}/worklog`, totais por dia
+- Editar e apagar entrada própria
+- Exportação CSV com incluir/**excluir** projetos
+- **Entrega:** critério de "pronto" da rodada 5 completo, ponta a ponta
+- **Precisa do humano:** nada
+
+### Semana 3 — equipe, i18n e billing
+- Visão de equipe (Pro), leitura por grupo/projeto
+- i18n: EN, pt-BR, ES, DE, FR
+- Editions Free/Standard/Pro + checagem de licença
+- **Precisa do humano:** **definir a tabela de faixas de preço no Developer Console** — eu preparo os números, o preço final é decisão sua
+
+### Semana 4 — endurecer para gente de verdade
+- Tratamento de erro: permissão negada, item apagado, worklog editado por outro app, instância grande
+- Desempenho com 50+ projetos e muitos worklogs
+- Acessibilidade e revisão de UI
+- **Precisa do humano:** **domínio `northstackapps.com` comprado**, política de privacidade e página de suporte publicadas — bloqueiam o beta, não só a submissão
+
+### Semanas 5–7 — beta privado (regra 16)
+- Distribuição por link privado a **5–10 instâncias reais**
+- `apps/jira-time/BETA.md`: quem entrou, o que quebrou, o que mudou
+- Correções em ciclo curto
+- **Precisa do humano:** **recrutar os participantes.** É o item mais difícil do plano inteiro e o que eu não consigo fazer sozinho — ver seção 7
+- **Regra:** menos de 5 instâncias usando de verdade = beta não terminou
+
+### Semana 8 — submissão
+- Screenshots reais, ícone, listagem final
+- Checklist de revisão da Atlassian item a item
+- **Precisa do humano:** apertar "submeter" e aceitar termos
+- **Depois:** **10 a 15 dias úteis** de fila de aprovação, fora do nosso controle
+
+**Do "ok" à submissão: ~8 semanas. À publicação: ~10 semanas.**
+
+---
+
+## 6. Testes
+
+- **Vitest** em lógica pura: cálculo de duração, formato `started` do Jira, fuso, agregação semanal, filtro de projetos
+- **Contra a API de verdade**, num item da dev instance: criar, editar, apagar worklog; conferir autoria; conferir o atraso de índice
+- **CI**: GitHub Actions rodando lint + test em PR (regra do `CLAUDE.md`)
+- **Não vou simular a API do Jira nos testes que importam.** O spike já mostrou que o comportamento real (latência de índice) é o que decide o desenho — mock não teria pego isso
+
+---
+
+## 7. O que precisa do humano, consolidado
+
+| Quando | O quê | Bloqueia |
+|---|---|---|
+| Agora | **Aprovar este plano** | Tudo |
+| Semana 3 | Definir a tabela de faixas de preço | Billing |
+| Semana 4 | **Comprar `northstackapps.com`**; publicar privacidade e suporte | **Beta**, não só a submissão |
+| Semanas 5–7 | **Recrutar 5–10 instâncias reais** | Beta, logo a submissão |
+| Semana 8 | Submeter e aceitar termos | Publicação |
+
+### O recrutamento do beta é o risco real do plano
+
+Construir isso é trabalho conhecido. **Achar 5–10 times que usem Jira e topem instalar um app novo é o que pode travar semanas.** Não adianta descobrir isso na semana 5.
+
+Sugiro começar a procurar **na semana 1, em paralelo com o código**. Caminhos possíveis, em ordem de custo: rede pessoal e clientes de quem você conhece; Atlassian Community (fórum tem seção de beta); r/jira; grupos de Atlassian no LinkedIn; Solution Partners pequenos que atendem várias instâncias.
+
+Se em três semanas não houver 5 candidatos, é sinal para reconsiderar o canal — não para pular o beta.
+
+---
+
+## 8. Riscos abertos
+
+| Risco | Gravidade | Mitigação |
+|---|---|---|
+| **Recrutamento do beta** | **Alta** | Começar na semana 1, não na 5 |
+| Timer perdido: usuário inicia e nunca para | Média | Aviso no painel após X horas; permitir corrigir antes de gravar |
+| Worklog editado fora do app | Baixa | Somos leitores do nativo; edição externa simplesmente aparece — é vantagem, não bug |
+| Custo de consumo do Forge estourar a franquia | Baixa | KVS mínimo por desenho; monitorar no painel de custos |
+| Concorrente copiar a cunha | Média | Para o Tempo, trocar `asApp` por `asUser` mexe no núcleo e na base histórica. Não é uma sprint. Mas não é impossível — nossa vantagem é tempo, não fosso permanente |
+| Atlassian tornar isso nativo | Baixa | Time tracking não mudou de patamar em anos e não diferencia planos (verificado na rodada 5) |
+
+---
+
+## 9. Fora da v1 — lista fechada
+
+Aprovação de horas · taxas de faturamento, custo, orçamento e faturamento a cliente · planejamento de capacidade e alocação · previsão · integrações externas (Google Calendar, Slack, Outlook) · app mobile · suporte a Data Center · Cloud Fortified · rollup em hierarquias com mais de 100 filhos (limite do próprio Jira).
+
+**Cada item aqui é um pedido que vai aparecer no beta.** A resposta padrão é "não na v1" — anotar em `BETA.md` e decidir depois, com dado de uso.
