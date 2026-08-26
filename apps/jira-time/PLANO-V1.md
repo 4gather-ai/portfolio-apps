@@ -77,51 +77,36 @@ permissions:
 
 ---
 
-## 5. Marcos semanais
+## 5. Marcos em dias
 
-Estimativas de trabalho meu; os itens de humano são o caminho crítico real.
+**Build comprimido em 14 dias corridos** (decisão do Amarildo, 26/08/2026). Dia 1 = **26/08/2026**. Commit e push **a cada marco**.
 
-### Semana 1 — o núcleo que já foi provado
-- Scaffold Forge, manifest, escopos, CI (lint + Vitest)
-- `jira:issuePanel`: timer (início no KVS) e apontamento manual
-- Gravação do worklog no "parar", com `started` retroativo, via `asUser()`
-- Testes: formato de data, fuso, timer órfão, permissão negada
-- **Entrega:** apontar 3 h pelo app e ver no worklog nativo com o nome certo
-- **Precisa do humano:** nada
+| Dia | Data | Marco | Precisa do humano |
+|---|---|---|---|
+| **D1** | 26/08 | Scaffold Forge no repo, manifest com os 4 módulos e escopos, CI (lint + Vitest), biblioteca de duração/data com testes | — |
+| **D2** | 27/08 | `issuePanel`: timer inicia e para, estado no KVS, um timer por pessoa | — |
+| **D3** | 28/08 | Gravação do worklog no "parar", `started` retroativo, via `asUser()`. **Critério: apontar 3 h e ver no worklog nativo com o nome certo** | — |
+| **D4** | 29/08 | Apontamento manual, editar e apagar entrada própria | — |
+| **D5** | 30/08 | Erros do núcleo: permissão negada, item apagado, timer órfão, fuso | — |
+| **D6** | 31/08 | `globalPage` "Minha semana": leitura via `/issue/{key}/worklog`, totais por dia | — |
+| **D7** | 01/09 | Navegação de semanas, edição a partir da folha | — |
+| **D8** | 02/09 | Exportação CSV com incluir/**excluir** projetos. **Critério de "pronto" da rodada 5 completo** | — |
+| **D9** | 03/09 | Visão de equipe (Pro), leitura por grupo/projeto | — |
+| **D10** | 04/09 | i18n: EN, pt-BR, ES, DE, FR | — |
+| **D11** | 05/09 | Editions Free/Standard/Pro + checagem de licença | **Definir a tabela de faixas de preço** no Developer Console — eu preparo os números |
+| **D12** | 06/09 | Instância grande: 50+ projetos, muitos worklogs, paginação, desempenho | — |
+| **D13** | 07/09 | Acessibilidade, revisão de UI, textos finais | — |
+| **D14** | 08/09 | Empacotar para o beta: link privado, `BETA.md`, instruções de instalação | **Privacidade e suporte no ar** em `northstackapps.com` |
 
-### Semana 2 — a semana da pessoa
-- `globalPage` "Minha semana": leitura por `/issue/{key}/worklog`, totais por dia
-- Editar e apagar entrada própria
-- Exportação CSV com incluir/**excluir** projetos
-- **Entrega:** critério de "pronto" da rodada 5 completo, ponta a ponta
-- **Precisa do humano:** nada
+**Dias 15–35 — beta privado (regra 16):** 5–10 instâncias reais por 2–3 semanas, correções em ciclo curto, tudo registrado em `BETA.md`.
+**Precisa do humano:** **recrutar os participantes** — ver `BETA-RECRUTAMENTO.md`. **Começa no D1, não no D15.**
 
-### Semana 3 — equipe, i18n e billing
-- Visão de equipe (Pro), leitura por grupo/projeto
-- i18n: EN, pt-BR, ES, DE, FR
-- Editions Free/Standard/Pro + checagem de licença
-- **Precisa do humano:** **definir a tabela de faixas de preço no Developer Console** — eu preparo os números, o preço final é decisão sua
+**Dia ~36 — submissão:** screenshots reais, ícone, listagem final, checklist da Atlassian.
+**Precisa do humano:** submeter e aceitar termos. Depois, **10 a 15 dias úteis** de fila.
 
-### Semana 4 — endurecer para gente de verdade
-- Tratamento de erro: permissão negada, item apagado, worklog editado por outro app, instância grande
-- Desempenho com 50+ projetos e muitos worklogs
-- Acessibilidade e revisão de UI
-- **Precisa do humano:** **domínio `northstackapps.com` comprado**, política de privacidade e página de suporte publicadas — bloqueiam o beta, não só a submissão
+**Do D1 à submissão: ~36 dias. À publicação: ~50 dias.**
 
-### Semanas 5–7 — beta privado (regra 16)
-- Distribuição por link privado a **5–10 instâncias reais**
-- `apps/jira-time/BETA.md`: quem entrou, o que quebrou, o que mudou
-- Correções em ciclo curto
-- **Precisa do humano:** **recrutar os participantes.** É o item mais difícil do plano inteiro e o que eu não consigo fazer sozinho — ver seção 7
-- **Regra:** menos de 5 instâncias usando de verdade = beta não terminou
-
-### Semana 8 — submissão
-- Screenshots reais, ícone, listagem final
-- Checklist de revisão da Atlassian item a item
-- **Precisa do humano:** apertar "submeter" e aceitar termos
-- **Depois:** **10 a 15 dias úteis** de fila de aprovação, fora do nosso controle
-
-**Do "ok" à submissão: ~8 semanas. À publicação: ~10 semanas.**
+> ⚠️ **O que a compressão de 4 semanas para 14 dias custa.** Ela é viável porque o risco técnico já caiu no spike e porque não há espera de terceiros no build. **A folga some.** Se algo der errado — a API se comportar diferente do esperado em instância grande, ou o billing der trabalho —, os 14 dias viram 18 e não há amortecedor. O beta e a fila de revisão da Atlassian **não comprimem** e continuam sendo o caminho crítico real: 21 dias de beta e 10–15 dias úteis de fila valem mais que os 14 dias de código.
 
 ---
 
@@ -138,11 +123,11 @@ Estimativas de trabalho meu; os itens de humano são o caminho crítico real.
 
 | Quando | O quê | Bloqueia |
 |---|---|---|
-| Agora | **Aprovar este plano** | Tudo |
-| Semana 3 | Definir a tabela de faixas de preço | Billing |
-| Semana 4 | **Comprar `northstackapps.com`**; publicar privacidade e suporte | **Beta**, não só a submissão |
-| Semanas 5–7 | **Recrutar 5–10 instâncias reais** | Beta, logo a submissão |
-| Semana 8 | Submeter e aceitar termos | Publicação |
+| ~~Agora~~ | ~~Aprovar este plano~~ | ✅ aprovado em 26/08 |
+| **D1 em diante** | **Recrutar 5–10 instâncias reais** — ver `BETA-RECRUTAMENTO.md` | **Dia 15**. É o caminho crítico |
+| D11 (05/09) | Definir a tabela de faixas de preço | Billing |
+| D14 (08/09) | Privacidade e suporte no ar em `northstackapps.com` *(domínio em compra em 26/08)* | **Beta** |
+| ~D36 | Submeter e aceitar termos | Publicação |
 
 ### O recrutamento do beta é o risco real do plano
 

@@ -27,7 +27,12 @@ Objetivo: portfólio de apps Shopify (e depois outros marketplaces) que gere US$
 
    Só depois de passar nesse filtro, escrever a listagem da App Store (`apps/<app>/LISTING.md`) — título, subtítulo, descrição, planos, 3 screenshots descritos. Se a listagem não convence, o produto não está claro.
 9. Toda UI e listagem em EN como base, com i18n desde o dia 1: pt-BR, es, de, fr. (76% dos apps são só em inglês; traduzir é ganho grátis.)
-10. Preço padrão: 3 planos — Free (1 caso de uso completo, sem paywall na função central), Growth ~US$ 19–29, Pro ~US$ 49–79. Trial 14 dias nos pagos. Cobrar via Shopify Billing API (obrigatório).
+10. **Preço: seguir o modelo nativo de cada marketplace.** Sempre **3 níveis**, e o **núcleo do produto nunca fica atrás de paywall** — o que separa os níveis é volume, escala ou função periférica, nunca a coisa central que o app faz. A *forma* do preço é a da plataforma, não a nossa:
+    - **Shopify:** planos de valor fixo (Free / ~US$ 19–29 / ~US$ 49–79), trial de 14 dias, cobrança obrigatória via Shopify Billing API.
+    - **Atlassian:** preço **por assento com faixas**, grátis até 10 usuários (padrão da categoria), 3 *editions*, trial de 30 dias, cobrança via "Paid via Atlassian".
+    - **Outros marketplaces:** identificar o modelo nativo **antes** de escrever a listagem e registrar em `DECISOES.md`.
+
+    Copiar o modelo de um marketplace para outro produz preço que ninguém entende e que a plataforma às vezes nem suporta.
 11. Mirar lojas de US$ 50k–5M/ano. Não construir para enterprise/Plus.
 12. Usar só APIs documentadas e estáveis da Shopify. Nada de beta como dependência central.
 13. Seguir os requisitos de "Built for Shopify" desde o início (App Bridge, Polaris, performance, GDPR webhooks obrigatórios, sem checkout script tags).
