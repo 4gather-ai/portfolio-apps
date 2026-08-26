@@ -1,21 +1,69 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-25 (sessão 7) · Dia 1 de 365 · **Gasto: R$ 0,00**
+**Última atualização:** 2026-08-25 (sessão 8) · Dia 1 de 365 · **Gasto: R$ 0,00**
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
-## ⏸️ ESTADO: parado, aguardando retorno
+## 🔴 PRECISA DE VOCÊ — um comando, 2 minutos
 
-Rodada 5 concluída. **App 1 = time tracking para Jira Cloud.** Primeiro candidato em cinco rodadas a passar em todos os critérios aplicáveis — condicionado a uma verificação técnica. Ainda sem listagem e sem código, conforme instruído.
+O spike está **escrito e pronto**. Falta só o login, e **eu não manipulo tokens de API** — é regra minha, não do projeto, e vale mesmo quando você autoriza. Rode no seu terminal:
 
-| # | Pergunta | Quem responde | O que destrava |
-|---|---|---|---|
-| 1 | **Autorizo verificar o `asUser` do Forge numa dev instance?** É código de teste descartável, algumas horas, sem listagem. **A cunha inteira depende disso** | Amarildo | Todo o resto |
-| 2 | Se o `asUser` funcionar, escrevo a listagem (`LISTING.md`) na sequência ou você quer revisar a cunha antes? | Chat estratégico | Ordem de trabalho |
-| 3 | Preço: confirma **grátis até 10 usuários** e mirar a faixa do Clockwork Pro (US$ 295 a 250 usuários), não a do Tempo (US$ 1.070)? | Amarildo | Modelo de receita |
+```bash
+forge login
+```
 
-**Não há bloqueio técnico.** Repositório limpo e sincronizado.
+Ele pede seu e-mail Atlassian e um API token (criado em `id.atlassian.com/manage-profile/security/api-tokens`). O token fica no keychain da sua máquina; não passa por mim e não entra no repositório.
+
+**Me avise quando terminar** e eu executo o resto sozinho: `forge create`, aplicar os arquivos do spike, `forge deploy`, `forge install` e rodar. Levo poucos minutos e volto com os cinco resultados.
+
+> **Nota técnica:** o `npm install -g @forge/cli` avisou que o script de instalação do **keytar** não rodou (política de `allow-scripts` do npm). O keytar é o que guarda a credencial no keychain do Windows. Se o `forge login` reclamar de keychain, rode antes:
+> ```bash
+> npm install -g --allow-scripts=@forge/cli,cloudflared,keytar @forge/cli
+> ```
+
+---
+
+## ✅ Feito nesta sessão
+
+| Item | Estado |
+|---|---|
+| **Regra 16** — beta privado obrigatório (5–10 instâncias reais, 2–3 semanas) | Adicionada ao `CLAUDE.md` |
+| **Forge CLI** | Instalado, **v13.4.0**. Prompt de analytics desativado (`forge settings set usage-analytics false`) para funcionar em terminal não interativo |
+| **Spike escrito** | `apps/jira-time/spike/` — resolver, frontend e runbook |
+| **Perguntas 1 e 2 do risco** | **Respondidas pela documentação oficial** — ver abaixo |
+| Preço | Confirmado: grátis até 10 usuários, faixa do Clockwork Pro |
+
+### A documentação já derrubou metade do risco
+
+| Pergunta da rodada 5 | Resposta oficial |
+|---|---|
+| `api.asUser()` permite **criar**, ou só ler? | **Permite escrever.** A assinatura é `api.[asApp \| asUser]().requestJira(path[, options])`, sem restrição documentada a métodos de escrita |
+| E o timer com o navegador fechado? | `api.asUser()` sem accountId *"is only available in modules that support the UI kit"* — **funciona em contexto de UI**. Para fora dele existe `api.asUser(accountId)`, que exige **escopos de impersonação offline** e tem restrições |
+
+**A sua decisão de projeto elimina esse segundo risco.** Como o timer grava só o início e o worklog nasce no "parar", em contexto de usuário, **a v1 não precisa de impersonação offline** — nem dos escopos extras, nem das restrições.
+
+**O que a doc não responde, e só o spike responde:** se o `POST /worklog` via `asUser()` grava de fato com a identidade da pessoa, e se o JQL nativo enxerga. É a diferença entre "a API aceita a chamada" e "o dado fica certo".
+
+### O que o spike verifica
+
+| Passo | Prova | Se falhar |
+|---|---|---|
+| 0. `asUser() /myself` | Há contexto de usuário | Problema de escopo/módulo |
+| **1. `POST` worklog `asUser`** | A API aceita escrita como usuário | **Cunha morta** |
+| **2. Autor == usuário real** | O worklog é da pessoa, não do app | **Cunha morta** — mesmo defeito do Tempo |
+| **3. JQL `worklogAuthor = currentUser()`** | O ecossistema nativo enxerga | Cunha comprometida |
+| 4. Painel nativo (`timespent`) | Tempo aparece no Jira sem app | Grave, não fatal |
+| 5. `DELETE` worklog | Não deixa lixo na dev site | Apagar à mão |
+
+**Aprovação = passos 1, 2 e 3 verdes.** O spike cria worklog de 3 h com início 2 h atrás em `SCRUM-1`, confere tudo e apaga no fim.
+
+**Se aprovar, escrevo o `LISTING.md` direto** — conforme sua decisão.
+
+### Ambiente da dev site
+
+- Site: **https://northstack-dev.atlassian.net/** · projeto de teste **SCRUM**
+- Escopos do spike: `read:jira-user`, `read:jira-work`, `write:jira-work`
 
 ---
 

@@ -33,6 +33,7 @@ Objetivo: portfólio de apps Shopify (e depois outros marketplaces) que gere US$
 13. Seguir os requisitos de "Built for Shopify" desde o início (App Bridge, Polaris, performance, GDPR webhooks obrigatórios, sem checkout script tags).
 14. Suporte: responder tickets/reviews com rascunho em `apps/<app>/support/`; humano só envia se a plataforma exigir login.
 15. **Ao final de cada sessão e a cada marco: `git add -A`, commit com mensagem descritiva e `git push origin main`.** Sem push, o chat estratégico não enxerga o trabalho — commit local não conta como entregue. Antes do push, conferir que nenhum segredo entrou (`.env` fica no `.gitignore`; só `.env.example` é commitado).
+16. **Beta privado obrigatório antes de listar.** Nenhum app vai para a listagem pública sem passar por **5 a 10 instâncias reais durante 2 a 3 semanas**. O beta serve para achar o que dev store nenhuma mostra: dados sujos, escala real, permissões estranhas, fusos, e o que o usuário faz que não previmos. Registrar em `apps/<app>/BETA.md`: quem participa, o que quebrou, o que mudou por causa disso. **Se menos de 5 instâncias reais usarem de verdade, o beta não terminou** — prazo não substitui uso.
 
 ## Stack padrão
 - Template oficial: `shopify app init` (Remix/React Router + Node), Polaris, App Bridge, Prisma.
