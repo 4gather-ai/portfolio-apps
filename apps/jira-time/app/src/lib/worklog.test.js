@@ -303,10 +303,48 @@ describe('listar', () => {
     expect(chamadas[0].opcoes.method).toBe('GET');
   });
 
-  it('avisa quando o Jira cortou a lista, em vez de dar soma incompleta como completa', async () => {
-    const { pedir } = espiao(() => resposta(200, { total: 5000, worklogs: [WORKLOG_CRIADO] }));
+  it('**pagina de verdade (D12)**: junta as páginas em vez de ler só a primeira', async () => {
+    // Uma página cheia seguida de uma parcial. Antes do D12 a segunda página
+    // era simplesmente ignorada, e o total saía errado sem aviso nenhum.
+    const cheia = Array.from({ length: 1000 }, (_, i) => ({ ...WORKLOG_CRIADO, id: `a${i}` }));
+    const resto = [{ ...WORKLOG_CRIADO, id: 'b0' }];
+    const { pedir, chamadas } = espiao((caminho) =>
+      caminho.includes('startAt=0')
+        ? resposta(200, { total: 1001, worklogs: cheia })
+        : resposta(200, { total: 1001, worklogs: resto })
+    );
+
     const r = await criarWorklogs({ pedir }).listar({ issueId: '10001', accountId: EU });
+
+    expect(r.worklogs).toHaveLength(1001);
+    expect(r.completo).toBe(true);
+    expect(chamadas).toHaveLength(2);
+    expect(chamadas[1].caminho).toContain('startAt=1000');
+  });
+
+  it('página menor que a pedida encerra o laço — é o sinal de última página', async () => {
+    // `total` mentindo alto de propósito: a página curta manda mais que ele.
+    const { pedir, chamadas } = espiao(() =>
+      resposta(200, { total: 999999, worklogs: [WORKLOG_CRIADO] })
+    );
+
+    const r = await criarWorklogs({ pedir }).listar({ issueId: '10001', accountId: EU });
+
+    expect(r.worklogs).toHaveLength(1);
+    expect(r.completo).toBe(true);
+    expect(chamadas).toHaveLength(1);
+  });
+
+  it('**servidor que ignora startAt não vira laço infinito**', async () => {
+    // Devolve sempre a mesma página cheia. Sem a saída pelo teto, o resolver
+    // ficaria preso até o timeout do Forge.
+    const cheia = Array.from({ length: 1000 }, (_, i) => ({ ...WORKLOG_CRIADO, id: `x${i}` }));
+    const { pedir, chamadas } = espiao(() => resposta(200, { total: 999999, worklogs: cheia }));
+
+    const r = await criarWorklogs({ pedir }).listar({ issueId: '10001', accountId: EU });
+
     expect(r.completo).toBe(false);
+    expect(chamadas.length).toBeLessThanOrEqual(6);
   });
 
   it('item sem apontamento não é erro', async () => {

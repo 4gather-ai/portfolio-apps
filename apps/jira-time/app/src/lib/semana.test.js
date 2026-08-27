@@ -373,11 +373,55 @@ describe('projetosVisiveis', () => {
   it('devolve chave e nome dos projetos que a pessoa enxerga', async () => {
     const pedir = async (caminho) => {
       expect(caminho).toContain('/rest/api/3/project/search');
-      return resposta(200, { values: [{ key: 'NL', name: 'Nativelog' }] });
+      return resposta(200, { isLast: true, values: [{ key: 'NL', name: 'Nativelog' }] });
     };
 
     const r = await criarSemana({ pedir }).projetosVisiveis();
     expect(r).toMatchObject({ ok: true, projetos: [{ chave: 'NL', nome: 'Nativelog' }] });
+  });
+
+  it('**pagina (D12)**: instância grande tem mais de 50 projetos', async () => {
+    // Antes do D12, a lista parava nos 50 primeiros por ordem alfabética e não
+    // avisava — quem coordenava "Vendas" não achava o projeto dele.
+    const pagina = (prefixo) =>
+      Array.from({ length: 50 }, (_, i) => ({ key: `${prefixo}${i}`, name: `${prefixo}${i}` }));
+    const chamadas = [];
+    const pedir = async (caminho) => {
+      chamadas.push(caminho);
+      if (caminho.includes('startAt=0')) return resposta(200, { values: pagina('A') });
+      return resposta(200, { isLast: true, values: [{ key: 'Z', name: 'Zulu' }] });
+    };
+
+    const r = await criarSemana({ pedir }).projetosVisiveis();
+
+    expect(r.projetos).toHaveLength(51);
+    expect(r.projetos.at(-1).chave).toBe('Z');
+    expect(chamadas[1]).toContain('startAt=50');
+  });
+
+  it('página incompleta encerra o laço sem depender de `isLast`', async () => {
+    const chamadas = [];
+    const pedir = async (caminho) => {
+      chamadas.push(caminho);
+      return resposta(200, { values: [{ key: 'NL', name: 'Nativelog' }] });
+    };
+
+    await criarSemana({ pedir }).projetosVisiveis();
+    expect(chamadas).toHaveLength(1);
+  });
+
+  it('**servidor que ignora startAt não vira laço infinito**', async () => {
+    const cheia = Array.from({ length: 50 }, (_, i) => ({ key: `P${i}`, name: `P${i}` }));
+    let chamadas = 0;
+    const pedir = async () => {
+      chamadas += 1;
+      return resposta(200, { values: cheia });
+    };
+
+    const r = await criarSemana({ pedir }).projetosVisiveis();
+
+    expect(r.cortada).toBe(true);
+    expect(chamadas).toBeLessThanOrEqual(11);
   });
 
   it('erro vira motivo, não exceção', async () => {
@@ -394,5 +438,64 @@ describe('projetosVisiveis', () => {
       ok: true,
       projetos: [],
     });
+  });
+});
+
+describe('D12 — a semana lê em lotes, não tudo de uma vez', () => {
+  it('**nunca dispara todas as chamadas de item ao mesmo tempo**', async () => {
+    // Sessenta simultâneas viram 429 e a folha volta furada.
+    const issues = Array.from({ length: 30 }, (_, i) => ITEM(String(1000 + i), `NL-${i}`, 'x'));
+    let emVoo = 0;
+    let pico = 0;
+
+    const pedir = async (caminho) => {
+      if (caminho.includes('/search/jql')) return resposta(200, { issues, isLast: true });
+      emVoo += 1;
+      pico = Math.max(pico, emVoo);
+      await new Promise((r) => setTimeout(r, 2));
+      emVoo -= 1;
+      return resposta(200, { worklogs: [] });
+    };
+
+    await criarSemana({ pedir }).minhaSemana({ accountId: EU, desde: DESDE, ate: ATE });
+
+    expect(pico).toBeLessThanOrEqual(5);
+  });
+
+  it('a folha do time também lê em lotes — ela lê ainda mais itens', async () => {
+    const issues = Array.from({ length: 20 }, (_, i) => ITEM(String(2000 + i), `NL-${i}`, 'x'));
+    let emVoo = 0;
+    let pico = 0;
+
+    const pedir = async (caminho) => {
+      if (caminho.includes('/search/jql')) return resposta(200, { issues, isLast: true });
+      emVoo += 1;
+      pico = Math.max(pico, emVoo);
+      await new Promise((r) => setTimeout(r, 2));
+      emVoo -= 1;
+      return resposta(200, { worklogs: [] });
+    };
+
+    await criarSemana({ pedir }).semanaDoTime({ projetoChave: 'NL', desde: DESDE, ate: ATE });
+
+    expect(pico).toBeLessThanOrEqual(5);
+  });
+
+  it('o resultado continua na ordem certa apesar dos lotes', async () => {
+    const issues = [ITEM('1', 'NL-1', 'um'), ITEM('2', 'NL-2', 'dois')];
+    const pedir = async (caminho) => {
+      if (caminho.includes('/search/jql')) return resposta(200, { issues, isLast: true });
+      const id = caminho.match(/\/issue\/([^/]+)\/worklog/)[1];
+      // O item 1 responde mais devagar que o 2, de propósito.
+      await new Promise((r) => setTimeout(r, id === '1' ? 8 : 1));
+      return resposta(200, {
+        worklogs: [wl(`w${id}`, emQue(25, id === '1' ? 15 : 10), 3600)],
+      });
+    };
+
+    const r = await criarSemana({ pedir }).minhaSemana({ accountId: EU, desde: DESDE, ate: ATE });
+
+    // Ordenado por instante, mais recente primeiro — não por quem respondeu antes.
+    expect(r.entradas.map((e) => e.id)).toEqual(['w1', 'w2']);
   });
 });

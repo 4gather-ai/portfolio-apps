@@ -15,6 +15,15 @@ import { paraDataJira } from './time.js';
 const caminhoWorklog = (issueId) =>
   `/rest/api/3/issue/${encodeURIComponent(String(issueId))}/worklog`;
 
+/**
+ * Teto de worklogs lidos de um item só.
+ *
+ * Cinco mil entradas num item é história de anos, não semana de trabalho. Ler
+ * mais que isso para desenhar um painel custa caro e não muda a decisão de
+ * ninguém — e o painel diz que cortou.
+ */
+export const MAXIMO_WORKLOGS_DO_ITEM = 5000;
+
 const caminhoDeUm = (issueId, worklogId) =>
   `${caminhoWorklog(issueId)}/${encodeURIComponent(String(worklogId))}`;
 
@@ -211,22 +220,54 @@ export function criarWorklogs({ pedir }) {
   async function listar({ issueId, accountId }) {
     if (!issueId) throw new TypeError('listar exige o issueId');
 
-    let resposta;
-    try {
-      resposta = await pedir(`${caminhoWorklog(issueId)}?maxResults=1000`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      });
-    } catch (erro) {
-      return { ok: false, motivo: 'rede', detalhe: erro?.message };
+    /**
+     * **Pagina de verdade (D12).** O endpoint devolve no máximo 1000 por
+     * página. Um item de manutenção acumula milhares de worklogs ao longo de
+     * anos — e a versão anterior lia só a primeira página e somava, produzindo
+     * um total que **parecia completo e não era**. Numa folha de ponto, número
+     * faltando em silêncio é o pior defeito possível.
+     */
+    const brutos = [];
+    let inicio = 0;
+    let completo = true;
+
+    for (;;) {
+      let resposta;
+      try {
+        resposta = await pedir(`${caminhoWorklog(issueId)}?startAt=${inicio}&maxResults=1000`, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+        });
+      } catch (erro) {
+        return { ok: false, motivo: 'rede', detalhe: erro?.message };
+      }
+
+      if (!resposta.ok) {
+        return { ok: false, motivo: motivoDoErro(resposta.status), status: resposta.status };
+      }
+
+      const pagina = await resposta.json();
+      const desta = pagina?.worklogs || [];
+      brutos.push(...desta);
+
+      const total = Number(pagina?.total);
+      inicio += desta.length;
+
+      // Três saídas, e as duas primeiras existem para o laço **nunca** depender
+      // da honestidade do servidor: página vazia, página menor que o pedido
+      // (sinal padrão de última página), e só então o `total`. Um servidor que
+      // ignore `startAt` devolveria a mesma página para sempre.
+      if (!desta.length) break;
+      if (desta.length < 1000) break;
+      if (!Number.isFinite(total) || inicio >= total) break;
+
+      if (brutos.length >= MAXIMO_WORKLOGS_DO_ITEM) {
+        completo = false;
+        break;
+      }
     }
 
-    if (!resposta.ok) {
-      return { ok: false, motivo: motivoDoErro(resposta.status), status: resposta.status };
-    }
-
-    const dados = await resposta.json();
-    const worklogs = (dados?.worklogs || [])
+    const worklogs = brutos
       .map((w) => normalizar(w, issueId, accountId))
       // Mais recente primeiro: é o que a pessoa acabou de lançar, e o que ela
       // mais provavelmente quer corrigir.
@@ -235,9 +276,9 @@ export function criarWorklogs({ pedir }) {
     return {
       ok: true,
       worklogs,
-      // O Jira pagina em silêncio. Dizer que a lista veio cortada é melhor do
-      // que mostrar um total errado com cara de completo.
-      completo: (dados?.total ?? worklogs.length) <= worklogs.length,
+      // Dizer que a lista veio cortada é melhor do que mostrar um total errado
+      // com cara de completo.
+      completo,
     };
   }
 

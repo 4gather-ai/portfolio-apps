@@ -20,6 +20,7 @@
  */
 
 import { deADF } from './worklog.js';
+import { emLotes } from './lotes.js';
 
 /** Formato que o `started` do Jira usa na comparação de janela. */
 function dentroDaJanela(started, desdeMs, ateMs) {
@@ -47,6 +48,14 @@ export const FOLGA_DA_BUSCA_MS = 36 * 3600 * 1000;
  * do que devolver um total que parece completo e não é.
  */
 export const MAXIMO_ITENS = 60;
+
+/**
+ * Teto de projetos no seletor da visão de equipe.
+ *
+ * Acima disso, uma lista suspensa deixa de ser navegável e o problema passa a
+ * ser de busca, não de listagem. O seletor diz que cortou.
+ */
+export const MAXIMO_PROJETOS = 500;
 
 export function criarSemana({ pedir }) {
   if (typeof pedir !== 'function') {
@@ -126,26 +135,52 @@ export function criarSemana({ pedir }) {
    * **A permissão do Jira é a permissão do app**, e isso é de propósito.
    */
   async function entradasDoItem(item, { accountId, desdeMs, ateMs }) {
-    // `startedAfter` corta no servidor. Um segundo de folga porque o Jira
-    // arredonda o instante que devolve.
-    const caminho =
-      `/rest/api/3/issue/${encodeURIComponent(item.issueId)}/worklog` +
-      `?startedAfter=${desdeMs - 1000}&maxResults=1000`;
+    /**
+     * **Pagina de verdade (D12).** O endpoint devolve no máximo 1000 por
+     * página e informa o `total`. Um item de manutenção com anos de histórico
+     * passa disso — e a versão anterior lia só a primeira página **sem dizer
+     * nada**, produzindo uma semana que parecia completa e não era. Numa folha
+     * de ponto, número faltando em silêncio é o pior defeito possível.
+     *
+     * `startedAfter` já corta no servidor, então na prática quase sempre é uma
+     * página só. O laço existe para o caso em que não é.
+     */
+    const lista = [];
+    let inicio = 0;
 
-    let resposta;
-    try {
-      resposta = await pedir(caminho, { method: 'GET', headers: { Accept: 'application/json' } });
-    } catch (erro) {
-      return { ok: false, item, motivo: 'rede' };
+    for (;;) {
+      // Um segundo de folga para trás porque o Jira arredonda o instante.
+      const caminho =
+        `/rest/api/3/issue/${encodeURIComponent(item.issueId)}/worklog` +
+        `?startedAfter=${desdeMs - 1000}&startAt=${inicio}&maxResults=1000`;
+
+      let resposta;
+      try {
+        resposta = await pedir(caminho, { method: 'GET', headers: { Accept: 'application/json' } });
+      } catch (erro) {
+        return { ok: false, item, motivo: 'rede' };
+      }
+
+      // Item que sumiu ou virou privado entre os dois passos não derruba a
+      // semana inteira — some da lista e é contado como falha parcial.
+      if (!resposta.ok) {
+        return { ok: false, item, motivo: motivoDaBusca(resposta.status) };
+      }
+
+      const pagina = await resposta.json();
+      const worklogs = pagina?.worklogs || [];
+      lista.push(...worklogs);
+
+      const total = Number(pagina?.total);
+      inicio += worklogs.length;
+      // Três saídas, e as duas primeiras não dependem da honestidade do
+      // servidor: página vazia, página menor que a pedida (sinal padrão de
+      // última página), e só então o `total`.
+      if (!worklogs.length) break;
+      if (worklogs.length < 1000) break;
+      if (!Number.isFinite(total) || inicio >= total) break;
     }
 
-    // Item que sumiu ou virou privado entre os dois passos não derruba a
-    // semana inteira — some da lista e é contado como falha parcial.
-    if (!resposta.ok) {
-      return { ok: false, item, motivo: motivoDaBusca(resposta.status) };
-    }
-
-    const lista = (await resposta.json())?.worklogs || [];
     const entradas = lista
       .filter((w) => !accountId || w.author?.accountId === accountId)
       .filter((w) => dentroDaJanela(w.started, desdeMs, ateMs))
@@ -186,8 +221,9 @@ export function criarSemana({ pedir }) {
     const busca = await itensDaJanela({ desde, ate, alvo: 'worklogAuthor = currentUser()' });
     if (!busca.ok) return busca;
 
-    const resultados = await Promise.all(
-      busca.itens.map((item) => entradasDoItem(item, { accountId, desdeMs, ateMs }))
+    // Em lotes, não tudo de uma vez: sessenta chamadas simultâneas viram 429.
+    const resultados = await emLotes(busca.itens, (item) =>
+      entradasDoItem(item, { accountId, desdeMs, ateMs })
     );
 
     const entradas = resultados.filter((r) => r.ok).flatMap((r) => r.entradas);
@@ -231,9 +267,10 @@ export function criarSemana({ pedir }) {
     const busca = await itensDaJanela({ desde, ate, alvo: `project = "${chave}"` });
     if (!busca.ok) return busca;
 
-    const resultados = await Promise.all(
-      // accountId nulo = todo mundo que esta pessoa pode ver.
-      busca.itens.map((item) => entradasDoItem(item, { accountId: null, desdeMs, ateMs }))
+    // accountId nulo = todo mundo que esta pessoa pode ver. Em lotes pelo
+    // mesmo motivo da minha semana: a folha do time lê mais itens ainda.
+    const resultados = await emLotes(busca.itens, (item) =>
+      entradasDoItem(item, { accountId: null, desdeMs, ateMs })
     );
 
     const entradas = resultados.filter((r) => r.ok).flatMap((r) => r.entradas);
@@ -253,25 +290,48 @@ export function criarSemana({ pedir }) {
    * Também `asUser`: a lista é a dela, não a do app.
    */
   async function projetosVisiveis() {
-    let resposta;
-    try {
-      resposta = await pedir('/rest/api/3/project/search?maxResults=50&orderBy=name', {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      });
-    } catch (erro) {
-      return { ok: false, motivo: 'rede', detalhe: erro?.message };
+    /**
+     * **Pagina (D12).** Uma instância grande tem mais de 50 projetos, e a
+     * versão anterior mostrava os 50 primeiros por ordem alfabética sem
+     * avisar — quem coordena o projeto "Vendas" simplesmente não achava o
+     * dele, e não tinha como saber por quê.
+     */
+    const projetos = [];
+    let inicio = 0;
+    let cortada = false;
+
+    for (;;) {
+      let resposta;
+      try {
+        resposta = await pedir(
+          `/rest/api/3/project/search?startAt=${inicio}&maxResults=50&orderBy=name`,
+          { method: 'GET', headers: { Accept: 'application/json' } }
+        );
+      } catch (erro) {
+        return { ok: false, motivo: 'rede', detalhe: erro?.message };
+      }
+
+      if (!resposta.ok) {
+        return { ok: false, motivo: motivoDaBusca(resposta.status), status: resposta.status };
+      }
+
+      const pagina = await resposta.json();
+      const valores = pagina?.values || [];
+      projetos.push(...valores.map((p) => ({ chave: p.key, nome: p.name })));
+
+      inicio += valores.length;
+      // Mesma lógica: vazio, página incompleta, ou o `isLast` do Jira.
+      if (!valores.length || valores.length < 50 || pagina?.isLast === true) break;
+
+      // Teto: mais de 500 projetos num seletor não é uma lista, é um problema
+      // de busca. Melhor dizer que cortou do que rolar para sempre.
+      if (projetos.length >= MAXIMO_PROJETOS) {
+        cortada = true;
+        break;
+      }
     }
 
-    if (!resposta.ok) {
-      return { ok: false, motivo: motivoDaBusca(resposta.status), status: resposta.status };
-    }
-
-    const dados = await resposta.json();
-    return {
-      ok: true,
-      projetos: (dados?.values || []).map((p) => ({ chave: p.key, nome: p.name })),
-    };
+    return { ok: true, projetos, cortada };
   }
 
   return { minhaSemana, semanaDoTime, projetosVisiveis };
