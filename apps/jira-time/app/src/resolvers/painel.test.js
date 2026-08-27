@@ -1066,3 +1066,93 @@ describe('saída para o timer preso em outro item', () => {
     expect(estado.timer.ultimaFalha).toBe('item-nao-encontrado');
   });
 });
+
+describe('D7: corrigir e apagar a partir da folha da semana', () => {
+  /**
+   * A folha é uma `globalPage`: não há item no contexto do Forge. O id do item
+   * vem no payload — e isso **não afrouxa nada**, porque a identidade continua
+   * vindo do contexto e a autoria é conferida no Jira antes de qualquer
+   * escrita. Um id forjado só alcança worklogs de quem está pedindo.
+   */
+  function daSemana(accountId, payload) {
+    return { context: { accountId }, payload };
+  }
+
+  it('edita uma entrada sem item no contexto', async () => {
+    const { painel, worklogs } = montarD4();
+
+    const r = await painel.editarApontamento(
+      daSemana('conta-eu', {
+        worklogId: '10501',
+        issueId: '10001',
+        issueKey: 'NL-1',
+        duracao: '45m',
+        iniciadoEm: '2026-08-26T10:00:00.000Z',
+      })
+    );
+
+    expect(r).toMatchObject({ ok: true, editado: true });
+    expect(worklogs.chamadas.find((c) => c.op === 'atualizar').alvo.segundos).toBe(2700);
+  });
+
+  it('apaga uma entrada sem item no contexto', async () => {
+    const { painel, worklogs } = montarD4();
+
+    const r = await painel.apagarApontamento(
+      daSemana('conta-eu', { worklogId: '10501', issueId: '10001' })
+    );
+
+    expect(r).toMatchObject({ ok: true, apagado: true });
+    expect(worklogs.chamadas.find((c) => c.op === 'apagar').alvo.issueId).toBe('10001');
+  });
+
+  it('**a guarda de autoria continua valendo** — id de item no payload não é passe livre', async () => {
+    const { painel, worklogs } = montarD4({
+      umPorId: () => ({ ok: true, worklog: WORKLOG_ALHEIO }),
+    });
+
+    const r = await painel.editarApontamento(
+      daSemana('conta-eu', {
+        worklogId: '10502',
+        issueId: '10001',
+        duracao: '99h',
+        iniciadoEm: '2026-08-26T10:00:00.000Z',
+      })
+    );
+
+    expect(r).toMatchObject({ ok: false, motivo: 'apontamento-de-outra-pessoa' });
+    expect(worklogs.chamadas.find((c) => c.op === 'atualizar')).toBeUndefined();
+  });
+
+  it('sem item no contexto e sem item no payload, recusa', async () => {
+    const { painel, worklogs } = montarD4();
+    const r = await painel.apagarApontamento(daSemana('conta-eu', { worklogId: '10501' }));
+
+    expect(r).toMatchObject({ ok: false, motivo: 'sem-item' });
+    expect(worklogs.chamadas).toHaveLength(0);
+  });
+
+  it('o contexto ainda ganha do payload — o painel do item não muda de comportamento', async () => {
+    const { painel, worklogs } = montarD4();
+
+    // Payload tentando apontar para outro item, com o painel dentro do 10001.
+    await painel.apagarApontamento({
+      ...EU,
+      payload: { worklogId: '10501', issueId: '99999' },
+    });
+
+    expect(worklogs.chamadas.find((c) => c.op === 'lerUm')).toBeDefined();
+    expect(worklogs.chamadas.find((c) => c.op === 'apagar').alvo.issueId).toBe('10001');
+  });
+
+  it('a identidade nunca vem do payload, nem na folha', async () => {
+    const { painel, worklogs } = montarD4();
+    const r = await painel.editarApontamento({
+      context: {},
+      payload: { accountId: 'conta-eu', worklogId: '10501', issueId: '10001', duracao: '1h' },
+    });
+
+    expect(r).toMatchObject({ ok: false, motivo: 'sem-usuario' });
+    expect(worklogs.chamadas).toHaveLength(0);
+  });
+});

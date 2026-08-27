@@ -13,7 +13,9 @@ import ForgeReconciler, {
 } from '@forge/react';
 import { invoke } from '@forge/bridge';
 import { agruparPorDia, chaveDoDia, formatarDuracao, limitesDaSemana } from '../lib/time.js';
-import { mensagemDaSemana } from './mensagens.js';
+import { FormularioApontamento } from './FormularioApontamento.jsx';
+import { formularioDe, paraEnvio } from './formulario.js';
+import { mensagemDaSemana, mensagemDoApontamento } from './mensagens.js';
 import { diasDaSemana, tituloDaSemana } from './semanaUi.js';
 
 /**
@@ -29,12 +31,22 @@ const Semana = () => {
   const [dados, setDados] = useState(null);
   const [erro, setErro] = useState(null);
   const [carregando, setCarregando] = useState(true);
-  // 0 = esta semana. Negativo = semanas anteriores (o D7 usa os botões).
+  // 0 = esta semana. Negativo = semanas anteriores.
   const [deslocamento, setDeslocamento] = useState(0);
+  // D7: corrigir e apagar sem sair da folha. `editando` guarda a entrada
+  // inteira porque o item dela precisa viajar junto — a página global não está
+  // "dentro" de item nenhum.
+  const [editando, setEditando] = useState(null);
+  const [apagando, setApagando] = useState(null);
+  const [ocupado, setOcupado] = useState(false);
+  const [aviso, setAviso] = useState(null);
 
   const carregar = useCallback(async (desloc) => {
     setCarregando(true);
     setErro(null);
+    // Confirmação da semana passada não vale na semana nova: "Entry updated to
+    // 5m" sobre uma folha vazia é confuso.
+    setAviso(null);
 
     // Os limites saem daqui, no fuso de quem está olhando, e viajam como
     // instantes absolutos. O servidor não precisa saber que dias são esses.
@@ -56,6 +68,63 @@ const Semana = () => {
   useEffect(() => {
     carregar(deslocamento);
   }, [carregar, deslocamento]);
+
+  /**
+   * Salvar a correção. O `issueId` vai no payload porque esta é uma página
+   * global: não há item no contexto do Forge para o resolver ler. A guarda de
+   * autoria continua no servidor — ver `itemDoAlvo` em `resolvers/painel.js`.
+   */
+  const salvar = async (valores) => {
+    const envio = paraEnvio({ ...valores, id: editando.id });
+    if (!envio.ok) {
+      setAviso({ tipo: 'error', texto: mensagemDoApontamento(envio.motivo) });
+      return;
+    }
+
+    setOcupado(true);
+    setAviso(null);
+    try {
+      const r = await invoke('editarApontamento', {
+        ...envio.payload,
+        issueId: editando.issueId,
+        issueKey: editando.issueKey,
+      });
+
+      if (!r?.ok) {
+        setAviso({ tipo: 'error', texto: mensagemDoApontamento(r?.motivo) });
+      } else {
+        // Só fecha quando gravou: fechar antes jogaria fora o que a pessoa
+        // digitou justamente quando ela precisa corrigir e reenviar.
+        setEditando(null);
+        setAviso({ tipo: 'success', texto: `Entry updated to ${r.worklog?.duracao || ''}.` });
+      }
+    } catch (e) {
+      setAviso({ tipo: 'error', texto: mensagemDoApontamento() });
+    }
+
+    await carregar(deslocamento);
+    setOcupado(false);
+  };
+
+  const apagar = async (entrada) => {
+    setOcupado(true);
+    setAviso(null);
+    try {
+      const r = await invoke('apagarApontamento', {
+        worklogId: entrada.id,
+        issueId: entrada.issueId,
+        issueKey: entrada.issueKey,
+      });
+      if (!r?.ok) setAviso({ tipo: 'error', texto: mensagemDoApontamento(r?.motivo) });
+      else setAviso({ tipo: 'information', texto: 'Entry deleted from Jira.' });
+    } catch (e) {
+      setAviso({ tipo: 'error', texto: mensagemDoApontamento() });
+    }
+    setApagando(null);
+    if (editando?.id === entrada.id) setEditando(null);
+    await carregar(deslocamento);
+    setOcupado(false);
+  };
 
   if (carregando && !dados) return <Spinner label="Loading your week" />;
 
@@ -93,6 +162,12 @@ const Semana = () => {
       {erro && (
         <SectionMessage appearance="error">
           <Text>{erro}</Text>
+        </SectionMessage>
+      )}
+
+      {aviso && (
+        <SectionMessage appearance={aviso.tipo}>
+          <Text>{aviso.texto}</Text>
         </SectionMessage>
       )}
 
@@ -136,12 +211,73 @@ const Semana = () => {
             </Inline>
 
             {doDia.map((e) => (
-              <Inline key={e.id} space="space.100" alignBlock="center">
-                <Strong>{e.duracao}</Strong>
-                <Text>
-                  {e.issueKey} {e.titulo}
-                </Text>
-              </Inline>
+              <Stack key={e.id} space="space.050">
+                <Inline space="space.100" alignBlock="center">
+                  <Strong>{e.duracao}</Strong>
+                  <Text>
+                    {e.issueKey} {e.titulo}
+                  </Text>
+                </Inline>
+
+                {apagando === e.id ? (
+                  <Inline space="space.100" alignBlock="center">
+                    {/* O dado é do Jira: apagar aqui apaga lá, sem lixeira. */}
+                    <Text>Delete this entry from Jira?</Text>
+                    <Button appearance="danger" onClick={() => apagar(e)} isDisabled={ocupado}>
+                      Delete
+                    </Button>
+                    <Button
+                      appearance="subtle"
+                      onClick={() => setApagando(null)}
+                      isDisabled={ocupado}
+                    >
+                      Keep
+                    </Button>
+                  </Inline>
+                ) : (
+                  editando?.id !== e.id && (
+                    <Inline space="space.050">
+                      <Button
+                        appearance="subtle"
+                        onClick={() => {
+                          setAviso(null);
+                          setApagando(null);
+                          setEditando(e);
+                        }}
+                        isDisabled={ocupado}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        appearance="subtle"
+                        onClick={() => {
+                          setAviso(null);
+                          setEditando(null);
+                          setApagando(e.id);
+                        }}
+                        isDisabled={ocupado}
+                      >
+                        Delete
+                      </Button>
+                    </Inline>
+                  )
+                )}
+
+                {/* O formulário abre na própria linha: corrigir a folha sem sair
+                    dela é o que o D7 existe para dar. `key` porque os campos são
+                    não-controlados — sem ela a segunda edição reaproveitaria os
+                    valores da primeira. */}
+                {editando?.id === e.id && (
+                  <FormularioApontamento
+                    key={e.id}
+                    inicial={formularioDe(e)}
+                    titulo={`Edit ${e.issueKey}`}
+                    ocupado={ocupado}
+                    aoSalvar={salvar}
+                    aoCancelar={() => setEditando(null)}
+                  />
+                )}
+              </Stack>
             ))}
           </Stack>
         );

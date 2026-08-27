@@ -19,6 +19,8 @@
  * propositalmente mais larga que a semana pedida.
  */
 
+import { deADF } from './worklog.js';
+
 /** Formato que o `started` do Jira usa na comparação de janela. */
 function dentroDaJanela(started, desdeMs, ateMs) {
   const t = Date.parse(started);
@@ -136,6 +138,9 @@ export function criarSemana({ pedir }) {
         titulo: item.titulo,
         started: w.started,
         segundos: w.timeSpentSeconds || 0,
+        // A descrição vem junto porque o D7 edita a partir daqui: sem ela, o
+        // formulário abriria vazio e salvar apagaria o que a pessoa escreveu.
+        comentario: deADF(w.comment),
       }));
 
     return { ok: true, entradas };

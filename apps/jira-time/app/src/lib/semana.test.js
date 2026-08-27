@@ -28,8 +28,16 @@ const ATE = new Date(2026, 7, 30, 23, 59, 59, 999).toISOString(); // domingo
 /** Instante local dentro da semana, para os testes valerem em qualquer fuso. */
 const emQue = (dia, hora, minuto = 0) => new Date(2026, 7, dia, hora, minuto).toISOString();
 
-function wl(id, started, segundos, accountId = EU) {
-  return { id, started, timeSpentSeconds: segundos, author: { accountId } };
+function wl(id, started, segundos, accountId = EU, comentario) {
+  const w = { id, started, timeSpentSeconds: segundos, author: { accountId } };
+  if (comentario) {
+    w.comment = {
+      type: 'doc',
+      version: 1,
+      content: [{ type: 'paragraph', content: [{ type: 'text', text: comentario }] }],
+    };
+  }
+  return w;
 }
 
 /**
@@ -222,5 +230,34 @@ describe('minhaSemana — o que a lista não tem', () => {
     await expect(criarSemana({ pedir }).minhaSemana({ desde: DESDE, ate: ATE })).rejects.toThrow(
       TypeError
     );
+  });
+});
+
+describe('a semana carrega a descrição junto', () => {
+  /**
+   * O D7 edita a partir da folha. Sem a descrição aqui, o formulário abriria
+   * vazio e **salvar apagaria o que a pessoa escreveu** — sem aviso nenhum,
+   * porque para o app seria uma edição legítima com descrição em branco.
+   */
+  it('traz o comentário para o formulário de edição poder devolvê-lo', async () => {
+    const { pedir } = jiraFalso({
+      issues: [ITEM('10001', 'NL-1', 'x')],
+      porItem: { 10001: [wl('w1', emQue(25, 10), 3600, EU, 'revisão do PR')] },
+    });
+
+    const r = await criarSemana({ pedir }).minhaSemana({ accountId: EU, desde: DESDE, ate: ATE });
+
+    expect(r.entradas[0].comentario).toBe('revisão do PR');
+  });
+
+  it('entrada sem descrição vira string vazia, não undefined', async () => {
+    const { pedir } = jiraFalso({
+      issues: [ITEM('10001', 'NL-1', 'x')],
+      porItem: { 10001: [wl('w1', emQue(25, 10), 3600)] },
+    });
+
+    const r = await criarSemana({ pedir }).minhaSemana({ accountId: EU, desde: DESDE, ate: ATE });
+
+    expect(r.entradas[0].comentario).toBe('');
   });
 });

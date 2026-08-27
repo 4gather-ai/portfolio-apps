@@ -36,6 +36,31 @@ function itemDoPainel(req) {
   return { issueId: String(issue.id), issueKey: issue.key || null };
 }
 
+/**
+ * O item de uma entrada que já existe — do contexto, ou do payload.
+ *
+ * A folha da semana (D7) mexe em apontamentos de itens que ela não está
+ * "dentro": é uma `globalPage`, não tem `extension.issue`. Então o id do item
+ * vem do navegador ali.
+ *
+ * **Isso não afrouxa nada, e vale dizer por quê.** O que nunca vem do cliente é
+ * a **identidade** — o `accountId` continua saindo do contexto do Forge. E toda
+ * operação que usa esta função passa antes por `conferirAutoria`, que lê o
+ * apontamento no Jira e confere o autor. Um id de item forjado só alcança
+ * worklogs daquele item cujo autor é quem está pedindo — ou seja, os próprios,
+ * que a pessoa já pode editar de qualquer forma. Para **criar** apontamento o
+ * item continua vindo só do contexto: ali não há entrada existente para
+ * conferir autoria contra.
+ */
+function itemDoAlvo(req) {
+  const issue = req?.context?.extension?.issue;
+  if (issue?.id) return { issueId: String(issue.id), issueKey: issue.key || null };
+
+  const doPayload = req?.payload?.issueId;
+  if (!doPayload) throw new Error('sem-item');
+  return { issueId: String(doPayload), issueKey: req?.payload?.issueKey || null };
+}
+
 /** Formato único que o painel entende, para não espalhar formatação na UI. */
 export function paraPainel(timer) {
   if (!timer) return null;
@@ -337,7 +362,7 @@ export function criarPainel({ timers, worklogs, permissoes, agora = () => new Da
 
     editarApontamento: seguro(async (req) => {
       const accountId = quemEstaPedindo(req);
-      const { issueId } = itemDoPainel(req);
+      const { issueId } = itemDoAlvo(req);
       const worklogId = req?.payload?.worklogId;
       if (!worklogId) throw new Error('sem-apontamento');
 
@@ -361,7 +386,7 @@ export function criarPainel({ timers, worklogs, permissoes, agora = () => new Da
 
     apagarApontamento: seguro(async (req) => {
       const accountId = quemEstaPedindo(req);
-      const { issueId } = itemDoPainel(req);
+      const { issueId } = itemDoAlvo(req);
       const worklogId = req?.payload?.worklogId;
       if (!worklogId) throw new Error('sem-apontamento');
 
