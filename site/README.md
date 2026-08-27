@@ -14,7 +14,9 @@ site/
     privacy.html          política de privacidade  ← exigida pela Marketplace
 ```
 
-## Publicar no Cloudflare Pages — precisa do humano
+## Publicar no Cloudflare Pages — ✅ feito em 27/08/2026
+
+> No ar. O que segue fica como registro de como foi, e para o próximo app.
 
 1. Cloudflare → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**.
 2. Escolher o repositório `portfolio-apps`.
@@ -30,7 +32,9 @@ site/
 
 Depois disso, todo push na `main` republica sozinho.
 
-## E-mail — precisa do humano
+## E-mail — ✅ feito em 27/08/2026
+
+> `support@northstackapps.com` roteando e testado.
 
 As três páginas apontam para **`support@northstackapps.com`**, que ainda não existe. No Cloudflare: **Email** → **Email Routing** → regra de `support@northstackapps.com` para o e-mail pessoal. É grátis e leva uns minutos.
 

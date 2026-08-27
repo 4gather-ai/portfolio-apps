@@ -2,7 +2,9 @@
 
 **Não publicar antes das 4 respostas da Community** ([`COMMUNITY.md`](COMMUNITY.md)). A ordem é a regra do canal: ajudar primeiro, pedir depois. Publicar o anúncio antes queima o canal inteiro, e a Community remove autopromoção.
 
-**Pré-requisito:** `northstackapps.com` no ar com [`beta.html`](../../site/nativelog/beta.html), `support.html` e `privacy.html` — o post precisa de um link que exista.
+**Pré-requisito 1 — ✅ feito em 27/08:** `northstackapps.com` no ar com as três páginas, e `support@northstackapps.com` respondendo.
+
+**Pré-requisito 2 — 🔴 falta:** o **link de instalação** do Developer Console. Sem ele o post rende curiosos e nenhum instalador. Passo a passo em `../../STATUS.md`.
 
 **Regra de formato, aprendida na resposta 1:** o editor da Community recusa HTML de colagem e símbolos especiais. Os textos abaixo estão em **blocos de texto puro, só ASCII**. Copie o conteúdo do bloco e cole direto.
 

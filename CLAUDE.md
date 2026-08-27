@@ -120,13 +120,15 @@ Pós-compra por micro-segmento, outros marketplaces (WordPress, Chrome, Atlassia
 
 ## Estado atual (atualizado em 27/08/2026)
 
-**App em construção: `Nativelog`** — apontamento de horas para Jira Cloud, em `apps/jira-time/`. Regra 8 cumprida na rodada 5 do `PESQUISA.md`, plano aprovado. **D1 a D13 de 14 concluídos; falta só o D14.** Deploy 2.23.0 na `northstack-dev`, 405 testes.
+**App em construção: `Nativelog`** — apontamento de horas para Jira Cloud, em `apps/jira-time/`. Regra 8 cumprida na rodada 5 do `PESQUISA.md`, plano aprovado. **Os 14 dias de código acabaram em 27/08/2026.** Produção 2.0.0, desenvolvimento 2.23.0, 405 testes. **A fase agora é o beta (regra 16), não código.**
 
 **A cunha está provada no produto, não só no spike:** em 26/08/2026 o Amarildo apontou tempo pelo app e o worklog nasceu com o nome dele na aba Work log do Jira.
 
 Ler nesta ordem: `STATUS.md` → `apps/jira-time/STATUS.md` (estado do app, arquitetura e regras que não se quebra) → `apps/jira-time/PLANO-V1.md` (marcos por dia).
 
-**O risco aberto não é técnico, é o beta (regra 16):** achar 5–10 instâncias reais. O kit está pronto desde 27/08 — páginas em `site/` (privacidade, suporte, guia de instalação) e os anúncios em `apps/jira-time/BETA-ANUNCIO.md`. **Falta o humano publicar o site no Cloudflare Pages e criar `support@northstackapps.com`.**
+**O risco aberto não é técnico, é o beta (regra 16):** achar 5–10 instâncias reais. Site e e-mail de suporte no ar desde 27/08; registro do beta em `apps/jira-time/BETA.md`. **Falta o humano gerar o link de instalação no Developer Console** — passo a passo em `STATUS.md`.
+
+**⚠️ NÃO ligar a licença no `manifest.yml` antes de o beta terminar.** A tela do Developer Console avisa que app com licença no manifest **não pode mais ser compartilhado por link de instalação** — ligar antes da hora mata o beta. Ordem correta: beta sem licença → beta termina → licença + preço → submissão. Ver `DECISOES.md`, 27/08/2026.
 
 ~~**Bloqueio: escolher o próximo app.**~~ Resolvido em 26/08/2026. O histórico dos candidatos reprovados fica em `PESQUISA.md`.
 

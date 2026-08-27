@@ -2,7 +2,8 @@
 
 Apontamento de horas para Jira Cloud. **O worklog do Jira é a fonte de verdade; não há segunda cópia.**
 
-**Última atualização:** 27/08/2026 (sessão 13) · **D13 de 14 concluído** · deploy **2.23.0** no ambiente `development` · **405 testes** · `forge lint` limpo
+**Última atualização:** 27/08/2026 (sessão 14) · **D14 de 14 — os 14 dias de código acabaram** · **405 testes** · `forge lint` limpo
+**Deploys:** `production` **2.0.0** (é onde o beta roda) · `development` **2.23.0** (é onde eu confiro)
 **Onde:** `northstack-dev.atlassian.net` · app id `22d863f1-cb08-4d77-a7b9-bd4098ede2b2` · elegível a **Runs on Atlassian**
 
 > Este arquivo é o estado do **app**. O estado do portfólio fica em `../../STATUS.md`; os marcos por dia em `PLANO-V1.md`; as decisões em `../../DECISOES.md`.
@@ -27,18 +28,17 @@ Apontamento de horas para Jira Cloud. **O worklog do Jira é a fonte de verdade;
 | **D11** | Editions e checagem de licença + [`PRECO.md`](PRECO.md) para aprovação | 388 |
 | **D12** | Instância grande: paginação de verdade e leitura em lotes | 405 |
 | **D13** | Acessibilidade e revisão de textos | 405 |
+| **D14** | **Beta empacotado:** produção no ar, `BETA.md`, guia publicado | 405 |
 
 **A cunha está provada no produto, não só no spike:** em 26/08 o Amarildo apontou tempo pelo app e o worklog nasceu **com o nome dele** na aba Work log do Jira. Era o único critério do D3 que o Claude Code não conseguia fechar sozinho.
 
 ---
 
-## ▶️ Próximo — D14, o último
+## ▶️ Próximo — o beta, e ele não é código
 
-**Empacotar para o beta:** link de instalação privado, `BETA.md` e as instruções.
+O código da v1 acabou. O que falta é **gerar o link de instalação** no Developer Console (passo a passo em `../../STATUS.md`) e **achar 5 a 10 instâncias reais**.
 
-O kit já está pronto desde 27/08 — páginas em [`../../site/`](../../site/) e anúncios em [`BETA-ANUNCIO.md`](BETA-ANUNCIO.md). O que falta do D14 é gerar o link de instalação no Developer Console, e isso é seu.
-
-**Depois dele o código para e o beta começa.** A regra 16 não deixa listar sem 5 a 10 instâncias reais usando de verdade por 2 a 3 semanas.
+**⚠️ Uma regra de ordem que o D14 descobriu:** **não ligar a licença no manifest antes de o beta terminar.** A tela do Developer Console diz que um app com licença no manifest **não pode mais ser compartilhado por link de instalação** — ligar agora mataria o beta. Ver `../../DECISOES.md`, 27/08.
 
 ---
 
@@ -54,18 +54,20 @@ Nenhum bloqueio técnico. **O risco aberto do projeto não é código, é o beta
 
 | # | O quê | Tempo | Bloqueia |
 |---|---|---|---|
-| 1 | **Publicar `site/` no Cloudflare Pages** — build vazio, output `site`. Ver `../../site/README.md` | 10 min | **D14 / beta** |
-| 2 | **Criar `support@northstackapps.com`** no Email Routing do Cloudflare | 5 min | **As 3 páginas já prometem esse endereço** |
-| 3 | **Publicar a resposta 2 da Community** — texto pronto para colar em `COMMUNITY.md` | 5 min | O beta |
+| 1 | **Gerar o link de instalação** no Developer Console — passo a passo em `../../STATUS.md` | 10 min | **O beta inteiro** |
+| 2 | **Publicar a resposta 2 da Community** — texto pronto para colar em `COMMUNITY.md` | 5 min | O beta |
+
+~~Publicar o site~~ ✅ e ~~criar `support@northstackapps.com`~~ ✅ — feitos por você em 27/08.
+~~Aprovar `PRECO.md`~~ ✅ — aprovado em 27/08: **duas editions**.
 | 4 | **Aprovar [`PRECO.md`](PRECO.md)** — uma decisão (2 ou 3 editions) e os números | 15 min | **Billing** |
 
 **Mais adiante:**
 
 | # | O quê | Quando | Bloqueia |
 |---|---|---|---|
-| 5 | **Inserir as faixas de preço no Developer Console** — depois de aprovar o `PRECO.md` | D14 | **Billing. Único item que trava a submissão** |
-| 6 | **Publicar o anúncio do beta** (`BETA-ANUNCIO.md`) e **gerar o link de instalação** | D14 | **O beta não começa** |
-| 7 | **Recrutar e acompanhar 5–10 instâncias reais** | dias 15–35 | **Listar. É o risco real do plano** |
+| 3 | **Publicar o anúncio do beta** (`BETA-ANUNCIO.md`), depois das 4 respostas | — | O recrutamento |
+| 4 | **Recrutar e acompanhar 5–10 instâncias reais**, registrando em [`BETA.md`](BETA.md) | dias 15–35 | **Listar. É o risco real do plano** |
+| 5 | **Só depois do beta:** ligar a licença e inserir as faixas de preço | pós-beta | Submissão |
 
 ~~Decidir se a v1 tem visão de equipe~~ — **decidido em 27/08: entra, somente leitura.**
 

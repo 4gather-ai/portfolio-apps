@@ -1,82 +1,165 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-27 (sessão 13) · Dia 2 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
+**Última atualização:** 2026-08-27 (sessão 14) · Dia 2 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
-## ▶️ Nativelog · **D13 de 14 concluído** · 405 testes · deploy 2.23.0
+## ✅ Nativelog · **os 14 dias de código acabaram** · 405 testes
 
 | Dia | Marco | Estado |
 |---|---|---|
 | **D1–D7** · 26–27/08 | Timer, worklog nativo, apontamento manual, erros do núcleo, "Minha semana" | ✅ |
-| **D8** · 27/08 | **Exportação CSV** com filtro de projetos | ✅ |
-| **D9** · 27/08 | **Visão de equipe, somente leitura** | ✅ |
-| **D10** · 27/08 | **i18n:** EN, pt-BR, ES, DE, FR | ✅ |
-| **D11** · 27/08 | **Editions + licença**, mais [`PRECO.md`](apps/jira-time/PRECO.md) para você aprovar | ✅ |
-| **D12** · 27/08 | **Instância grande:** paginação de verdade, leitura em lotes | ✅ |
-| **D13** · 27/08 | **Acessibilidade** e revisão de textos | ✅ |
-| **D14** | Empacotar o beta: link de instalação, `BETA.md` | ▶️ **o último, e precisa de você** |
+| **D8–D13** · 27/08 | CSV, visão de equipe, i18n, editions, instância grande, acessibilidade | ✅ |
+| **D14** · 27/08 | **Beta empacotado** — produção no ar, `BETA.md`, guia publicado | ✅ **hoje** |
 
-**Treze marcos em dois dias de calendário.** Cada um verificado no navegador antes do commit (regra 17) — e essa disciplina achou **cinco defeitos que os testes não pegavam**, listados abaixo.
+**Produção implantada:** versão **2.0.0** do ambiente `production`, em 27/08 16:01 UTC. O `development` continua em 2.23.0 e é onde eu conferi tudo.
+
+**Por que dois ambientes:** `development` é onde eu implanto dez vezes por dia. Participante de beta apontado para lá veria o produto mudar embaixo dele no meio de uma semana de trabalho.
 
 ---
 
-## 🔴 PRECISA DE VOCÊ
+## 🔴 O QUE VOCÊ PRECISA FAZER — passo a passo
 
-### Agora
+### ⚠️ Antes de tudo: uma coisa que **não** se deve fazer ainda
 
-| # | O quê | Tempo | Bloqueia |
-|---|---|---|---|
-| 1 | **Aprovar [`PRECO.md`](apps/jira-time/PRECO.md)** — uma decisão de estrutura e os números | 15 min | **Billing, e portanto a submissão** |
-| 2 | Publicar `site/` no Cloudflare Pages *(você disse que está publicando)* | 10 min | D14 / beta |
-| 3 | Criar `support@northstackapps.com` no Email Routing | 5 min | As páginas prometem esse endereço |
-| 4 | **Resposta 2 da Community**, pronta para colar | 5 min | O beta |
+**Não ligue a licença no manifest, e não submeta à Marketplace, antes de o beta terminar.** Li isto na própria tela do Developer Console hoje:
 
-### Depois, no D14
+> *"once your app has a license in the app manifest, or has been submitted for listing on Marketplace, **it can't be shared via installation link**."*
 
-Gerar o **link de instalação privado** no Developer Console e **publicar o anúncio do beta**. Aí o código para e começa o que a regra 16 exige: 5 a 10 instâncias reais por 2 a 3 semanas.
+Ligar a licença agora **mata o beta**: o link de instalação privado para de funcionar no instante em que a licença existe. A saída que a Atlassian sugere é manter duas cópias do app, o que produz divergência entre o que se testa e o que se vende.
+
+**A ordem certa é:** beta sem licença → beta termina → aí liga a licença e insere as faixas de preço → submete. Registrado em [`DECISOES.md`](DECISOES.md).
 
 ---
 
-## 💰 O preço está pronto e esperando você
+### Passo a passo — gerar o link de instalação privado
 
-[`apps/jira-time/PRECO.md`](apps/jira-time/PRECO.md). **Nada foi inserido no Developer Console** — o arquivo é a proposta.
+**Onde:** https://developer.atlassian.com/console/myapps/22d863f1-cb08-4d77-a7b9-bd4098ede2b2/manage/distribution
 
-**A decisão que preciso de você é uma só:** duas editions pagas, ou três com uma Free ilimitada.
+*(Ou: **developer.atlassian.com/console** → **Northstack Apps** → **nativelog** → menu lateral, seção **Manage** → **Distribution**.)*
 
-**Recomendo duas.** A Atlassian já torna todo app Cloud grátis abaixo de 11 usuários — isso é regra deles, não escolha nossa —, então "Free" não é uma edition que a gente cria, é uma consequência que existe de qualquer jeito. Uma terceira edition grátis para sempre seria um concorrente nosso que nunca cobra, e o que ela daria de graça é **a cunha**: worklog nativo no nome da pessoa, que é justamente o que o cliente mais valoriza.
+A produção já está implantada, então o pré-requisito da tela — *"deploy your app to production"* — já está cumprido. Ela mostra **Last deployed to production: Aug 27, 2026 16:01:16 UTC**.
 
-**Duas mudanças em relação ao que a `LISTING.md` prometia:**
+#### 1. Abra o formulário
 
-1. **A exportação CSV desceu para o núcleo.** Cobrar de alguém para exportar as próprias horas chega perto de segurar dado de refém, e é o que rende avaliação de duas estrelas. O que separa Standard de Pro passou a ser **de quem são as horas** — as suas, ou as do time.
-2. **A visão de equipe é o Pro inteiro**, e é somente leitura por decisão sua.
+No cartão **"Distribution controls"**, clique em **Edit** (canto superior direito do cartão).
+
+#### 2. Distribution status
+
+Marque **Sharing** *(o rádio de cima; hoje está em "Not sharing")*.
+
+#### 3. App details
+
+Quatro campos. Os três com asterisco são obrigatórios:
+
+| Campo | O que preencher |
+|---|---|
+| **App owner** | Já vem preenchido: *Amarildo Pereira*. Não é editável |
+| **Company/Department** \* | `Northstack Apps` |
+| **Customer support contact** \* | `support@northstackapps.com` — o campo aceita e-mail ou URL |
+| **Privacy policy** \* | `https://northstackapps.com/nativelog/privacy.html` |
+| **Terms of service** | Deixe em branco. **Não é obrigatório** e nós não temos termos publicados — inventar uma URL que não existe é pior que deixar vazio |
+
+> A tela avisa: *"This information will be displayed to your customer on the app installation page."* Ou seja, é o que o admin do beta vai ler antes de instalar. As duas URLs precisam abrir — as duas já estão no ar.
+
+#### 4. Personal data declaration — ⚠️ **a única pergunta que eu não respondo por você**
+
+O campo é **"Does your app store personal data?"**, uma lista com Yes/No, hoje em **No**. O texto de ajuda da tela diz:
+
+> *Select "Yes" if you copy and store personal data associated with user references (e.g. AccountID) in your own systems or if you cache data for longer than 24 hours.*
+
+**Os fatos, para você decidir:**
+
+| A favor de "No" | A favor de "Yes" |
+|---|---|
+| O único dado guardado é o **cronômetro em andamento**: seu accountId, o id do item e o instante de início | O accountId **é** uma referência de usuário, e ele é a chave do registro |
+| Ele fica no **Forge KVS**, infraestrutura da própria Atlassian — não em "sistema nosso". É o ponto do *Runs on Atlassian* | Um cronômetro esquecido passa das 24 h com facilidade. O app tem função dedicada para esse caso, então **sabemos que acontece** |
+| Nenhuma hora apontada é guardada por nós: vira worklog nativo e o registro some | Declarar a mais custa nada; declarar a menos é problema de conformidade e risco na revisão |
+
+**Minha recomendação: marque "Yes".** É uma declaração legal em seu nome, e a assimetria é clara — o custo de declarar a mais é zero, o de declarar a menos não é. Nossa política de privacidade já descreve exatamente esse registro, então "Yes" fica coerente com o que está publicado.
+
+**Mas a decisão é sua, e por isso parei aqui.**
+
+#### 5. Salve
+
+Clique em **Save changes**.
+
+#### 6. Escolha o produto
+
+Role até o cartão **"Installation link"**, em **"Install this app onto"**. As caixas ficam habilitadas depois que os detalhes estão completos.
+
+**Marque apenas `Jira`.** As outras — Bitbucket, Compass, Confluence, Ecosystem — não se aplicam: o app declara só módulos de Jira no manifest.
+
+#### 7. Copie o link
+
+No mesmo cartão, em **"Installation link"**, o texto muda de *"No link available"* para a URL. **Esse é o link do beta.**
+
+**Me mande esse link.** Eu coloco nos textos de anúncio e no e-mail de convite, que já estão prontos.
+
+---
+
+### Depois disso — na ordem
+
+| # | O quê | Onde |
+|---|---|---|
+| 1 | **Publicar a resposta 2 da Community** (a 3 e a 4 nos dias seguintes) | [`COMMUNITY.md`](apps/jira-time/COMMUNITY.md) |
+| 2 | Quando as quatro estiverem no ar, **publicar o anúncio do beta** | [`BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md) |
+| 3 | **Recrutar 5–10 instâncias reais** e registrar cada uma | [`BETA.md`](apps/jira-time/BETA.md) |
+| 4 | Beta termina → **ligar a licença** e inserir as faixas de preço | [`PRECO.md`](apps/jira-time/PRECO.md) |
+| 5 | Submeter à Marketplace | — |
+
+---
+
+## ✅ D14 — o beta está empacotado
+
+| O quê | Onde | Estado |
+|---|---|---|
+| App em produção | ambiente `production`, 2.0.0 | ✅ |
+| Guia de instalação, em EN | https://northstackapps.com/nativelog/beta.html | ✅ no ar |
+| Política de privacidade | https://northstackapps.com/nativelog/privacy.html | ✅ no ar |
+| Página de suporte | https://northstackapps.com/nativelog/support.html | ✅ no ar |
+| `support@northstackapps.com` | Cloudflare Email Routing | ✅ testado por você |
+| Registro do beta | [`BETA.md`](apps/jira-time/BETA.md) | ✅ pronto para preencher |
+| Anúncios | [`BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md) | ✅ prontos para colar |
+| **Link de instalação** | Developer Console | 🔴 **precisa de você** |
+
+### O `BETA.md` tem uma coisa que vale você ler antes de começar
+
+**A definição de "usando de verdade":** apontou horas em **três dias diferentes**, em trabalho real, sem ninguém do nosso lado pedindo. Instalar e abrir uma vez não conta — e é exatamente isso que um beta mal medido conta como sucesso.
+
+E as perguntas para os participantes já estão escritas, com uma regra: **não perguntar "está gostando?"**. A resposta é sempre sim e não serve para nada. A pergunta que importa é a 4 — *"você voltou para o jeito antigo em algum momento? qual foi a gota?"* — e é justamente a que as pessoas educadamente omitem.
+
+---
+
+## 💰 Preço aprovado — duas editions
+
+Aprovado por você hoje, registrado em [`DECISOES.md`](DECISOES.md). **Não entra no Developer Console agora**, pelo motivo da licença acima.
 
 | Usuários | Standard | Pro | Clockwork Pro | Tempo |
 |---|---|---|---|---|
+| até 10 | Grátis | Grátis | Grátis | US$ 10 |
 | 50 | US$ 40 | US$ 64 | US$ 65 | US$ 260 |
 | 250 | US$ 195 | US$ 294 | US$ 295 | US$ 1.070 |
 | 1.000 | US$ 450 | US$ 650 | US$ 610 | US$ 2.428 |
 
-O Pro empata com o líder de qualidade da categoria e fica **3,7× abaixo** do líder de volume. O arquivo explica também **o que eu não recomendo**: cobrar acima do Clockwork sem ter avaliação nenhuma, e entrar muito mais barato — preço de banana num app de folha de ponto sugere hobby, e a conta do Forge cresce com uso.
+O código já está pronto para os dois mundos: `lib/licenca.js` trata ausência de licença como "libera", então **ligar a licença não muda comportamento nenhum** — só passa a haver o que conferir.
 
 ---
 
-## 🐞 O que o navegador achou nesta sessão
+## 📊 Onde o projeto está
 
-Cinco defeitos, e nenhum deles aparecia em teste. **Três eram de plataforma; dois eram meus.**
+**Dois dias de calendário, 14 marcos, 405 testes, zero real gasto.** O código da v1 acabou.
 
-| Marco | Defeito | Por que o teste não pegava |
-|---|---|---|
-| D7 | Entradas da semana sem descrição — editar dali **apagaria em silêncio** o que a pessoa escreveu | O leitor estava certo; faltava um campo que só a tela usava |
-| D9 | Aba "Equipe" deixava a "Minha semana" renderizada embaixo, com Editar e Apagar | Eu sobrecarreguei o projeto escolhido como estado de aba, e string vazia é falsa |
-| D10 | **Editar e Apagar em inglês** nas linhas da semana | A semana tem cópias próprias dos botões; passei por cima delas |
-| D10 | Página travada até eu descobrir que era a aba do Chrome, não o app | — |
-| D12 | Paginação: um item com muito histórico dava total **que parecia completo e não era** | Achado ao ler o código para o D12, antes de virar reclamação |
+**O que sobra é o que sempre foi o risco:** achar 5 a 10 instâncias reais. Isso não é trabalho de código, é trabalho de convencer estranhos a instalar um app novo de um desenvolvedor desconhecido — e a regra 16 não deixa pular.
+
+**O caminho crítico real, em dias:** 21 dias de beta + 10 a 15 dias úteis de fila de revisão da Atlassian. Os 14 dias de código foram a parte fácil, e a mais rápida.
 
 ---
 
-## ✅ D12 — instância grande
+## 📄 Histórico — D8 a D13 e as sessões anteriores
+
+### D12 — instância grande
 
 Dois defeitos silenciosos, do mesmo formato: **um número que parecia completo e não era.**
 

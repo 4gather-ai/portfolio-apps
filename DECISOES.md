@@ -578,6 +578,46 @@ Iniciar um timer em outro item grava o worklog do anterior primeiro. **Se essa g
 
 ---
 
+## 2026-08-27 — Preço aprovado: duas editions, Standard e Pro
+
+**Decisão:** aprovada a opção A do [`PRECO.md`](apps/jira-time/PRECO.md) — **duas editions pagas**, com a faixa grátis até 10 usuários que a Atlassian já impõe. Números da tabela aprovados como estavam.
+**Motivo:** uma terceira edition grátis para sempre seria um concorrente nosso que nunca cobra, e o que daria de graça é a cunha — worklog nativo com a identidade da pessoa. O "grátis até 10" já cobre avaliação, time pequeno e boca a boca, que é a faixa onde nasce indicação e não receita.
+**O que ficou diferente da `LISTING.md`:** a exportação CSV desceu para o núcleo (cobrar para exportar as próprias horas chega perto de segurar dado de refém), e o que separa Standard de Pro passou a ser **de quem são as horas** — as suas, ou as do time.
+**Reversível?** O preço sim, até a listagem. A estrutura de editions, depois de haver assinante, não — mexer nisso mexe na fatura de quem já paga.
+
+---
+
+## 2026-08-27 — Licença **fica desligada** até a submissão, e isso não é preguiça
+
+**Decisão:** o `manifest.yml` **não** ganha bloco de licença agora. O beta roda sem licença, com o produto inteiro liberado. A licença entra junto com a submissão à Marketplace, por volta do D36.
+
+**Motivo, lido na própria tela do Developer Console em 27/08:**
+
+> *"once your app has a license in the app manifest, or has been submitted for listing on Marketplace, **it can't be shared via installation link**. In order to share and test this app, you'll need to copy the app's code, create a new, unlicensed version of the app, and share this version via installation link."*
+
+**Ligar a licença agora mataria o beta.** O link de instalação privado — o único jeito de pôr o app em instância de terceiro sem listar na Marketplace — para de funcionar no instante em que a licença existe no manifest. A alternativa que a Atlassian sugere é manter **duas cópias do app**, uma licenciada e outra não, o que é exatamente o tipo de coisa que produz divergência silenciosa entre o que se testa e o que se vende.
+
+**Efeito colateral bom:** beta sem licença é beta com tudo liberado, que é o que um beta gratuito deve ser de qualquer forma. E o código já está pronto para os dois mundos: `lib/licenca.js` trata ausência de licença como "libera", então **nada muda no comportamento quando a licença for ligada** — só passa a haver o que conferir.
+
+**Ordem correta, que este achado fixou:**
+1. Beta com link de instalação, **sem licença** (agora)
+2. Beta termina com 5–10 instâncias reais (regra 16)
+3. **Só então** ligar a licença no manifest e inserir as faixas de preço
+4. Submeter à Marketplace
+
+**Reversível?** Sim, mas inverter a ordem custa o beta inteiro.
+
+---
+
+## 2026-08-27 — O app foi para o ambiente `production`
+
+**Decisão:** `forge deploy -e production`, versão 2.0.0 do ambiente de produção. O beta roda em produção, não em `development`.
+**Motivo:** o link de instalação exige produção — a própria tela diz *"To get a link, deploy your app to production"*. E há um motivo melhor: **`development` é onde eu implanto dez vezes por dia.** Participante de beta com o app apontado para lá veria o produto mudar embaixo dele no meio de uma semana de trabalho.
+**Consequência:** daqui em diante, correção durante o beta é `deploy -e development` para conferir, e só depois `deploy -e production` para os participantes. As duas versões são numeradas separadamente.
+**Reversível?** Sim.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: em construção.** D1 e D2 entregues. Nenhuma decisão em aberto bloqueia o código.
