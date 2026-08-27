@@ -74,7 +74,7 @@ export function criarSemana({ pedir }) {
     do {
       const caminho =
         `/rest/api/3/search/jql?jql=${encodeURIComponent(jql)}` +
-        `&fields=summary&maxResults=100` +
+        `&fields=summary,project&maxResults=100` +
         (token ? `&nextPageToken=${encodeURIComponent(token)}` : '');
 
       let resposta;
@@ -98,6 +98,11 @@ export function criarSemana({ pedir }) {
           issueId: String(item.id),
           issueKey: item.key,
           titulo: item.fields?.summary || '',
+          // Projeto vem do campo, não do prefixo da chave: a chave do item
+          // costuma bater com a do projeto, mas "costuma" não é contrato — e o
+          // D8 filtra por projeto.
+          projetoChave: item.fields?.project?.key || null,
+          projetoNome: item.fields?.project?.name || null,
         });
       }
       token = cortada ? null : dados?.nextPageToken || null;
@@ -136,6 +141,8 @@ export function criarSemana({ pedir }) {
         issueId: item.issueId,
         issueKey: item.issueKey,
         titulo: item.titulo,
+        projetoChave: item.projetoChave,
+        projetoNome: item.projetoNome,
         started: w.started,
         segundos: w.timeSpentSeconds || 0,
         // A descrição vem junto porque o D7 edita a partir daqui: sem ela, o

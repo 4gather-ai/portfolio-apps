@@ -10,9 +10,12 @@ import ForgeReconciler, {
   Stack,
   Strong,
   Text,
+  TextArea,
+  Toggle,
 } from '@forge/react';
 import { invoke } from '@forge/bridge';
 import { agruparPorDia, chaveDoDia, formatarDuracao, limitesDaSemana } from '../lib/time.js';
+import { filtrarProjetos, paraCSV, projetosDe } from '../lib/csv.js';
 import { FormularioApontamento } from './FormularioApontamento.jsx';
 import { formularioDe, paraEnvio } from './formulario.js';
 import { mensagemDaSemana, mensagemDoApontamento } from './mensagens.js';
@@ -40,6 +43,10 @@ const Semana = () => {
   const [apagando, setApagando] = useState(null);
   const [ocupado, setOcupado] = useState(false);
   const [aviso, setAviso] = useState(null);
+  // D8: exportação. `projetosFora` são as chaves desmarcadas — o padrão é
+  // exportar tudo, e desmarcar é o gesto de excluir.
+  const [exportando, setExportando] = useState(false);
+  const [projetosFora, setProjetosFora] = useState([]);
 
   const carregar = useCallback(async (desloc) => {
     setCarregando(true);
@@ -134,6 +141,9 @@ const Semana = () => {
     entradas.map((e) => ({ started: e.started, timeSpentSeconds: e.segundos }))
   );
   const dias = dados ? diasDaSemana(dados.inicio) : [];
+  const projetos = projetosDe(entradas);
+  const paraExportar = filtrarProjetos(entradas, { modo: 'excluir', chaves: projetosFora });
+  const csv = exportando ? paraCSV(paraExportar) : '';
 
   return (
     <Stack space="space.200">
@@ -282,6 +292,79 @@ const Semana = () => {
           </Stack>
         );
       })}
+
+      {/* D8 — exportação. */}
+      {entradas.length > 0 && (
+        <Stack space="space.100">
+          <Inline space="space.100" alignBlock="center">
+            <Button onClick={() => setExportando((v) => !v)} isDisabled={carregando}>
+              {exportando ? 'Hide export' : 'Export CSV'}
+            </Button>
+            {exportando && (
+              <Text>
+                {paraExportar.length} of {entradas.length}{' '}
+                {entradas.length === 1 ? 'entry' : 'entries'}
+              </Text>
+            )}
+          </Inline>
+
+          {exportando && (
+            <Stack space="space.100">
+              {projetos.length > 1 && (
+                <Stack space="space.050">
+                  <Strong>Projects to include</Strong>
+                  {/* Incluir e excluir são o mesmo gesto: tudo marcado por
+                      padrão, e desmarcar tira o projeto. Quem fatura por
+                      cliente sabe listar os dois projetos que NÃO quer muito
+                      antes de saber listar os dez que quer. */}
+                  {projetos.map((p) => (
+                    <Inline key={p.chave} space="space.100" alignBlock="center">
+                      <Toggle
+                        id={`projeto-${p.chave}`}
+                        isChecked={!projetosFora.includes(p.chave)}
+                        onChange={() =>
+                          setProjetosFora((fora) =>
+                            fora.includes(p.chave)
+                              ? fora.filter((c) => c !== p.chave)
+                              : [...fora, p.chave]
+                          )
+                        }
+                      />
+                      <Text>
+                        {p.nome} ({p.chave})
+                      </Text>
+                    </Inline>
+                  ))}
+                </Stack>
+              )}
+
+              {paraExportar.length === 0 ? (
+                <SectionMessage appearance="warning">
+                  <Text>Every project is unticked, so there is nothing to export.</Text>
+                </SectionMessage>
+              ) : (
+                <Stack space="space.050">
+                  {/* Não há download de arquivo dentro de um app Forge, então
+                      dizemos isso em vez de fingir um botão que não baixa. */}
+                  <Text>
+                    Select all of the box below and copy it, then paste into a spreadsheet or save
+                    it as a .csv file. Jira apps can&apos;t hand your browser a file directly.
+                  </Text>
+                  <TextArea
+                    id="nativelog-csv"
+                    isReadOnly
+                    isMonospaced
+                    resize="vertical"
+                    minimumRows={12}
+                    value={csv}
+                    defaultValue={csv}
+                  />
+                </Stack>
+              )}
+            </Stack>
+          )}
+        </Stack>
+      )}
 
       {/* O JQL do passo 1 passa pelo índice de busca do Jira, que atrasa alguns
           segundos. Dizer isso é mais barato que alguém achar que perdeu horas. */}
