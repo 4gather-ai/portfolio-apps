@@ -36,9 +36,9 @@ Depois disso, todo push na `main` republica sozinho.
 
 > `support@northstackapps.com` roteando e testado.
 
-As três páginas apontam para **`support@northstackapps.com`**, que ainda não existe. No Cloudflare: **Email** → **Email Routing** → regra de `support@northstackapps.com` para o e-mail pessoal. É grátis e leva uns minutos.
+Como foi feito, para o próximo app: Cloudflare → **Email** → **Email Routing** → regra de `support@northstackapps.com` para o e-mail pessoal. É grátis e leva uns minutos.
 
-**Sem esse endereço, as páginas prometem um canal que não responde** — e a página de suporte é item obrigatório da revisão da Atlassian.
+**A página de suporte é item obrigatório da revisão da Atlassian**, e ela só vale se o endereço responder. Por isso o e-mail entra junto com o site, não depois.
 
 ## Ao mexer nas páginas
 
