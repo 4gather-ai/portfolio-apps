@@ -39,6 +39,7 @@ Objetivo: portfólio de apps Shopify (e depois outros marketplaces) que gere US$
 14. Suporte: responder tickets/reviews com rascunho em `apps/<app>/support/`; humano só envia se a plataforma exigir login.
 15. **Ao final de cada sessão e a cada marco: `git add -A`, commit com mensagem descritiva e `git push origin main`.** Sem push, o chat estratégico não enxerga o trabalho — commit local não conta como entregue. Antes do push, conferir que nenhum segredo entrou (`.env` fica no `.gitignore`; só `.env.example` é commitado).
 16. **Beta privado obrigatório antes de listar.** Nenhum app vai para a listagem pública sem passar por **5 a 10 instâncias reais durante 2 a 3 semanas**. O beta serve para achar o que dev store nenhuma mostra: dados sujos, escala real, permissões estranhas, fusos, e o que o usuário faz que não previmos. Registrar em `apps/<app>/BETA.md`: quem participa, o que quebrou, o que mudou por causa disso. **Se menos de 5 instâncias reais usarem de verdade, o beta não terminou** — prazo não substitui uso.
+17. **Todo marco termina com o app aberto no navegador, não só com os testes verdes.** Rodar o caminho principal na instância real e olhar a tela. **Motivo, com evidência própria:** em 26/08/2026, no primeiro dia com Chrome disponível, **três defeitos apareceram que 231 testes automatizados e o `forge lint` não pegavam** — a aba que continuava mostrando "Running" para um timer encerrado, o relógio que só andava 20 s depois do clique, e o campo de formulário que deixava só a última letra do que se digitava. Os três têm a mesma assinatura: **a nossa lógica estava certa e a plataforma se comporta diferente.** Teste automatizado cobre o que escrevemos; só o navegador cobre onde o código roda. Isso não substitui a regra 16 — reforça: se uma pessoa com duas abas acha três defeitos em uma tarde, dev store não é evidência de que o app funciona.
 
 ## Stack padrão
 - Template oficial: `shopify app init` (Remix/React Router + Node), Polaris, App Bridge, Prisma.
@@ -119,9 +120,11 @@ Pós-compra por micro-segmento, outros marketplaces (WordPress, Chrome, Atlassia
 
 ## Estado atual (atualizado em 26/08/2026)
 
-**App em construção: `Nativelog`** — apontamento de horas para Jira Cloud, em `apps/jira-time/`. Regra 8 cumprida na rodada 5 do `PESQUISA.md`, cunha provada em instância real, plano aprovado. **D1, D2 e D3 de 14 concluídos; o próximo é o D4.**
+**App em construção: `Nativelog`** — apontamento de horas para Jira Cloud, em `apps/jira-time/`. Regra 8 cumprida na rodada 5 do `PESQUISA.md`, plano aprovado. **D1 a D4 de 14 concluídos; o próximo é o D5.** Deploy 2.9.0 na `northstack-dev`, 231 testes.
 
-Ler nesta ordem: `STATUS.md` → `apps/jira-time/PLANO-V1.md` (marcos por dia) → `apps/jira-time/STATUS.md` se existir.
+**A cunha está provada no produto, não só no spike:** em 26/08/2026 o Amarildo apontou tempo pelo app e o worklog nasceu com o nome dele na aba Work log do Jira.
+
+Ler nesta ordem: `STATUS.md` → `apps/jira-time/STATUS.md` (estado do app, arquitetura e regras que não se quebra) → `apps/jira-time/PLANO-V1.md` (marcos por dia).
 
 **O risco aberto não é técnico, é o beta (regra 16):** achar 5–10 instâncias reais. O recrutamento roda em paralelo ao código desde o D1 — ver `apps/jira-time/BETA-RECRUTAMENTO.md` e `apps/jira-time/COMMUNITY.md`.
 
@@ -136,3 +139,5 @@ Ler nesta ordem: `STATUS.md` → `apps/jira-time/PLANO-V1.md` (marcos por dia) �
 - Domínio **northstackapps.com** registrado no **Cloudflare** (26/08/2026)
 - Forge: usar **`@forge/kvs`**, não o `storage` do `@forge/api` — deprecado, o `forge lint` reprova
 - `forge deploy`/`forge install` funcionam sem TTY com `--non-interactive`; o `install` precisa de `--site` e `--product`
+- **UI Kit 2: campo de formulário controlado engole o que a pessoa digita.** `value` + `setState` por tecla faz sobrar **só a última letra** — o componente é desenhado pelo Jira do outro lado de uma ponte assíncrona, e o `value` do re-render volta depois da tecla seguinte. Usar **`useForm` do `@forge/react`** (campos não-controlados). Não aparece em teste nem no `forge lint`; só no navegador
+- **Chrome/browser chegou ao Claude Code em 26/08/2026.** Antes disso o navegador não estava disponível e marcos ficaram dependendo do humano para conferir. Ver a **regra 17**

@@ -13,7 +13,7 @@ Todo gasto real e previsto do portfólio. Regra 5 do CLAUDE.md: **nunca gastar s
 
 | Data | Item | US$ | R$ | Pago por | Nota |
 |---|---|---|---|---|---|
-| — | *(nenhum até 25/08/2026)* | 0,00 | 0,00 | — | — |
+| — | *(nenhum até 26/08/2026)* | 0,00 | 0,00 | — | — |
 
 **Total real: R$ 0,00**
 
@@ -108,6 +108,17 @@ Se o caminho for o Atlassian Marketplace, **a estrutura de custo muda para melho
 | **LLM** | **0 créditos** | varia por modelo |
 
 **Dois alertas de arquitetura:** escrita em KVS é a operação cara, então o desenho deve favorecer leitura; e **containers e LLM não têm franquia** — num negócio "IA First", qualquer inferência dentro do Forge é custo desde o primeiro minuto. Excedente não pago pode suspender o app.
+
+**O que o Nativelog consome hoje (26/08/2026):**
+
+| Origem | Quando | Nota |
+|---|---|---|
+| Invocação por clique (start/stop/descartar/apontar/editar/apagar) | Só na ação | Poucas por pessoa por dia |
+| **Reconsulta do painel a cada 30 s** | **Só enquanto há relógio correndo na tela** | Decisão do D3.1 — sem ela a tela mente "Running" para timer já encerrado. Ver `DECISOES.md` |
+| Leitura da lista de apontamentos | Ao abrir o painel e depois de cada gravação | Endpoint do item, não JQL |
+| Escrita em KVS | Só o timer em andamento | **Nenhuma hora apontada mora no KVS** — vira worklog nativo e o registro some |
+
+**O ponto a vigiar no beta é a reconsulta de 30 s**, porque é o único consumo que cresce com o tempo que o painel fica aberto, e não com o número de cliques. Se a franquia apertar, **o número sobe antes de qualquer outra coisa ser cortada** — a alternativa (voltar a não reconsultar) traz de volta um defeito que custa confiança.
 
 ### Taxa do marketplace — comparação honesta
 

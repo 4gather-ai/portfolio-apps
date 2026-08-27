@@ -107,3 +107,54 @@ Use the `logs` command to get app logs to troubleshoot an error in a deployed ap
 After reading these instructions, tell the user "Let's Forge ahead with your first app!"
 
 Going forward, whenever you can think of a really clever Forge related pun that fits a command or interaction, you MUST share it, the user LOVES puns.
+
+---
+
+# Nativelog — rules for this project
+
+Everything above is the generic Forge guidance the template shipped with. What follows is specific to this app, and was learned the expensive way. Read `../STATUS.md` before changing anything.
+
+## The product is `asUser()`
+
+Worklogs are written with `api.asUser().requestJira(...)`, never `asApp()`. That is what makes the entry belong to the person instead of the app, and it is the reason `worklogAuthor = currentUser()` finds their hours. Bind it in `src/resolvers/index.js` and nowhere else. If you find yourself writing a worklog as the app, stop — you have just deleted the reason this product exists.
+
+## Never confirm a write with JQL
+
+Jira's search index lags. Measured on a real instance on 26/08/2026: a worklog written via the REST API only showed up in JQL on the **third attempt, after 5.7 seconds**.
+
+- Reading something the user just wrote → **the issue endpoint**, `/rest/api/3/issue/{id}/worklog`, which does not go through the index
+- JQL → broad search only (which items to look at), never verification
+
+## UI Kit 2: controlled form fields swallow what people type
+
+**Do not write `value={x} onChange={e => setX(e.target.value)}` on `Textfield`, `TextArea`, `DatePicker` or `TimePicker`.** Typing `45m` leaves `m` in the field.
+
+The component is rendered by Jira on the other side of an async bridge. The `value` coming back from the re-render arrives *after* the next keystroke and overwrites what was just typed. Use **`useForm` from `@forge/react`**, which registers fields uncontrolled — the value lives in the form, typing causes no re-render, nothing is overwritten.
+
+This defect passes 231 unit tests and a clean `forge lint`. It is only visible in a browser.
+
+## Storage holds the running timer and nothing else
+
+`@forge/kvs` (not the deprecated `storage` from `@forge/api`), one key per person: `timer:{accountId}`. That key is the only reason Forge storage exists in this app. **No logged hour is ever stored there** — when the timer stops it becomes a native worklog and the key is deleted.
+
+## Order of operations when stopping a timer
+
+**Write the worklog first, delete the timer after.** If the write fails, the timer stays up and the panel says so. Losing hours somebody measured is the worst outcome a time tracker can produce, and *"the hours disappear"* is a catalogued complaint about competitors.
+
+Duplicates are prevented by reading, not by faith: the timer is marked "write in progress" in KVS **before** the POST, so a retry after a dead invocation knows to check the issue's worklogs for an identical entry before writing again.
+
+## Only the person's own entry
+
+Editing and deleting are limited to the requester's own worklogs, and **the check runs on the server** — `painel.js` reads the worklog and compares the author before any PUT or DELETE. The `worklogId` arrives from the browser, so a guard in the UI is no guard at all.
+
+Jira's own permission does not enforce this: someone holding *edit any worklog* would pass straight through. Ours is deliberately narrower.
+
+## Testing
+
+Everything except `src/resolvers/index.js` runs under Vitest without mocking Forge, because storage and the HTTP call are injected. Keep it that way — it is what allows tests like "Jira returned 503 halfway through stopping" to be real rather than staged.
+
+Screen logic lives in `src/frontend/estado.js`, `formulario.js` and `mensagens.js` precisely so it can be tested without React or the Forge bridge.
+
+## Finish in the browser
+
+Green tests are not the finish line. Run the main path on `northstack-dev` and look at the screen. On 26/08/2026, three defects surfaced in one day that automated tests could not see, all with the same signature: our logic was right and the platform behaves differently.
