@@ -12,7 +12,9 @@ import { kvs } from '@forge/kvs';
 import { criarTimers } from '../lib/timer.js';
 import { criarWorklogs } from '../lib/worklog.js';
 import { criarPermissoes } from '../lib/permissoes.js';
+import { criarSemana } from '../lib/semana.js';
 import { criarPainel } from './painel.js';
+import { criarVisaoSemana } from './semana.js';
 
 /**
  * **`asUser()` é o produto inteiro.**
@@ -36,8 +38,12 @@ const painel = criarPainel({
   permissoes: criarPermissoes({ pedir }),
 });
 
+// A página "Minha semana" (D6). Mesmo resolver, outra pergunta: o painel é
+// sobre um item, a semana é sobre uma pessoa.
+const visaoSemana = criarVisaoSemana({ semana: criarSemana({ pedir }) });
+
 const resolver = new Resolver();
-for (const [nome, fn] of Object.entries(painel)) {
+for (const [nome, fn] of Object.entries({ ...painel, ...visaoSemana })) {
   resolver.define(nome, fn);
 }
 

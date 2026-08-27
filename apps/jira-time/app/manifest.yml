@@ -9,6 +9,16 @@ modules:
       title: Nativelog
       icon: https://developer.atlassian.com/platform/forge/images/icons/issue-panel-icon.svg
 
+  # Folha de ponto da semana, fora do item.
+  jira:globalPage:
+    - key: nativelog-week
+      resource: week
+      resolver:
+        function: resolver
+      render: native
+      title: Nativelog
+      icon: https://developer.atlassian.com/platform/forge/images/icons/issue-panel-icon.svg
+
   function:
     - key: resolver
       handler: index.handler
@@ -16,6 +26,8 @@ modules:
 resources:
   - key: main
     path: src/frontend/index.jsx
+  - key: week
+    path: src/frontend/semana.jsx
 
 app:
   runtime:
@@ -32,7 +44,6 @@ permissions:
     - write:jira-work # criar, editar e apagar worklog do próprio usuário
     - storage:app # KVS: só o timer em andamento e preferências (PLANO-V1, seção 4)
 # Módulos dos dias seguintes, mantidos aqui como contrato do plano:
-#   D6  jira:globalPage nativelog-week  — minha semana + CSV
 #   D9  jira:globalPage nativelog-team  — visão de equipe (Pro)
 #   D11 jira:adminPage  nativelog-admin — grupos da visão de equipe
 # Entram junto com a tela que os usa, não antes: escopo e módulo sem uso

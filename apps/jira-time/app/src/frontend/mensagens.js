@@ -93,3 +93,31 @@ export function textoDoWorklog(worklog, issueKey, jaEstavaGravado) {
     ? `Already logged: ${worklog.duracao}${onde}${quem}. Nothing was written twice.`
     : `Logged ${worklog.duracao}${onde}${quem}.`;
 }
+
+/**
+ * Erros da folha da semana.
+ *
+ * Terceira função pela mesma razão das outras duas: aqui **nada estava sendo
+ * gravado**. Ninguém tem tempo em risco, e a frase certa é sobre o que a tela
+ * conseguiu ou não conseguiu ler.
+ */
+export function mensagemDaSemana(motivo) {
+  switch (motivo) {
+    case 'janela-invalida':
+      return 'Nativelog could not work out which week to show. Reload the page.';
+    case 'busca-invalida':
+      return 'Jira rejected the search for your week. Please report this.';
+    case 'sem-permissao':
+      return "Your Jira permissions don't allow searching work items, so your week can't be built.";
+    case 'limite-de-taxa':
+      return 'Jira is rate limiting the request. Wait a minute and press Refresh.';
+    case 'jira-indisponivel':
+      return "Jira didn't respond. Nothing is lost — press Refresh in a moment.";
+    case 'rede':
+      return "The request didn't complete. Press Refresh to try again.";
+    case 'sem-usuario':
+      return 'Nativelog could not identify you. Try reloading the page.';
+    default:
+      return "Your week couldn't be loaded. Press Refresh to try again.";
+  }
+}

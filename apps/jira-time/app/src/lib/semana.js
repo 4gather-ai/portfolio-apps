@@ -1,0 +1,191 @@
+/**
+ * Nativelog — a folha de ponto da semana, lida do Jira.
+ *
+ * **Não há tabela nossa de horas.** A semana é remontada a cada abertura a
+ * partir do worklog nativo, em dois passos, que é a única forma honesta de
+ * fazer isso sem manter uma cópia:
+ *
+ *   1. **JQL** para descobrir *quais itens* têm worklog meu na janela. Este é
+ *      o uso legítimo do JQL — busca ampla — e o único que a regra de
+ *      arquitetura permite.
+ *   2. **Endpoint do item** (`/issue/{id}/worklog`) para pegar *as entradas*,
+ *      com autor, instante e duração. O JQL não sabe devolver isso: ele
+ *      seleciona itens, nunca lançamentos, e a coluna Time Spent do resultado
+ *      é o total de toda a vida do item, não o da semana.
+ *
+ * **O atraso do índice mora no passo 1, e é assumido.** Uma hora apontada há
+ * cinco segundos pode ainda não aparecer na busca (medido: ~5,7 s). Para a
+ * folha da semana isso é aceitável — e é por isso que a janela do passo 1 é
+ * propositalmente mais larga que a semana pedida.
+ */
+
+/** Formato que o `started` do Jira usa na comparação de janela. */
+function dentroDaJanela(started, desdeMs, ateMs) {
+  const t = Date.parse(started);
+  return !Number.isNaN(t) && t >= desdeMs && t <= ateMs;
+}
+
+/**
+ * Quanto alargar a janela do JQL para os lados.
+ *
+ * O JQL resolve `worklogDate` no fuso da instância; a semana que a pessoa vê
+ * é montada no fuso do navegador dela. Os dois podem estar a horas de
+ * distância, e um item apontado na segunda de manhã em Tóquio pode cair no
+ * domingo da instância. Pedir um dia a mais de cada lado custa alguns itens a
+ * mais no passo 1 — e a filtragem exata acontece no passo 2, pelo instante
+ * real. Alargar é barato; perder um dia de apontamento não é.
+ */
+export const FOLGA_DA_BUSCA_MS = 36 * 3600 * 1000;
+
+/**
+ * Teto de itens que a semana lê.
+ *
+ * Cada item custa uma chamada no passo 2. Uma semana de trabalho humano não
+ * passa disso nem de longe; se passar, é melhor dizer que a lista veio cortada
+ * do que devolver um total que parece completo e não é.
+ */
+export const MAXIMO_ITENS = 60;
+
+export function criarSemana({ pedir }) {
+  if (typeof pedir !== 'function') {
+    throw new TypeError('criarSemana exige a função pedir');
+  }
+
+  /** Passo 1: quais itens têm worklog meu na janela. */
+  async function itensDaJanela({ desde, ate }) {
+    const desdeData = new Date(new Date(desde).getTime() - FOLGA_DA_BUSCA_MS);
+    const ateData = new Date(new Date(ate).getTime() + FOLGA_DA_BUSCA_MS);
+    const dia = (d) => d.toISOString().slice(0, 10);
+
+    const jql =
+      `worklogAuthor = currentUser()` +
+      ` AND worklogDate >= "${dia(desdeData)}"` +
+      ` AND worklogDate <= "${dia(ateData)}"` +
+      ` ORDER BY updated DESC`;
+
+    const itens = [];
+    let token = null;
+    let cortada = false;
+
+    // Poucas páginas na prática; o laço existe para não mentir quando houver
+    // mais de uma.
+    do {
+      const caminho =
+        `/rest/api/3/search/jql?jql=${encodeURIComponent(jql)}` +
+        `&fields=summary&maxResults=100` +
+        (token ? `&nextPageToken=${encodeURIComponent(token)}` : '');
+
+      let resposta;
+      try {
+        resposta = await pedir(caminho, { method: 'GET', headers: { Accept: 'application/json' } });
+      } catch (erro) {
+        return { ok: false, motivo: 'rede', detalhe: erro?.message };
+      }
+
+      if (!resposta.ok) {
+        return { ok: false, motivo: motivoDaBusca(resposta.status), status: resposta.status };
+      }
+
+      const dados = await resposta.json();
+      for (const item of dados?.issues || []) {
+        if (itens.length >= MAXIMO_ITENS) {
+          cortada = true;
+          break;
+        }
+        itens.push({
+          issueId: String(item.id),
+          issueKey: item.key,
+          titulo: item.fields?.summary || '',
+        });
+      }
+      token = cortada ? null : dados?.nextPageToken || null;
+    } while (token);
+
+    return { ok: true, itens, cortada };
+  }
+
+  /** Passo 2: as entradas de um item que são minhas e caem na janela. */
+  async function entradasDoItem(item, { accountId, desdeMs, ateMs }) {
+    // `startedAfter` corta no servidor. Um segundo de folga porque o Jira
+    // arredonda o instante que devolve.
+    const caminho =
+      `/rest/api/3/issue/${encodeURIComponent(item.issueId)}/worklog` +
+      `?startedAfter=${desdeMs - 1000}&maxResults=1000`;
+
+    let resposta;
+    try {
+      resposta = await pedir(caminho, { method: 'GET', headers: { Accept: 'application/json' } });
+    } catch (erro) {
+      return { ok: false, item, motivo: 'rede' };
+    }
+
+    // Item que sumiu ou virou privado entre os dois passos não derruba a
+    // semana inteira — some da lista e é contado como falha parcial.
+    if (!resposta.ok) {
+      return { ok: false, item, motivo: motivoDaBusca(resposta.status) };
+    }
+
+    const lista = (await resposta.json())?.worklogs || [];
+    const entradas = lista
+      .filter((w) => w.author?.accountId === accountId)
+      .filter((w) => dentroDaJanela(w.started, desdeMs, ateMs))
+      .map((w) => ({
+        id: String(w.id),
+        issueId: item.issueId,
+        issueKey: item.issueKey,
+        titulo: item.titulo,
+        started: w.started,
+        segundos: w.timeSpentSeconds || 0,
+      }));
+
+    return { ok: true, entradas };
+  }
+
+  /**
+   * A semana inteira: entradas cruas, com instante absoluto.
+   *
+   * **Não agrupa por dia de propósito** — quem sabe o fuso de quem está olhando
+   * é o navegador. Ver o contrato no topo de `resolvers/painel.js`.
+   */
+  async function minhaSemana({ accountId, desde, ate }) {
+    if (!accountId) throw new TypeError('minhaSemana exige o accountId');
+
+    const desdeMs = Date.parse(desde);
+    const ateMs = Date.parse(ate);
+    if (Number.isNaN(desdeMs) || Number.isNaN(ateMs) || ateMs <= desdeMs) {
+      return { ok: false, motivo: 'janela-invalida' };
+    }
+
+    const busca = await itensDaJanela({ desde, ate });
+    if (!busca.ok) return busca;
+
+    const resultados = await Promise.all(
+      busca.itens.map((item) => entradasDoItem(item, { accountId, desdeMs, ateMs }))
+    );
+
+    const entradas = resultados.filter((r) => r.ok).flatMap((r) => r.entradas);
+    const falhas = resultados.filter((r) => !r.ok).map((r) => r.item.issueKey);
+
+    return {
+      ok: true,
+      // Mais recente primeiro. O agrupamento por dia é do navegador.
+      entradas: entradas.sort((a, b) => Date.parse(b.started) - Date.parse(a.started)),
+      // Honestidade sobre o que a lista não tem:
+      itensLidos: busca.itens.length,
+      cortada: busca.cortada,
+      falhas,
+    };
+  }
+
+  return { minhaSemana };
+}
+
+/** O JQL erra por motivos próprios — inclusive JQL inválido, que é 400. */
+function motivoDaBusca(status) {
+  if (status === 400) return 'busca-invalida';
+  if (status === 401 || status === 403) return 'sem-permissao';
+  if (status === 404) return 'item-nao-encontrado';
+  if (status === 429) return 'limite-de-taxa';
+  if (status >= 500) return 'jira-indisponivel';
+  return 'erro-do-jira';
+}
