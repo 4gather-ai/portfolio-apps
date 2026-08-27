@@ -49,5 +49,39 @@ export function criarVisaoSemana({ semana }) {
         falhas: r.falhas,
       };
     }),
+
+    /**
+     * D9 — a semana do time, **somente leitura**.
+     *
+     * Devolve entradas com autor. Não há operação de escrita nesta tela e não
+     * vai haver: **corrigir hora de outra pessoa continua sendo pela tela do
+     * Jira**, com a permissão do Jira. A regra do D4 não muda porque apareceu
+     * uma tela nova.
+     */
+    semanaDoTime: seguro(async (req) => {
+      quemEstaPedindo(req);
+      const { projetoChave, desde, ate } = req?.payload || {};
+
+      const r = await semana.semanaDoTime({ projetoChave, desde, ate });
+      if (!r.ok) return { ok: false, motivo: r.motivo };
+
+      return {
+        // `started` continua instante absoluto: o dia é decidido na tela.
+        entradas: r.entradas.map((e) => ({ ...e, duracao: formatarDuracao(e.segundos) })),
+        totalSegundos: r.entradas.reduce((soma, e) => soma + e.segundos, 0),
+        itensLidos: r.itensLidos,
+        cortada: r.cortada,
+        falhas: r.falhas,
+        somenteLeitura: true,
+      };
+    }),
+
+    /** Os projetos que esta pessoa enxerga, para o seletor. */
+    projetosVisiveis: seguro(async (req) => {
+      quemEstaPedindo(req);
+      const r = await semana.projetosVisiveis();
+      if (!r.ok) return { ok: false, motivo: r.motivo };
+      return { projetos: r.projetos };
+    }),
   };
 }

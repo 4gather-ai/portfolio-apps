@@ -53,14 +53,19 @@ export function criarSemana({ pedir }) {
     throw new TypeError('criarSemana exige a função pedir');
   }
 
-  /** Passo 1: quais itens têm worklog meu na janela. */
-  async function itensDaJanela({ desde, ate }) {
+  /**
+   * Passo 1: quais itens têm worklog na janela.
+   *
+   * `alvo` é a cláusula que diz de quem: `worklogAuthor = currentUser()` para a
+   * minha semana, `project = "X"` para a semana do time.
+   */
+  async function itensDaJanela({ desde, ate, alvo }) {
     const desdeData = new Date(new Date(desde).getTime() - FOLGA_DA_BUSCA_MS);
     const ateData = new Date(new Date(ate).getTime() + FOLGA_DA_BUSCA_MS);
     const dia = (d) => d.toISOString().slice(0, 10);
 
     const jql =
-      `worklogAuthor = currentUser()` +
+      `${alvo}` +
       ` AND worklogDate >= "${dia(desdeData)}"` +
       ` AND worklogDate <= "${dia(ateData)}"` +
       ` ORDER BY updated DESC`;
@@ -111,7 +116,15 @@ export function criarSemana({ pedir }) {
     return { ok: true, itens, cortada };
   }
 
-  /** Passo 2: as entradas de um item que são minhas e caem na janela. */
+  /**
+   * Passo 2: as entradas do item que caem na janela.
+   *
+   * `accountId` nulo significa **todo mundo** — é o que a visão de equipe pede.
+   * Não é brecha: a chamada é `asUser`, então o Jira já devolve só o que a
+   * pessoa que está olhando pode ver. Quem não enxerga o projeto não recebe
+   * worklog nenhum dele, e worklog com visibilidade restrita continua restrito.
+   * **A permissão do Jira é a permissão do app**, e isso é de propósito.
+   */
   async function entradasDoItem(item, { accountId, desdeMs, ateMs }) {
     // `startedAfter` corta no servidor. Um segundo de folga porque o Jira
     // arredonda o instante que devolve.
@@ -134,7 +147,7 @@ export function criarSemana({ pedir }) {
 
     const lista = (await resposta.json())?.worklogs || [];
     const entradas = lista
-      .filter((w) => w.author?.accountId === accountId)
+      .filter((w) => !accountId || w.author?.accountId === accountId)
       .filter((w) => dentroDaJanela(w.started, desdeMs, ateMs))
       .map((w) => ({
         id: String(w.id),
@@ -148,6 +161,8 @@ export function criarSemana({ pedir }) {
         // A descrição vem junto porque o D7 edita a partir daqui: sem ela, o
         // formulário abriria vazio e salvar apagaria o que a pessoa escreveu.
         comentario: deADF(w.comment),
+        autorId: w.author?.accountId || null,
+        autorNome: w.author?.displayName || null,
       }));
 
     return { ok: true, entradas };
@@ -168,7 +183,7 @@ export function criarSemana({ pedir }) {
       return { ok: false, motivo: 'janela-invalida' };
     }
 
-    const busca = await itensDaJanela({ desde, ate });
+    const busca = await itensDaJanela({ desde, ate, alvo: 'worklogAuthor = currentUser()' });
     if (!busca.ok) return busca;
 
     const resultados = await Promise.all(
@@ -189,7 +204,77 @@ export function criarSemana({ pedir }) {
     };
   }
 
-  return { minhaSemana };
+  /**
+   * A semana de um projeto inteiro, para quem coordena — **somente leitura**.
+   *
+   * Devolve as entradas de todo mundo, com autor. **Corrigir hora alheia
+   * continua sendo pela tela do Jira**, de propósito: a regra do D4 não muda
+   * porque apareceu uma tela nova. Este caminho nem sabe escrever.
+   *
+   * E o que cada pessoa vê é decidido pelo Jira, não por nós: a chamada é
+   * `asUser`, então projeto que ela não enxerga simplesmente não devolve nada.
+   * **Não existe modelo de permissão nosso**, e é isso que impede o app de
+   * virar um vazamento de quem trabalhou em quê.
+   */
+  async function semanaDoTime({ projetoChave, desde, ate }) {
+    if (!projetoChave) throw new TypeError('semanaDoTime exige o projetoChave');
+
+    const desdeMs = Date.parse(desde);
+    const ateMs = Date.parse(ate);
+    if (Number.isNaN(desdeMs) || Number.isNaN(ateMs) || ateMs <= desdeMs) {
+      return { ok: false, motivo: 'janela-invalida' };
+    }
+
+    // Aspas na chave, e aspas de dentro escapadas: chave estranha não monta
+    // JQL torto nem sai do lugar onde deveria estar.
+    const chave = String(projetoChave).replace(/"/g, '\\"');
+    const busca = await itensDaJanela({ desde, ate, alvo: `project = "${chave}"` });
+    if (!busca.ok) return busca;
+
+    const resultados = await Promise.all(
+      // accountId nulo = todo mundo que esta pessoa pode ver.
+      busca.itens.map((item) => entradasDoItem(item, { accountId: null, desdeMs, ateMs }))
+    );
+
+    const entradas = resultados.filter((r) => r.ok).flatMap((r) => r.entradas);
+    const falhas = resultados.filter((r) => !r.ok).map((r) => r.item.issueKey);
+
+    return {
+      ok: true,
+      entradas: entradas.sort((a, b) => Date.parse(b.started) - Date.parse(a.started)),
+      itensLidos: busca.itens.length,
+      cortada: busca.cortada,
+      falhas,
+    };
+  }
+
+  /**
+   * Os projetos que esta pessoa enxerga, para o seletor da visão de equipe.
+   * Também `asUser`: a lista é a dela, não a do app.
+   */
+  async function projetosVisiveis() {
+    let resposta;
+    try {
+      resposta = await pedir('/rest/api/3/project/search?maxResults=50&orderBy=name', {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+    } catch (erro) {
+      return { ok: false, motivo: 'rede', detalhe: erro?.message };
+    }
+
+    if (!resposta.ok) {
+      return { ok: false, motivo: motivoDaBusca(resposta.status), status: resposta.status };
+    }
+
+    const dados = await resposta.json();
+    return {
+      ok: true,
+      projetos: (dados?.values || []).map((p) => ({ chave: p.key, nome: p.name })),
+    };
+  }
+
+  return { minhaSemana, semanaDoTime, projetosVisiveis };
 }
 
 /** O JQL erra por motivos próprios — inclusive JQL inválido, que é 400. */

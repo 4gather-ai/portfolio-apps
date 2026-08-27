@@ -9,6 +9,7 @@ import ForgeReconciler, {
   Spinner,
   Stack,
   Strong,
+  Select,
   Text,
   TextArea,
   Toggle,
@@ -16,6 +17,7 @@ import ForgeReconciler, {
 import { invoke } from '@forge/bridge';
 import { agruparPorDia, chaveDoDia, formatarDuracao, limitesDaSemana } from '../lib/time.js';
 import { filtrarProjetos, paraCSV, projetosDe } from '../lib/csv.js';
+import { porPessoa, totalDoTime } from './equipeUi.js';
 import { FormularioApontamento } from './FormularioApontamento.jsx';
 import { formularioDe, paraEnvio } from './formulario.js';
 import { mensagemDaSemana, mensagemDoApontamento } from './mensagens.js';
@@ -47,6 +49,13 @@ const Semana = () => {
   // exportar tudo, e desmarcar é o gesto de excluir.
   const [exportando, setExportando] = useState(false);
   const [projetosFora, setProjetosFora] = useState([]);
+  // D9: visão de equipe, **somente leitura**. A aba é estado próprio: usar o
+  // projeto escolhido como sinal de aba deixava as duas folhas na tela ao mesmo
+  // tempo enquanto ninguém tinha escolhido projeto — visto no navegador.
+  const [aba, setAba] = useState('minha');
+  const [projetoDoTime, setProjetoDoTime] = useState('');
+  const [time, setTime] = useState(null);
+  const [projetosDisponiveis, setProjetosDisponiveis] = useState([]);
 
   const carregar = useCallback(async (desloc) => {
     setCarregando(true);
@@ -75,6 +84,40 @@ const Semana = () => {
   useEffect(() => {
     carregar(deslocamento);
   }, [carregar, deslocamento]);
+
+  /** A lista de projetos só é buscada quando a aba de equipe é aberta. */
+  const carregarProjetos = useCallback(async () => {
+    try {
+      const r = await invoke('projetosVisiveis');
+      if (r?.ok) setProjetosDisponiveis(r.projetos || []);
+    } catch (e) {
+      // Sem lista, o seletor fica vazio e a mensagem da tela explica.
+    }
+  }, []);
+
+  const carregarTime = useCallback(async (chave, desloc) => {
+    if (!chave) return;
+    setCarregando(true);
+    setErro(null);
+
+    const { inicio, fim } = limitesDaSemana(new Date(), desloc);
+    try {
+      const r = await invoke('semanaDoTime', {
+        projetoChave: chave,
+        desde: inicio.toISOString(),
+        ate: fim.toISOString(),
+      });
+      if (r?.ok) setTime({ ...r, inicio, fim });
+      else setErro(mensagemDaSemana(r?.motivo));
+    } catch (e) {
+      setErro(mensagemDaSemana());
+    }
+    setCarregando(false);
+  }, []);
+
+  useEffect(() => {
+    if (aba === 'time' && projetoDoTime) carregarTime(projetoDoTime, deslocamento);
+  }, [carregarTime, aba, projetoDoTime, deslocamento]);
 
   /**
    * Salvar a correção. O `issueId` vai no payload porque esta é uma página
@@ -141,6 +184,8 @@ const Semana = () => {
     entradas.map((e) => ({ started: e.started, timeSpentSeconds: e.segundos }))
   );
   const dias = dados ? diasDaSemana(dados.inicio) : [];
+  const diasDoTime = time ? diasDaSemana(time.inicio) : [];
+  const linhasDoTime = time ? porPessoa(time.entradas, diasDoTime) : [];
   const projetos = projetosDe(entradas);
   const paraExportar = filtrarProjetos(entradas, { modo: 'excluir', chaves: projetosFora });
   const csv = exportando ? paraCSV(paraExportar) : '';
@@ -148,6 +193,65 @@ const Semana = () => {
   return (
     <Stack space="space.200">
       <Heading as="h2">{dados ? tituloDaSemana(dados.inicio, dados.fim) : 'My week'}</Heading>
+
+      {/* D9 — duas abas. A de equipe é somente leitura, e a tela diz isso. */}
+      <Inline space="space.100" alignBlock="center">
+        <ButtonGroup>
+          <Button
+            appearance={aba === 'minha' ? 'primary' : 'default'}
+            onClick={() => {
+              setAba('minha');
+              setErro(null);
+            }}
+            isDisabled={carregando}
+          >
+            My week
+          </Button>
+          <Button
+            appearance={aba === 'time' ? 'primary' : 'default'}
+            onClick={() => {
+              setAba('time');
+              setExportando(false);
+              setEditando(null);
+              setApagando(null);
+              setErro(null);
+              carregarProjetos();
+            }}
+            isDisabled={carregando}
+          >
+            Team
+          </Button>
+        </ButtonGroup>
+      </Inline>
+
+      {aba === 'time' && (
+        <Stack space="space.100">
+          <Select
+            id="nativelog-projeto-time"
+            placeholder="Choose a project"
+            options={projetosDisponiveis.map((p) => ({
+              label: `${p.nome} (${p.chave})`,
+              value: p.chave,
+            }))}
+            value={
+              projetoDoTime
+                ? {
+                    label:
+                      projetosDisponiveis.find((p) => p.chave === projetoDoTime)?.nome ||
+                      projetoDoTime,
+                    value: projetoDoTime,
+                  }
+                : null
+            }
+            onChange={(opcao) => setProjetoDoTime(opcao?.value || '')}
+          />
+          <Text>
+            Read-only. Nativelog shows you what Jira already lets you see, and never lets you
+            change someone else&apos;s hours — do that from the work item&apos;s Work log tab if
+            you have permission.
+          </Text>
+        </Stack>
+      )}
 
       <Inline space="space.100" alignBlock="center">
         <ButtonGroup>
@@ -164,7 +268,13 @@ const Semana = () => {
             Next week
           </Button>
         </ButtonGroup>
-        <Button appearance="subtle" onClick={() => carregar(deslocamento)} isDisabled={carregando}>
+        <Button
+          appearance="subtle"
+          onClick={() =>
+            aba === 'time' ? carregarTime(projetoDoTime, deslocamento) : carregar(deslocamento)
+          }
+          isDisabled={carregando}
+        >
           Refresh
         </Button>
       </Inline>
@@ -200,6 +310,52 @@ const Semana = () => {
         </SectionMessage>
       )}
 
+      {/* Corpo da aba de equipe: uma linha por pessoa, totais por dia. */}
+      {aba === 'time' && time && projetoDoTime && (
+        <Stack space="space.150">
+          <Inline space="space.100" alignBlock="center">
+            <Strong>Team total</Strong>
+            <Lozenge appearance={time.totalSegundos > 0 ? 'success' : 'default'}>
+              {time.totalSegundos > 0
+                ? formatarDuracao(time.totalSegundos)
+                : 'nothing logged'}
+            </Lozenge>
+            {carregando && <Spinner size="small" label="Refreshing" />}
+          </Inline>
+
+          {linhasDoTime.length === 0 ? (
+            <Text>Nobody logged time on this project during this week.</Text>
+          ) : (
+            linhasDoTime.map((pessoa) => (
+              <Stack key={pessoa.id} space="space.050">
+                <Inline space="space.100" alignBlock="center">
+                  <Strong>{pessoa.nome}</Strong>
+                  <Lozenge appearance="inprogress">{formatarDuracao(pessoa.total)}</Lozenge>
+                </Inline>
+                <Inline space="space.100">
+                  {diasDoTime.map((dia, i) => (
+                    <Text key={chaveDoDia(dia.data)}>
+                      {dia.rotulo}: {pessoa.dias[i] > 0 ? formatarDuracao(pessoa.dias[i]) : '—'}
+                    </Text>
+                  ))}
+                </Inline>
+              </Stack>
+            ))
+          )}
+
+          {time.cortada && (
+            <SectionMessage appearance="warning" title="This week is only partly shown">
+              <Text>
+                The team logged time on more work items than Nativelog reads in one go, so the
+                total above is lower than the real week.
+              </Text>
+            </SectionMessage>
+          )}
+        </Stack>
+      )}
+
+      {/* Daqui para baixo é a minha semana. */}
+      {aba === 'minha' && (
       <Inline space="space.100" alignBlock="center">
         <Strong>Total</Strong>
         <Lozenge appearance={total > 0 ? 'success' : 'default'}>
@@ -207,8 +363,9 @@ const Semana = () => {
         </Lozenge>
         {carregando && <Spinner size="small" label="Refreshing" />}
       </Inline>
+      )}
 
-      {dias.map((dia) => {
+      {aba === 'minha' && dias.map((dia) => {
         const chave = chaveDoDia(dia.data);
         const segundosDoDia = porDia[chave] || 0;
         const doDia = entradas.filter((e) => chaveDoDia(e.started) === chave);
@@ -293,8 +450,9 @@ const Semana = () => {
         );
       })}
 
-      {/* D8 — exportação. */}
-      {entradas.length > 0 && (
+      {/* D8 — exportação. Só na minha semana: a folha do time é somente
+          leitura, e exportar hora alheia é outra conversa (e outro risco). */}
+      {aba === 'minha' && entradas.length > 0 && (
         <Stack space="space.100">
           <Inline space="space.100" alignBlock="center">
             <Button onClick={() => setExportando((v) => !v)} isDisabled={carregando}>

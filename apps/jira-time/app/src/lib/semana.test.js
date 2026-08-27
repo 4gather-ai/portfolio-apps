@@ -261,3 +261,138 @@ describe('a semana carrega a descrição junto', () => {
     expect(r.entradas[0].comentario).toBe('');
   });
 });
+
+describe('semanaDoTime — D9, somente leitura', () => {
+  it('busca por projeto, não por autor', async () => {
+    const { pedir, chamadas } = jiraFalso({ issues: [] });
+    await criarSemana({ pedir }).semanaDoTime({ projetoChave: 'NL', desde: DESDE, ate: ATE });
+
+    const jql = decodeURIComponent(chamadas[0]);
+    expect(jql).toContain('project = "NL"');
+    expect(jql).not.toContain('currentUser()');
+  });
+
+  it('**devolve o worklog de todo mundo, com autor** — é o ponto da tela', async () => {
+    const { pedir } = jiraFalso({
+      issues: [ITEM('10001', 'NL-1', 'x')],
+      porItem: {
+        10001: [wl('meu', emQue(25, 10), 3600), wl('alheio', emQue(25, 11), 7200, OUTRA)],
+      },
+    });
+
+    const r = await criarSemana({ pedir }).semanaDoTime({
+      projetoChave: 'NL',
+      desde: DESDE,
+      ate: ATE,
+    });
+
+    expect(r.entradas.map((e) => e.id).sort()).toEqual(['alheio', 'meu']);
+    expect(r.entradas.find((e) => e.id === 'alheio').autorId).toBe(OUTRA);
+  });
+
+  it('a minha semana continua filtrando por autor — uma tela não contaminou a outra', async () => {
+    const { pedir } = jiraFalso({
+      issues: [ITEM('10001', 'NL-1', 'x')],
+      porItem: {
+        10001: [wl('meu', emQue(25, 10), 3600), wl('alheio', emQue(25, 11), 7200, OUTRA)],
+      },
+    });
+
+    const r = await criarSemana({ pedir }).minhaSemana({ accountId: EU, desde: DESDE, ate: ATE });
+    expect(r.entradas.map((e) => e.id)).toEqual(['meu']);
+  });
+
+  it('a janela é cortada pelo instante, como na minha semana', async () => {
+    const { pedir } = jiraFalso({
+      issues: [ITEM('10001', 'NL-1', 'x')],
+      porItem: {
+        10001: [
+          wl('dentro', emQue(25, 10), 3600, OUTRA),
+          wl('fora', new Date(2026, 7, 31, 10).toISOString(), 7200, OUTRA),
+        ],
+      },
+    });
+
+    const r = await criarSemana({ pedir }).semanaDoTime({
+      projetoChave: 'NL',
+      desde: DESDE,
+      ate: ATE,
+    });
+    expect(r.entradas.map((e) => e.id)).toEqual(['dentro']);
+  });
+
+  it('chave de projeto com aspas não monta JQL torto', async () => {
+    const { pedir, chamadas } = jiraFalso({ issues: [] });
+    await criarSemana({ pedir }).semanaDoTime({
+      projetoChave: 'A" OR project = "B',
+      desde: DESDE,
+      ate: ATE,
+    });
+
+    const jql = decodeURIComponent(chamadas[0]);
+    expect(jql).toContain('project = "A\\" OR project = \\"B"');
+  });
+
+  it('exige a chave do projeto', async () => {
+    const { pedir } = jiraFalso({ issues: [] });
+    await expect(
+      criarSemana({ pedir }).semanaDoTime({ desde: DESDE, ate: ATE })
+    ).rejects.toThrow(TypeError);
+  });
+
+  it('janela inválida é recusada antes de falar com o Jira', async () => {
+    const { pedir, chamadas } = jiraFalso({ issues: [] });
+    const r = await criarSemana({ pedir }).semanaDoTime({
+      projetoChave: 'NL',
+      desde: ATE,
+      ate: DESDE,
+    });
+    expect(r).toMatchObject({ ok: false, motivo: 'janela-invalida' });
+    expect(chamadas).toHaveLength(0);
+  });
+
+  it('item que a pessoa não pode ler some da lista e é declarado', async () => {
+    const { pedir } = jiraFalso({
+      issues: [ITEM('10001', 'NL-1', 'ok'), ITEM('10002', 'NL-2', 'restrito')],
+      porItem: { 10001: [wl('w1', emQue(25, 10), 3600, OUTRA)] },
+      worklogFalha: { 10002: 403 },
+    });
+
+    const r = await criarSemana({ pedir }).semanaDoTime({
+      projetoChave: 'NL',
+      desde: DESDE,
+      ate: ATE,
+    });
+
+    expect(r.ok).toBe(true);
+    expect(r.falhas).toEqual(['NL-2']);
+  });
+});
+
+describe('projetosVisiveis', () => {
+  it('devolve chave e nome dos projetos que a pessoa enxerga', async () => {
+    const pedir = async (caminho) => {
+      expect(caminho).toContain('/rest/api/3/project/search');
+      return resposta(200, { values: [{ key: 'NL', name: 'Nativelog' }] });
+    };
+
+    const r = await criarSemana({ pedir }).projetosVisiveis();
+    expect(r).toMatchObject({ ok: true, projetos: [{ chave: 'NL', nome: 'Nativelog' }] });
+  });
+
+  it('erro vira motivo, não exceção', async () => {
+    const pedir = async () => resposta(403, {});
+    expect(await criarSemana({ pedir }).projetosVisiveis()).toMatchObject({
+      ok: false,
+      motivo: 'sem-permissao',
+    });
+  });
+
+  it('lista vazia não quebra o seletor', async () => {
+    const pedir = async () => resposta(200, {});
+    expect(await criarSemana({ pedir }).projetosVisiveis()).toMatchObject({
+      ok: true,
+      projetos: [],
+    });
+  });
+});
