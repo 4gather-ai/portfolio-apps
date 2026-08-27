@@ -36,6 +36,9 @@ export function mensagemDeErro(motivo) {
       return 'Nativelog could not tell which work item this is.';
     case 'sem-usuario':
       return 'Nativelog could not identify you. Try reloading the page.';
+    case 'precisa-confirmar':
+      // Não é erro: é o app se recusando a gravar um número que ninguém olhou.
+      return 'This timer has been running a long time. Check the total before logging it.';
     default:
       return 'Something went wrong. Your time is still running — try again.';
   }

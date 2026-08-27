@@ -871,3 +871,198 @@ describe('apagarApontamento', () => {
     expect(r).toMatchObject({ ok: false, motivo: 'jira-indisponivel' });
   });
 });
+
+// ── D5: erros do núcleo ──────────────────────────────────────────────────────
+
+/** Permissões falsas, com o roteiro que o teste quiser. */
+function permissoesFalsas(resposta) {
+  const chamadas = [];
+  return {
+    chamadas,
+    async doItem({ issueId }) {
+      chamadas.push(issueId);
+      return (
+        resposta || { ok: true, conferida: true, podeApontar: true, podeEditar: true, podeApagar: true }
+      );
+    },
+  };
+}
+
+function montarD5(opcoes = {}) {
+  const storage = storageDeMemoria();
+  const tempo = relogio('2026-08-27T09:00:00.000Z');
+  const timers = criarTimers({ storage, agora: tempo.agora });
+  const worklogs = worklogsFalsos(opcoes);
+  const permissoes = permissoesFalsas(opcoes.permissao);
+  return {
+    storage,
+    tempo,
+    timers,
+    worklogs,
+    permissoes,
+    painel: criarPainel({ timers, worklogs, permissoes, agora: tempo.agora }),
+  };
+}
+
+describe('estadoDoTimer com permissões', () => {
+  it('pergunta as permissões do item na abertura, não na hora de gravar', async () => {
+    const { painel, permissoes } = montarD5();
+    const r = await painel.estadoDoTimer(EU);
+
+    expect(permissoes.chamadas).toEqual(['10001']);
+    expect(r.permissoes).toMatchObject({ conferida: true, podeApontar: true });
+  });
+
+  it('sem permissão de apontar, o painel sabe antes de a pessoa cronometrar', async () => {
+    const { painel } = montarD5({
+      permissao: { ok: true, conferida: true, podeApontar: false, podeEditar: false, podeApagar: false },
+    });
+    const r = await painel.estadoDoTimer(EU);
+    expect(r.permissoes).toMatchObject({ podeApontar: false, podeEditar: false, podeApagar: false });
+  });
+
+  it('consulta de permissão que falhou libera e marca como não conferida', async () => {
+    const { painel } = montarD5({
+      permissao: { ok: false, motivo: 'rede', conferida: false, podeApontar: true, podeEditar: true, podeApagar: true },
+    });
+    const r = await painel.estadoDoTimer(EU);
+
+    // Nunca trancar alguém fora da própria folha por causa de um problema nosso.
+    expect(r.ok).toBe(true);
+    expect(r.permissoes).toMatchObject({ conferida: false, podeApontar: true });
+  });
+
+  it('funciona sem a camada de permissões — o painel não depende dela', async () => {
+    const storage = storageDeMemoria();
+    const tempo = relogio('2026-08-27T09:00:00.000Z');
+    const painel = criarPainel({
+      timers: criarTimers({ storage, agora: tempo.agora }),
+      worklogs: worklogsFalsos(),
+      agora: tempo.agora,
+    });
+    const r = await painel.estadoDoTimer(EU);
+    expect(r.ok).toBe(true);
+    expect(r.permissoes).toBeNull();
+  });
+});
+
+describe('timer esquecido não vira worklog sem alguém olhar o número', () => {
+  /** Um timer de dias, que é o que a regra existe para pegar. */
+  async function timerLongo() {
+    const ctx = montarD5();
+    await ctx.painel.iniciarTimer(EU);
+    ctx.tempo.avancar(30 * 3600); // 30 h
+    return ctx;
+  }
+
+  it('parar um timer suspeito pede confirmação em vez de gravar', async () => {
+    const { painel, worklogs } = await timerLongo();
+
+    const r = await painel.pararTimer(EU);
+
+    expect(r).toMatchObject({ ok: true, gravado: false, motivo: 'precisa-confirmar' });
+    expect(r.encerrado.duracao).toBe('1d 6h');
+    expect(worklogs.gravados).toHaveLength(0);
+  });
+
+  it('o timer continua de pé enquanto não confirmam — nada se perde', async () => {
+    const { painel, timers } = await timerLongo();
+    await painel.pararTimer(EU);
+    expect(await timers.ler('conta-eu')).not.toBeNull();
+  });
+
+  it('confirmado, grava normalmente', async () => {
+    const { painel, worklogs, timers } = await timerLongo();
+
+    const r = await painel.pararTimer({ ...EU, payload: { confirmado: true } });
+
+    expect(r).toMatchObject({ ok: true, gravado: true });
+    expect(worklogs.gravados[0].segundos).toBe(30 * 3600);
+    expect(await timers.ler('conta-eu')).toBeNull();
+  });
+
+  it('timer normal não pede confirmação nenhuma', async () => {
+    const { painel, tempo, worklogs } = montarD5();
+    await painel.iniciarTimer(EU);
+    tempo.avancar(2 * 3600);
+
+    const r = await painel.pararTimer(EU);
+
+    expect(r).toMatchObject({ ok: true, gravado: true });
+    expect(worklogs.gravados).toHaveLength(1);
+  });
+
+  it('trocar de item **não** pede confirmação: o painel já mostrou o total antes do clique', async () => {
+    const { painel, worklogs } = await timerLongo();
+
+    const r = await painel.iniciarTimer(EU_OUTRO_ITEM);
+
+    expect(r.ok).toBe(true);
+    expect(r.anterior.gravado).toBe(true);
+    expect(worklogs.gravados[0].segundos).toBe(30 * 3600);
+  });
+
+  it('timer corrompido não cai na confirmação — tem caminho próprio', async () => {
+    const { painel, storage } = montarD5();
+    await storage.set(chaveDoTimer('conta-eu'), { issueId: '10001', startedAt: 'lixo' });
+
+    const r = await painel.pararTimer(EU);
+
+    expect(r).toMatchObject({ ok: false, motivo: 'timer-corrompido' });
+  });
+});
+
+describe('saída para o timer preso em outro item', () => {
+  /**
+   * O beco sem saída que o D5 fechou: timer rodando no item A, A apagado do
+   * Jira. Gravar dá 404 para sempre, e até aqui o painel do item B só oferecia
+   * "Start here" — que falha. A pessoa ficava sem poder apontar em lugar nenhum.
+   */
+  it('descartar funciona mesmo com o timer em outro item', async () => {
+    const { painel, timers, storage } = montarD5();
+    await painel.iniciarTimer(EU);
+
+    // A pessoa está olhando o item B e descarta o timer que está no item A.
+    const r = await painel.descartarTimer(EU_OUTRO_ITEM);
+
+    expect(r.ok).toBe(true);
+    expect(r.descartado.issueId).toBe('10001');
+    expect(await timers.ler('conta-eu')).toBeNull();
+    expect(storage.tamanho).toBe(0);
+  });
+
+  it('depois de descartar, dá para começar um timer novo', async () => {
+    const { painel, tempo } = montarD5({
+      aoGravar: () => ({ ok: false, motivo: 'item-nao-encontrado' }),
+    });
+    await painel.iniciarTimer(EU);
+    // Passa do mínimo: abaixo de 1 minuto o timer é descartado sem tentar
+    // gravar, e aí não há falha nenhuma para prender.
+    tempo.avancar(600);
+
+    // Item A sumiu: trocar falha e o timer fica preso.
+    const travado = await painel.iniciarTimer(EU_OUTRO_ITEM);
+    expect(travado).toMatchObject({ ok: false, motivo: 'item-nao-encontrado' });
+
+    // A saída:
+    await painel.descartarTimer(EU_OUTRO_ITEM);
+    const novo = await painel.iniciarTimer(EU_OUTRO_ITEM);
+    expect(novo.ok).toBe(true);
+    expect(novo.timer.issueId).toBe('10002');
+  });
+
+  it('o timer preso guarda o motivo da falha, para a tela poder explicar', async () => {
+    const { painel, tempo } = montarD5({
+      aoGravar: () => ({ ok: false, motivo: 'item-nao-encontrado' }),
+    });
+    await painel.iniciarTimer(EU);
+    tempo.avancar(600);
+    await painel.iniciarTimer(EU_OUTRO_ITEM);
+
+    const estado = await painel.estadoDoTimer(EU_OUTRO_ITEM);
+
+    expect(estado.emOutroItem).toBe(true);
+    expect(estado.timer.tentativas).toBe(1);
+    expect(estado.timer.ultimaFalha).toBe('item-nao-encontrado');
+  });
+});

@@ -11,6 +11,7 @@ import Resolver from '@forge/resolver';
 import { kvs } from '@forge/kvs';
 import { criarTimers } from '../lib/timer.js';
 import { criarWorklogs } from '../lib/worklog.js';
+import { criarPermissoes } from '../lib/permissoes.js';
 import { criarPainel } from './painel.js';
 
 /**
@@ -30,6 +31,9 @@ const pedir = (caminho, opcoes) =>
 const painel = criarPainel({
   timers: criarTimers({ storage: kvs }),
   worklogs: criarWorklogs({ pedir }),
+  // Também `asUser`: a pergunta é o que **a pessoa** pode fazer neste item.
+  // Com `asApp` a resposta seria sobre o app, que não é a pergunta.
+  permissoes: criarPermissoes({ pedir }),
 });
 
 const resolver = new Resolver();

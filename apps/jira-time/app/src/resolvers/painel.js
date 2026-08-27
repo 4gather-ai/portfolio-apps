@@ -85,7 +85,18 @@ function seguro(fn) {
   };
 }
 
-export function criarPainel({ timers, worklogs, agora = () => new Date() }) {
+/**
+ * **Agrupar worklog por dia é trabalho do navegador, não daqui.**
+ *
+ * O resolver do Forge roda em UTC e não tem como saber que 23h30 de terça em
+ * São Paulo ainda é terça. Se a folha de ponto fosse montada no servidor, todo
+ * apontamento do fim da noite cairia no dia seguinte — e a pessoa veria horas
+ * num dia em que não trabalhou. Por isso este arquivo devolve **instantes**
+ * (`started` em ISO) e nunca "dias": quem agrupa é `frontend/`, onde o fuso de
+ * quem está olhando existe de verdade. Vale para o D6 e o D7.
+ */
+
+export function criarPainel({ timers, worklogs, permissoes, agora = () => new Date() }) {
   /**
    * **A guarda do D4: só a própria entrada.**
    *
@@ -175,16 +186,33 @@ export function criarPainel({ timers, worklogs, agora = () => new Date() }) {
   }
 
   return {
-    /** Estado inicial: existe timer meu? é neste item ou em outro? */
+    /** Estado inicial: existe timer meu? é neste item ou em outro? posso apontar? */
     estadoDoTimer: seguro(async (req) => {
       const accountId = quemEstaPedindo(req);
       const { issueId, issueKey } = itemDoPainel(req);
-      const timer = await timers.ler(accountId);
+
+      // As duas leituras são independentes — não há motivo para uma esperar a
+      // outra numa função que já paga cold start.
+      const [timer, permissao] = await Promise.all([
+        timers.ler(accountId),
+        permissoes ? permissoes.doItem({ issueId }) : null,
+      ]);
+
       return {
         item: { issueId, issueKey },
         timer: paraPainel(timer),
         // Timer rodando em OUTRO item: o painel precisa avisar antes de trocar.
         emOutroItem: Boolean(timer) && timer.issueId !== issueId,
+        // **Perguntado na abertura, não na hora de gravar.** Tratar bem o 403
+        // depois de a pessoa cronometrar três horas não devolve as três horas.
+        permissoes: permissao
+          ? {
+              conferida: Boolean(permissao.conferida),
+              podeApontar: permissao.podeApontar !== false,
+              podeEditar: permissao.podeEditar !== false,
+              podeApagar: permissao.podeApagar !== false,
+            }
+          : null,
       };
     }),
 
@@ -227,6 +255,28 @@ export function criarPainel({ timers, worklogs, agora = () => new Date() }) {
       const accountId = quemEstaPedindo(req);
       const timer = await timers.ler(accountId);
       if (!timer) return { encerrado: null, gravado: false };
+
+      /**
+       * **Timer esquecido não vira worklog sem alguém olhar o número.**
+       *
+       * Um cronômetro que ficou a semana inteira ligado não mede trabalho —
+       * mede esquecimento. Gravar 4d 6h em silêncio suja a folha de ponto de
+       * um jeito que ninguém percebe até a fatura, e "o app inventou horas" é
+       * exatamente a reputação que este produto não pode ter.
+       *
+       * Só no "parar". Ao **trocar de item** o painel já mostra, antes do
+       * clique, a frase "You have a timer running on X (4d 6h). Starting here
+       * logs that time to it first" — o número está na tela, e pedir confirmação
+       * duas vezes seria atrito sem ganho.
+       */
+      if (timer.suspeito && !timer.invalido && req?.payload?.confirmado !== true) {
+        return {
+          gravado: false,
+          motivo: 'precisa-confirmar',
+          encerrado: paraPainel(timer),
+        };
+      }
+
       return gravarEEncerrar(accountId, timer);
     }),
 

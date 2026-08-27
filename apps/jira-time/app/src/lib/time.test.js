@@ -230,3 +230,73 @@ describe('inicioDoTimer', () => {
     expect(TOLERANCIA_INICIO_MS).toBeGreaterThanOrEqual(20000);
   });
 });
+
+/**
+ * D5 — fuso horário.
+ *
+ * **A que dia pertence uma hora apontada?** Ao dia de quem apontou, sempre.
+ * Um apontamento das 23h30 de terça em São Paulo é 02h30 de quarta em UTC. Se
+ * a folha de ponto fosse montada no servidor do Forge, que roda em UTC, essa
+ * hora apareceria na quarta — e a pessoa veria trabalho num dia em que não
+ * trabalhou. Por isso o agrupamento por dia é do navegador, e o resolver só
+ * devolve instantes.
+ *
+ * Estes testes valem em qualquer fuso de propósito: constroem a data em hora
+ * local e conferem o dia local. Um teste que só passasse em UTC daria
+ * exatamente a falsa segurança que este bloco existe para evitar.
+ */
+describe('fuso: o dia de um apontamento é o dia de quem apontou', () => {
+  it('23h30 pertence ao dia que a pessoa viveu, não ao dia seguinte em UTC', () => {
+    const tardeDaNoite = new Date(2026, 7, 25, 23, 30);
+    expect(chaveDoDia(tardeDaNoite)).toBe('2026-08-25');
+  });
+
+  it('00h30 pertence ao dia novo, não ao anterior', () => {
+    expect(chaveDoDia(new Date(2026, 7, 26, 0, 30))).toBe('2026-08-26');
+  });
+
+  it('a virada do mês e a do ano não escorregam', () => {
+    expect(chaveDoDia(new Date(2026, 7, 31, 23, 59))).toBe('2026-08-31');
+    expect(chaveDoDia(new Date(2026, 8, 1, 0, 1))).toBe('2026-09-01');
+    expect(chaveDoDia(new Date(2026, 11, 31, 23, 59))).toBe('2026-12-31');
+    expect(chaveDoDia(new Date(2027, 0, 1, 0, 1))).toBe('2027-01-01');
+  });
+
+  it('agrupa duas pontas do mesmo dia local no mesmo balde', () => {
+    const worklogs = [
+      { started: new Date(2026, 7, 25, 0, 15).toISOString(), timeSpentSeconds: 3600 },
+      { started: new Date(2026, 7, 25, 23, 45).toISOString(), timeSpentSeconds: 1800 },
+    ];
+    const { porDia, total } = agruparPorDia(worklogs);
+    expect(Object.keys(porDia)).toEqual(['2026-08-25']);
+    expect(porDia['2026-08-25']).toBe(5400);
+    expect(total).toBe(5400);
+  });
+
+  it('a semana começa na segunda e cobre o domingo inteiro, em hora local', () => {
+    // Quarta-feira, 26/08/2026.
+    const { inicio, fim } = limitesDaSemana(new Date(2026, 7, 26, 15, 0));
+
+    expect(chaveDoDia(inicio)).toBe('2026-08-24'); // segunda
+    expect(chaveDoDia(fim)).toBe('2026-08-30'); // domingo
+    expect(inicio.getHours()).toBe(0);
+    expect(inicio.getMinutes()).toBe(0);
+    expect(fim.getHours()).toBe(23);
+    expect(fim.getMinutes()).toBe(59);
+  });
+
+  it('domingo pertence à semana que começou na segunda anterior', () => {
+    // O erro clássico: getDay() trata domingo como 0 e joga o dia para a
+    // semana seguinte. Uma folha de ponto que perde o domingo perde plantão.
+    const { inicio } = limitesDaSemana(new Date(2026, 7, 30, 10, 0));
+    expect(chaveDoDia(inicio)).toBe('2026-08-24');
+  });
+
+  it('o instante gravado no Jira continua absoluto — o fuso é só da leitura', () => {
+    // paraDataJira preserva o instante; quem interpreta o dia é a tela.
+    const instante = new Date(2026, 7, 25, 23, 30);
+    const jira = paraDataJira(instante);
+    expect(new Date(jira).getTime()).toBe(instante.getTime());
+    expect(jira).toMatch(/\+0000$/);
+  });
+});

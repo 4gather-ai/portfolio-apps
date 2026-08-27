@@ -108,6 +108,10 @@ const App = () => {
   const [apontamentos, setApontamentos] = useState(null);
   const [formulario, setFormulario] = useState(null);
   const [apagando, setApagando] = useState(null);
+  // D5: o timer esquecido esperando o segundo clique, e a confirmação de jogar
+  // fora um timer preso em outro item.
+  const [confirmandoParada, setConfirmandoParada] = useState(null);
+  const [confirmandoDescarte, setConfirmandoDescarte] = useState(false);
 
   /**
    * Os dois refs existem pelo mesmo motivo: os ouvintes de `ligarSincronia` são
@@ -250,14 +254,18 @@ const App = () => {
     definirOcupado(false);
   };
 
-  const parar = async () => {
+  const parar = async ({ confirmado = false } = {}) => {
     definirOcupado(true);
     setAviso(null);
     try {
-      const r = await invoke('pararTimer');
+      const r = await invoke('pararTimer', { confirmado });
 
       if (!r?.ok) {
         setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
+      } else if (r.motivo === 'precisa-confirmar') {
+        // O servidor se recusou a gravar sem alguém olhar o número. A tela
+        // mostra o total e pede o segundo clique.
+        setConfirmandoParada(r.encerrado);
       } else if (r.gravado) {
         setAviso({
           tipo: 'success',
@@ -273,6 +281,7 @@ const App = () => {
       setAviso({ tipo: 'error', texto: mensagemDeErro() });
     }
 
+    setConfirmandoParada(null);
     await carregar({ silencioso: true });
     // O timer virou worklog: a lista logo abaixo estaria mentindo sem isto.
     await carregarApontamentos();
@@ -289,6 +298,8 @@ const App = () => {
     } catch (erro) {
       setAviso({ tipo: 'error', texto: mensagemDeErro() });
     }
+    setConfirmandoParada(null);
+    setConfirmandoDescarte(false);
     await carregar({ silencioso: true });
     definirOcupado(false);
   };
@@ -381,6 +392,10 @@ const App = () => {
   const timer = estado?.timer;
   const falhou = (timer?.tentativas || 0) > 0;
   const linhas = apontamentos?.apontamentos || [];
+  // Timer noutro item que já falhou ao gravar: item apagado, permissão perdida,
+  // projeto arquivado. É o caso que precisa de saída, não só de aviso.
+  const presoEmOutroItem = Boolean(timer) && estado?.emOutroItem && falhou;
+  const naoPodeApontar = estado?.permissoes?.podeApontar === false;
 
   return (
     <Stack space="space.150">
@@ -390,12 +405,71 @@ const App = () => {
         </SectionMessage>
       )}
 
-      {/* Timer aberto em outro item: trocar grava o anterior, então avisamos onde. */}
+      {/* Timer aberto em outro item: trocar grava o anterior, então avisamos onde.
+          **E sempre oferece uma saída.** Até o D5 este caso era um beco sem
+          saída: se o outro item tivesse sido apagado, ou se a permissão de
+          apontar nele tivesse sumido, "Start here" falhava para sempre e não
+          havia botão nenhum para descartar o timer preso — a pessoa ficava sem
+          poder apontar em lugar nenhum, sem nada a fazer na tela. */}
       {timer && estado.emOutroItem && (
-        <SectionMessage appearance="warning" title="A timer is already running">
+        <SectionMessage
+          appearance={presoEmOutroItem ? 'error' : 'warning'}
+          title={presoEmOutroItem ? 'That timer cannot be logged' : 'A timer is already running'}
+        >
+          <Stack space="space.100">
+            <Text>
+              {presoEmOutroItem ? (
+                <>
+                  Your timer on <Strong>{timer.issueKey || 'another work item'}</Strong> (
+                  {timer.duracao}) could not be written to Jira
+                  {timer.ultimaFalha === 'item-nao-encontrado'
+                    ? ' because that work item no longer exists'
+                    : ''}
+                  . Until it is dealt with, no new timer can start.
+                </>
+              ) : (
+                <>
+                  You have a timer running on <Strong>{timer.issueKey || 'another work item'}</Strong>{' '}
+                  ({timer.duracao}). Starting here logs that time to it first.
+                </>
+              )}
+            </Text>
+
+            {confirmandoDescarte ? (
+              <Inline space="space.100" alignBlock="center">
+                <Text>Throw away {timer.duracao} without logging it?</Text>
+                <Button appearance="danger" onClick={descartar} isDisabled={ocupado}>
+                  Discard it
+                </Button>
+                <Button
+                  appearance="subtle"
+                  onClick={() => setConfirmandoDescarte(false)}
+                  isDisabled={ocupado}
+                >
+                  Keep it
+                </Button>
+              </Inline>
+            ) : (
+              <Button
+                appearance="subtle"
+                onClick={() => setConfirmandoDescarte(true)}
+                isDisabled={ocupado}
+              >
+                Discard that timer
+              </Button>
+            )}
+          </Stack>
+        </SectionMessage>
+      )}
+
+      {/* Permissão conferida na abertura: dizer agora, não depois de a pessoa
+          cronometrar três horas que não terá onde gravar. */}
+      {naoPodeApontar && (
+        <SectionMessage appearance="warning" title="You can't log work on this item">
           <Text>
-            You have a timer running on <Strong>{timer.issueKey || 'another work item'}</Strong> (
-            {timer.duracao}). Starting here logs that time to it first.
+            Your Jira permissions on this project don't include logging work, so a timer here
+            would have nowhere to go. Ask a project admin for the &quot;Work on issues&quot;
+            permission.
           </Text>
         </SectionMessage>
       )}
@@ -428,10 +502,43 @@ const App = () => {
         <Text>No timer running on this work item.</Text>
       )}
 
+      {/* Timer esquecido: o total por extenso e um segundo clique. Gravar 4d 6h
+          em silêncio suja a folha de ponto de um jeito que só aparece na fatura. */}
+      {confirmandoParada && (
+        <SectionMessage appearance="warning" title="Check this total before logging it">
+          <Stack space="space.100">
+            <Text>
+              This timer has been running since {quandoLegivel(confirmandoParada.startedAt)}, which
+              is <Strong>{confirmandoParada.duracao}</Strong>. Log that to{' '}
+              {confirmandoParada.issueKey || 'this work item'}?
+            </Text>
+            <Inline space="space.100" alignBlock="center">
+              <Button
+                appearance="primary"
+                onClick={() => parar({ confirmado: true })}
+                isDisabled={ocupado}
+              >
+                Log {confirmandoParada.duracao}
+              </Button>
+              <Button appearance="subtle" onClick={descartar} isDisabled={ocupado}>
+                Discard it instead
+              </Button>
+              <Button
+                appearance="subtle"
+                onClick={() => setConfirmandoParada(null)}
+                isDisabled={ocupado}
+              >
+                Keep running
+              </Button>
+            </Inline>
+          </Stack>
+        </SectionMessage>
+      )}
+
       <ButtonGroup>
         {rodandoAqui ? (
           <>
-            <Button appearance="primary" onClick={parar} isDisabled={ocupado}>
+            <Button appearance="primary" onClick={() => parar()} isDisabled={ocupado}>
               {falhou ? 'Stop and retry' : 'Stop'}
             </Button>
             <Button appearance="subtle" onClick={descartar} isDisabled={ocupado}>
@@ -439,13 +546,17 @@ const App = () => {
             </Button>
           </>
         ) : (
-          <Button appearance="primary" onClick={iniciar} isDisabled={ocupado}>
-            {timer && estado.emOutroItem ? 'Start here' : 'Start timer'}
-          </Button>
+          // Sem permissão de apontar, o botão não aparece: convidar para um
+          // cronômetro que não tem onde gravar é a pior coisa que a tela faz.
+          !naoPodeApontar && (
+            <Button appearance="primary" onClick={iniciar} isDisabled={ocupado}>
+              {timer && estado.emOutroItem ? 'Start here' : 'Start timer'}
+            </Button>
+          )
         )}
         {/* Sempre disponível, inclusive com o timer correndo: lançar a sexta
             esquecida não pode exigir parar o cronômetro de hoje. */}
-        {!formulario && (
+        {!formulario && !naoPodeApontar && (
           <Button appearance="default" onClick={abrirNovo} isDisabled={ocupado}>
             Log time manually
           </Button>
@@ -500,12 +611,19 @@ const App = () => {
                 // esticava na largura toda e os dois botões ficavam longe da
                 // linha a que pertencem.
                 <Inline space="space.050">
-                  <Button appearance="subtle" onClick={() => abrirEdicao(linha)} isDisabled={ocupado}>
-                    Edit
-                  </Button>
-                  <Button appearance="subtle" onClick={() => setApagando(linha.id)} isDisabled={ocupado}>
-                    Delete
-                  </Button>
+                  {/* Permissão de worklog próprio pode ter sido removida depois
+                      de a entrada existir. Mostrar o botão seria prometer o que
+                      o Jira vai recusar. */}
+                  {estado?.permissoes?.podeEditar !== false && (
+                    <Button appearance="subtle" onClick={() => abrirEdicao(linha)} isDisabled={ocupado}>
+                      Edit
+                    </Button>
+                  )}
+                  {estado?.permissoes?.podeApagar !== false && (
+                    <Button appearance="subtle" onClick={() => setApagando(linha.id)} isDisabled={ocupado}>
+                      Delete
+                    </Button>
+                  )}
                 </Inline>
               )}
             </Stack>
