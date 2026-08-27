@@ -1,6 +1,6 @@
 # Nativelog — Plano da v1
 
-> **✅ Aprovado pelo Amarildo em 26/08/2026.** Em construção — **D1 a D7 concluídos**, D8 é o próximo.
+> **✅ Aprovado pelo Amarildo em 26/08/2026.** Em construção — **D1 a D13 concluídos**, D14 é o último.
 > Base: cunha provada no spike de 26/08/2026 (`STATUS.md`). Escopo fechado em `PESQUISA.md`, rodada 5.
 
 ---
@@ -93,13 +93,13 @@ permissions:
 | ~~**D5**~~ ✅ | **27/08** *(adiantado)* | Erros do núcleo: permissão conferida na abertura, timer preso com saída, timer esquecido com confirmação, fuso virou contrato | — |
 | ~~**D6**~~ ✅ | **27/08** *(adiantado)* | `globalPage` "Minha semana": busca em dois passos, totais por dia no fuso local | — |
 | ~~**D7**~~ ✅ | **27/08** *(adiantado)* | Navegação de semanas, corrigir e apagar a partir da folha | — |
-| **D8** ▶️ | 02/09 | Exportação CSV com incluir/**excluir** projetos. **Critério de "pronto" da rodada 5 completo** | — |
-| **D9** | 03/09 | Visão de equipe (Pro), leitura por grupo/projeto | — |
-| **D10** | 04/09 | i18n: EN, pt-BR, ES, DE, FR | — |
-| **D11** | 05/09 | Editions Free/Standard/Pro + checagem de licença | **Definir a tabela de faixas de preço** no Developer Console — eu preparo os números |
-| **D12** | 06/09 | Instância grande: 50+ projetos, muitos worklogs, paginação, desempenho | — |
-| **D13** | 07/09 | Acessibilidade, revisão de UI, textos finais | — |
-| **D14** | 08/09 | Empacotar para o beta: link privado, `BETA.md`, instruções de instalação | **Privacidade e suporte no ar** em `northstackapps.com` |
+| ~~**D8**~~ ✅ | **27/08** | Exportação CSV com incluir/**excluir** projetos. **Critério de "pronto" da rodada 5 completo** | — |
+| ~~**D9**~~ ✅ | **27/08** | Visão de equipe (Pro), **somente leitura**, por projeto | — |
+| ~~**D10**~~ ✅ | **27/08** | i18n: EN, pt-BR, ES, DE, FR — no i18n nativo do Forge | — |
+| ~~**D11**~~ ✅ | **27/08** | Editions + checagem de licença | ▶️ **Aprovar `PRECO.md`** — a tabela está pronta com os números propostos |
+| ~~**D12**~~ ✅ | **27/08** | Instância grande: paginação de verdade, leitura em lotes | — |
+| ~~**D13**~~ ✅ | **27/08** | Acessibilidade, revisão de UI, textos finais | — |
+| **D14** ▶️ | 08/09 | Empacotar para o beta: link privado, `BETA.md`, instruções de instalação | **Site no ar**, **preço aprovado**, **link de instalação gerado** |
 
 > **Um dia de folga recuperado.** O D2 saiu em 26/08, no dia do D1. As datas seguintes ficam como estavam de propósito: o aviso abaixo diz que a compressão para 14 dias tirou todo o amortecedor, então o dia ganho vale mais como folga do que como antecipação.
 

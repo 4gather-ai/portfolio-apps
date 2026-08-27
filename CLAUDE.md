@@ -120,7 +120,7 @@ Pós-compra por micro-segmento, outros marketplaces (WordPress, Chrome, Atlassia
 
 ## Estado atual (atualizado em 27/08/2026)
 
-**App em construção: `Nativelog`** — apontamento de horas para Jira Cloud, em `apps/jira-time/`. Regra 8 cumprida na rodada 5 do `PESQUISA.md`, plano aprovado. **D1 a D7 de 14 concluídos; o próximo é o D8.** Deploy 2.13.0 na `northstack-dev`, 292 testes.
+**App em construção: `Nativelog`** — apontamento de horas para Jira Cloud, em `apps/jira-time/`. Regra 8 cumprida na rodada 5 do `PESQUISA.md`, plano aprovado. **D1 a D13 de 14 concluídos; falta só o D14.** Deploy 2.23.0 na `northstack-dev`, 405 testes.
 
 **A cunha está provada no produto, não só no spike:** em 26/08/2026 o Amarildo apontou tempo pelo app e o worklog nasceu com o nome dele na aba Work log do Jira.
 

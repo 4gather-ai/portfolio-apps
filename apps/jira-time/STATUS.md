@@ -2,7 +2,7 @@
 
 Apontamento de horas para Jira Cloud. **O worklog do Jira é a fonte de verdade; não há segunda cópia.**
 
-**Última atualização:** 27/08/2026 (sessão 12) · **D7 de 14 concluído** · deploy **2.13.0** no ambiente `development` · **292 testes** · `forge lint` limpo
+**Última atualização:** 27/08/2026 (sessão 13) · **D13 de 14 concluído** · deploy **2.23.0** no ambiente `development` · **405 testes** · `forge lint` limpo
 **Onde:** `northstack-dev.atlassian.net` · app id `22d863f1-cb08-4d77-a7b9-bd4098ede2b2` · elegível a **Runs on Atlassian**
 
 > Este arquivo é o estado do **app**. O estado do portfólio fica em `../../STATUS.md`; os marcos por dia em `PLANO-V1.md`; as decisões em `../../DECISOES.md`.
@@ -21,16 +21,24 @@ Apontamento de horas para Jira Cloud. **O worklog do Jira é a fonte de verdade;
 | **D5** | Erros do núcleo: permissão na abertura, timer preso com saída, timer esquecido, fuso | 262 |
 | **D6** | **"Minha semana"** (`globalPage`): busca em dois passos, totais por dia no fuso local | 284 |
 | **D7** | Navegação de semanas + **corrigir e apagar a partir da folha** | 292 |
+| **D8** | Exportação CSV, com filtro de projetos e defesa contra injeção de fórmula | 321 |
+| **D9** | **Visão de equipe, somente leitura** — o gestor vê a semana do time | 343 |
+| **D10** | i18n em EN, pt-BR, ES, DE e FR, no i18n nativo do Forge | 373 |
+| **D11** | Editions e checagem de licença + [`PRECO.md`](PRECO.md) para aprovação | 388 |
+| **D12** | Instância grande: paginação de verdade e leitura em lotes | 405 |
+| **D13** | Acessibilidade e revisão de textos | 405 |
 
 **A cunha está provada no produto, não só no spike:** em 26/08 o Amarildo apontou tempo pelo app e o worklog nasceu **com o nome dele** na aba Work log do Jira. Era o único critério do D3 que o Claude Code não conseguia fechar sozinho.
 
 ---
 
-## ▶️ Próximo — D8 (02/09)
+## ▶️ Próximo — D14, o último
 
-**Exportação CSV**, com incluir/excluir projetos. Fecha o critério de "pronto" da rodada 5 do `PESQUISA.md`.
+**Empacotar para o beta:** link de instalação privado, `BETA.md` e as instruções.
 
-A leitura já existe: o D6 montou a semana a partir do worklog nativo. O D8 é dar saída a ela — e a decisão que importa é **de quem é o CSV**: contador quer uma linha por lançamento com projeto, item, data, duração e descrição; gerente quer somado por dia. A v1 exporta o cru, porque somar a partir do cru é trivial e o inverso é impossível.
+O kit já está pronto desde 27/08 — páginas em [`../../site/`](../../site/) e anúncios em [`BETA-ANUNCIO.md`](BETA-ANUNCIO.md). O que falta do D14 é gerar o link de instalação no Developer Console, e isso é seu.
+
+**Depois dele o código para e o beta começa.** A regra 16 não deixa listar sem 5 a 10 instâncias reais usando de verdade por 2 a 3 semanas.
 
 ---
 
@@ -49,15 +57,17 @@ Nenhum bloqueio técnico. **O risco aberto do projeto não é código, é o beta
 | 1 | **Publicar `site/` no Cloudflare Pages** — build vazio, output `site`. Ver `../../site/README.md` | 10 min | **D14 / beta** |
 | 2 | **Criar `support@northstackapps.com`** no Email Routing do Cloudflare | 5 min | **As 3 páginas já prometem esse endereço** |
 | 3 | **Publicar a resposta 2 da Community** — texto pronto para colar em `COMMUNITY.md` | 5 min | O beta |
+| 4 | **Aprovar [`PRECO.md`](PRECO.md)** — uma decisão (2 ou 3 editions) e os números | 15 min | **Billing** |
 
 **Mais adiante:**
 
 | # | O quê | Quando | Bloqueia |
 |---|---|---|---|
-| 4 | **Decidir se a v1 tem visão de equipe** — é o que separa Standard de Pro | D9 · 03/09 | O preço do Pro |
-| 5 | **Definir a tabela de faixas de preço no Developer Console** | D11 · 05/09 | **Billing. Único item que trava a submissão** |
-| 6 | **Publicar o anúncio do beta** (`BETA-ANUNCIO.md`) e **gerar o link de instalação** | D14 · 08/09 | **O beta não começa** |
+| 5 | **Inserir as faixas de preço no Developer Console** — depois de aprovar o `PRECO.md` | D14 | **Billing. Único item que trava a submissão** |
+| 6 | **Publicar o anúncio do beta** (`BETA-ANUNCIO.md`) e **gerar o link de instalação** | D14 | **O beta não começa** |
 | 7 | **Recrutar e acompanhar 5–10 instâncias reais** | dias 15–35 | **Listar. É o risco real do plano** |
+
+~~Decidir se a v1 tem visão de equipe~~ — **decidido em 27/08: entra, somente leitura.**
 
 ---
 
@@ -70,6 +80,9 @@ src/
     timer.js        máquina de estados do timer (KVS injetado)
     worklog.js      escrita e leitura do worklog nativo (`pedir` injetado)
     apontamento.js  validação do apontamento manual
+    csv.js          exportação, com defesa contra injeção de fórmula
+    licenca.js      que edition esta instância tem — na dúvida, libera
+    lotes.js        concorrência limitada: 60 chamadas simultâneas viram 429
     permissoes.js   o que esta pessoa pode fazer neste item
     semana.js       a folha da semana, em dois passos (JQL + endpoint do item)
   resolvers/
@@ -83,6 +96,7 @@ src/
     estado.js       relógio otimista, quando reconsultar, o que mudou por fora
     formulario.js   dia+hora local ⇄ instante absoluto
     semanaUi.js     os sete dias e os rótulos da folha
+    equipeUi.js     a folha do time agrupada por pessoa — só totais, sem edição
     mensagens.js    motivo técnico → frase que a pessoa entende
 ```
 
@@ -98,6 +112,9 @@ src/
 6. **`@forge/kvs`**, não o `storage` do `@forge/api` (deprecado, o `forge lint` reprova).
 7. **Agrupar worklog por dia é do navegador, nunca do resolver.** O Forge roda em UTC e não sabe que 23h30 de terça em São Paulo ainda é terça. O servidor devolve instantes; a tela decide o dia.
 8. **Uma consulta de permissão que falha nunca tranca ninguém.** Na dúvida, libera — a gravação de verdade ainda recusa com frase clara, e nesse caminho nada se perde.
+9. **A licença segue a mesma regra, e ela é assimétrica de propósito.** Bloquear um cliente pagante por um campo que não soubemos ler é pior que alguém ver o Pro de graça por um tempo. Só a visão de equipe é paga; o núcleo é igual em todas as editions.
+10. **Ler do Jira sempre pagina e sempre em lotes.** Ler a primeira página e somar dá um total que parece completo e não é; 60 chamadas simultâneas viram 429 e a folha volta furada.
+11. **Símbolo não é texto.** Travessão para dia vazio não é lido por leitor de tela. Campo tem `Label` associado, não texto ao lado.
 
 ---
 
@@ -123,7 +140,7 @@ E é a evidência mais forte a favor da **regra 16**: dev store com uma aba só 
 
 ```bash
 # Node está fora do PATH nesta máquina
-"/c/Program Files/nodejs/npm.cmd" run check        # lint + 292 testes
+"/c/Program Files/nodejs/npm.cmd" run check        # lint + 405 testes
 "/c/Program Files/nodejs/npx.cmd" forge lint
 "/c/Program Files/nodejs/npx.cmd" forge deploy --non-interactive
 ```

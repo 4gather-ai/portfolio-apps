@@ -1,80 +1,129 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-27 (sessão 12) · Dia 2 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
+**Última atualização:** 2026-08-27 (sessão 13) · Dia 2 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
-## ▶️ Nativelog · **D7 de 14 concluído** · 292 testes · deploy 2.13.0
+## ▶️ Nativelog · **D13 de 14 concluído** · 405 testes · deploy 2.23.0
 
 | Dia | Marco | Estado |
 |---|---|---|
-| **D1–D4** · 26/08 | Scaffold, timer, worklog nativo via `asUser()`, apontamento manual | ✅ |
-| **D5** · 27/08 | **Erros do núcleo:** permissão, timer preso, timer esquecido, fuso | ✅ **hoje** |
-| **D6** · 27/08 | **"Minha semana":** folha remontada do Jira, totais por dia | ✅ **hoje** |
-| **D7** · 27/08 | **Navegação de semanas + corrigir e apagar a partir da folha** | ✅ **hoje** |
-| **D8** · 02/09 | Exportação CSV com incluir/**excluir** projetos | ▶️ próximo |
+| **D1–D7** · 26–27/08 | Timer, worklog nativo, apontamento manual, erros do núcleo, "Minha semana" | ✅ |
+| **D8** · 27/08 | **Exportação CSV** com filtro de projetos | ✅ |
+| **D9** · 27/08 | **Visão de equipe, somente leitura** | ✅ |
+| **D10** · 27/08 | **i18n:** EN, pt-BR, ES, DE, FR | ✅ |
+| **D11** · 27/08 | **Editions + licença**, mais [`PRECO.md`](apps/jira-time/PRECO.md) para você aprovar | ✅ |
+| **D12** · 27/08 | **Instância grande:** paginação de verdade, leitura em lotes | ✅ |
+| **D13** · 27/08 | **Acessibilidade** e revisão de textos | ✅ |
+| **D14** | Empacotar o beta: link de instalação, `BETA.md` | ▶️ **o último, e precisa de você** |
 
-**Sete dias de marco em dois dias de calendário.** As datas seguintes ficam como estavam: a folga ganha vale mais como amortecedor que como antecipação — o beta e a fila da Atlassian não comprimem.
-
-**Os três marcos de hoje foram verificados no navegador, um a um** (regra 17). O que o navegador achou nesta sessão está registrado em cada seção abaixo.
+**Treze marcos em dois dias de calendário.** Cada um verificado no navegador antes do commit (regra 17) — e essa disciplina achou **cinco defeitos que os testes não pegavam**, listados abaixo.
 
 ---
 
 ## 🔴 PRECISA DE VOCÊ
 
-### Agora — 3 itens, todos rápidos
+### Agora
 
-| # | O quê | Quanto tempo | Bloqueia |
+| # | O quê | Tempo | Bloqueia |
 |---|---|---|---|
-| 1 | **Publicar a resposta 2 da Community** — texto pronto em [`COMMUNITY.md`](apps/jira-time/COMMUNITY.md), já em texto puro para colar | 5 min | O beta |
-| 2 | **Publicar o site no Cloudflare Pages** — passo a passo em [`site/README.md`](site/README.md). Build vazio, output `site` | 10 min | **D14 (beta)** |
-| 3 | **Criar `support@northstackapps.com`** no Email Routing do Cloudflare | 5 min | **As 3 páginas do site prometem esse endereço** |
+| 1 | **Aprovar [`PRECO.md`](apps/jira-time/PRECO.md)** — uma decisão de estrutura e os números | 15 min | **Billing, e portanto a submissão** |
+| 2 | Publicar `site/` no Cloudflare Pages *(você disse que está publicando)* | 10 min | D14 / beta |
+| 3 | Criar `support@northstackapps.com` no Email Routing | 5 min | As páginas prometem esse endereço |
+| 4 | **Resposta 2 da Community**, pronta para colar | 5 min | O beta |
 
-> **O item 3 é o mais fácil e o mais perigoso de esquecer.** A página de suporte é **item obrigatório** da revisão da Atlassian, e as três páginas já apontam para esse e-mail. Sem ele, o site promete um canal que não responde.
+### Depois, no D14
 
-### Por marco, daqui até a submissão
-
-| Marco | Data | O que precisa de você | Se não fizer |
-|---|---|---|---|
-| **D8** · Exportação CSV | 02/09 | Nada | — |
-| **D9** · Visão de equipe (Pro) | 03/09 | Nada — mas **decida se a v1 tem visão de equipe**. É o que separa Standard de Pro | Sem ela, o Pro perde a razão de existir e o preço muda |
-| **D10** · i18n (EN, pt-BR, ES, DE, FR) | 04/09 | Nada. Traduzo e você revisa o **pt-BR** se quiser | Fica como eu escrevi |
-| **D11** · Editions + licença | 05/09 | **Definir a tabela de faixas de preço no Developer Console.** Eu preparo os números; a tela exige sua conta | **Billing não existe.** É o único item que trava a submissão |
-| **D12** · Instância grande | 06/09 | Nada | — |
-| **D13** · Acessibilidade e textos | 07/09 | Nada | — |
-| **D14** · Empacotar o beta | 08/09 | **Site no ar** (itens 2 e 3 acima) · **publicar o anúncio do beta** ([`BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md)) · **gerar o link de instalação** no Developer Console | **O beta não começa** |
-| **Beta** · dias 15–35 | 09/09–29/09 | **Recrutar e acompanhar 5–10 instâncias reais.** Me traga toda thread técnica: eu escrevo a réplica | **A regra 16 não deixa listar.** É o risco real do plano |
-| **Submissão** · ~D36 | ~04/10 | Submeter, aceitar termos, responder a revisão | — |
-
-**Resumo honesto:** de hoje até o D14 você tem **3 itens de 5 a 10 minutos** e **1 decisão de preço**. Depois disso, o trabalho é seu e é o mais difícil do projeto: achar as instâncias.
+Gerar o **link de instalação privado** no Developer Console e **publicar o anúncio do beta**. Aí o código para e começa o que a regra 16 exige: 5 a 10 instâncias reais por 2 a 3 semanas.
 
 ---
 
-## 📦 Kit do beta — pronto hoje, esperando você publicar
+## 💰 O preço está pronto e esperando você
 
-Usei a folga dos marcos adiantados para preparar tudo que o D14 vai precisar. **Nada disso depende de mais código.**
+[`apps/jira-time/PRECO.md`](apps/jira-time/PRECO.md). **Nada foi inserido no Developer Console** — o arquivo é a proposta.
 
-| Arquivo | O que é |
-|---|---|
-| [`site/index.html`](site/index.html) | northstackapps.com |
-| [`site/nativelog/privacy.html`](site/nativelog/privacy.html) | **Política de privacidade** — obrigatória na Marketplace |
-| [`site/nativelog/support.html`](site/nativelog/support.html) | **Página de suporte** — obrigatória na Marketplace |
-| [`site/nativelog/beta.html`](site/nativelog/beta.html) | **Guia de instalação do beta, em EN** — é o link que vai nos anúncios |
-| [`site/style.css`](site/style.css) | Folha única, tema claro e escuro |
-| [`apps/jira-time/BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md) | **Anúncio do beta** para a Community e o r/jira, em texto puro |
+**A decisão que preciso de você é uma só:** duas editions pagas, ou três com uma Free ilimitada.
 
-**Duas escolhas do kit que valem explicação:**
+**Recomendo duas.** A Atlassian já torna todo app Cloud grátis abaixo de 11 usuários — isso é regra deles, não escolha nossa —, então "Free" não é uma edition que a gente cria, é uma consequência que existe de qualquer jeito. Uma terceira edition grátis para sempre seria um concorrente nosso que nunca cobra, e o que ela daria de graça é **a cunha**: worklog nativo no nome da pessoa, que é justamente o que o cliente mais valoriza.
 
-**1. O site não carrega nada de fora.** Sem fonte remota, sem analytics, sem script de terceiro. A política de privacidade afirma que o app não rastreia ninguém — um site que carrega Google Fonts contradiz a própria política na primeira linha. Também abre instantâneo e passa em revisão de segurança sem conversa.
+**Duas mudanças em relação ao que a `LISTING.md` prometia:**
 
-**2. A política de privacidade é curta porque o produto tem pouco a declarar.** É a cunha aparecendo de novo, agora como vantagem comercial: *"Nativelog não guarda cópia das suas horas. O único registro que existe é o cronômetro em andamento, e ele some quando você para."* Concorrente que mantém banco próprio não consegue escrever essa frase.
+1. **A exportação CSV desceu para o núcleo.** Cobrar de alguém para exportar as próprias horas chega perto de segurar dado de refém, e é o que rende avaliação de duas estrelas. O que separa Standard de Pro passou a ser **de quem são as horas** — as suas, ou as do time.
+2. **A visão de equipe é o Pro inteiro**, e é somente leitura por decisão sua.
 
-**O texto do r/jira lista as limitações antes que alguém as encontre** — Cloud only, só o próprio tempo, um timer por vez, app novo de um desenvolvedor só. No Reddit, admitir limitação é o que dá credibilidade; esconder é o que faz o post virar alvo.
+| Usuários | Standard | Pro | Clockwork Pro | Tempo |
+|---|---|---|---|---|
+| 50 | US$ 40 | US$ 64 | US$ 65 | US$ 260 |
+| 250 | US$ 195 | US$ 294 | US$ 295 | US$ 1.070 |
+| 1.000 | US$ 450 | US$ 650 | US$ 610 | US$ 2.428 |
+
+O Pro empata com o líder de qualidade da categoria e fica **3,7× abaixo** do líder de volume. O arquivo explica também **o que eu não recomendo**: cobrar acima do Clockwork sem ter avaliação nenhuma, e entrar muito mais barato — preço de banana num app de folha de ponto sugere hobby, e a conta do Forge cresce com uso.
 
 ---
 
-## ✅ D7 — corrigir a folha sem sair da folha
+## 🐞 O que o navegador achou nesta sessão
+
+Cinco defeitos, e nenhum deles aparecia em teste. **Três eram de plataforma; dois eram meus.**
+
+| Marco | Defeito | Por que o teste não pegava |
+|---|---|---|
+| D7 | Entradas da semana sem descrição — editar dali **apagaria em silêncio** o que a pessoa escreveu | O leitor estava certo; faltava um campo que só a tela usava |
+| D9 | Aba "Equipe" deixava a "Minha semana" renderizada embaixo, com Editar e Apagar | Eu sobrecarreguei o projeto escolhido como estado de aba, e string vazia é falsa |
+| D10 | **Editar e Apagar em inglês** nas linhas da semana | A semana tem cópias próprias dos botões; passei por cima delas |
+| D10 | Página travada até eu descobrir que era a aba do Chrome, não o app | — |
+| D12 | Paginação: um item com muito histórico dava total **que parecia completo e não era** | Achado ao ler o código para o D12, antes de virar reclamação |
+
+---
+
+## ✅ D12 — instância grande
+
+Dois defeitos silenciosos, do mesmo formato: **um número que parecia completo e não era.**
+
+**Paginação.** O endpoint de worklog devolve no máximo 1000 por página e o de projetos 50, e o código lia a primeira página e somava. Item com anos de manutenção, ou instância com mais de 50 projetos, produzia total curto sem avisar. Agora pagina — e o laço tem **três saídas, das quais duas não confiam no servidor**: página vazia, página menor que a pedida, e só então o total informado. Servidor que ignore `startAt` devolveria a mesma página para sempre e prenderia o resolver até o timeout do Forge. Tem teste para isso.
+
+**Lotes.** A semana lê um item por chamada, e `Promise.all` sobre sessenta itens dispara sessenta requisições simultâneas. O Jira responde 429, a folha volta cheia de buracos, e o usuário lê "alguns itens não puderam ser lidos" numa semana em que estava tudo bem. Agora são cinco por vez. **Numa folha de ponto, completa e devagar ganha de rápida e furada** — o número errado ninguém percebe, a demora todo mundo perdoa.
+
+---
+
+## ✅ D10 — cinco línguas
+
+EN, pt-BR, ES, DE e FR, no i18n nativo do Forge.
+
+**Cada chamada leva o inglês embutido como padrão.** Se uma tradução falhar ao carregar, ou faltar uma chave, a tela mostra inglês — nunca a chave crua.
+
+**As frases com valor usam marcador `{0}`, e isso importa mais do que parece:** em alemão o verbo vai para o fim. Montar frase por concatenação produz ordem de palavras inglesa vestindo palavras alemãs. Com marcador, cada tradução decide a ordem.
+
+**Um teste segura os cinco arquivos** no mesmo conjunto de chaves, sem valor vazio, com os mesmos marcadores, e aponta qualquer frase longa ainda idêntica ao inglês. i18n apodrece em silêncio: alguém acrescenta uma frase, esquece quatro arquivos, e o app fica metade traduzido para quem não fala inglês — e ninguém percebe, porque ninguém da equipe usa o app em alemão.
+
+---
+
+## ✅ D9 — visão de equipe, somente leitura
+
+Aba "Equipe": escolhe o projeto, vê a semana por pessoa com totais por dia. **Não há caminho de escrita nesse código, e não vai haver** — corrigir hora alheia continua sendo pela tela do Jira.
+
+**Quem vê o quê é decidido pelo Jira, não por nós.** A chamada é `asUser`, então projeto que a pessoa não enxerga não devolve nada. **Não existe modelo de permissão nosso**, e é isso que impede o app de virar um vazamento de quem trabalhou em quê.
+
+O formato reforça a decisão: sai **totais por pessoa e por dia**, nunca lançamento editável. Um teste afirma o conjunto exato de campos de uma linha, para que acrescentar um id de worklog ali seja um ato deliberado e não um deslize.
+
+---
+
+## ✅ D8 — exportação CSV
+
+Uma linha por lançamento, **nunca somado**. Somar linha crua é tabela dinâmica de trinta segundos; separar um total que já veio somado é impossível.
+
+Duas colunas de duração, porque servem a leitores diferentes: a notação do Jira para conferir contra a tela, e **horas decimais porque ninguém soma "1h 30m" numa planilha**.
+
+O filtro é por exclusão, apresentado como desmarcar projeto. **Quem fatura por cliente raramente sabe listar os projetos que quer; sabe listar os dois que não quer** — o interno e o de férias.
+
+**E há uma parte que é segurança, não formatação:** todo campo que começa com `=`, `+`, `-`, `@`, tab ou retorno de carro ganha um apóstrofo na frente. Uma descrição que começa com `=` vira fórmula ao abrir no Excel, e existe uma família inteira de ataques que usa exatamente isso para rodar comando na máquina de quem abre. **Quem escreve a descrição é qualquer pessoa do Jira; quem abre o CSV costuma ser o financeiro.**
+
+Não há download de arquivo dentro de um app Forge — o `router.open` só aceita http(s). Então a tela mostra o CSV numa caixa e **diz que não dá**, em vez de oferecer um botão que finge baixar.
+
+---
+## 📄 Histórico — D7 e as sessões anteriores
+
+### D7 — corrigir a folha sem sair da folha
 
 Navegação de semanas (anterior / esta / próxima) e **Edit e Delete em cada entrada da semana**. Corrigir o lançamento de sexta não devia exigir caçar o item de sexta.
 
