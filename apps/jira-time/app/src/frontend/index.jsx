@@ -8,7 +8,9 @@ import ForgeReconciler, {
   Spinner,
   Stack,
   Strong,
+  I18nProvider,
   Text,
+  useTranslation,
 } from '@forge/react';
 import { invoke } from '@forge/bridge';
 import { formatarDuracao, formatarRelogio } from '../lib/time.js';
@@ -21,7 +23,7 @@ import {
 } from './estado.js';
 import { FormularioApontamento } from './FormularioApontamento.jsx';
 import { formularioDe, formularioVazio, paraEnvio } from './formulario.js';
-import { mensagemDeErro, mensagemDoApontamento, textoDoWorklog } from './mensagens.js';
+import { mensagemDeErro, mensagemDoApontamento, preencher, textoDoWorklog } from './mensagens.js';
 
 /** Data legível no fuso de quem está olhando: "Aug 26, 14:30". */
 function quandoLegivel(iso) {
@@ -36,6 +38,9 @@ function quandoLegivel(iso) {
 }
 
 const App = () => {
+  // `t` do i18n do Forge. Cada chamada leva o inglês embutido como padrão: se a
+  // tradução não carregar, aparece inglês, nunca a chave crua.
+  const { t } = useTranslation();
   const [estado, setEstado] = useState(null);
   const [ocupado, setOcupado] = useState(false);
   const [aviso, setAviso] = useState(null);
@@ -94,15 +99,15 @@ const App = () => {
         if (r?.ok) {
           const mudanca = avisarMudanca ? avisoDeMudanca(estadoRef.current, r) : null;
           aplicarEstado(r);
-          if (mudanca) setAviso(mudanca);
+          if (mudanca) setAviso({ tipo: mudanca.tipo, texto: t(mudanca.chave, mudanca.padrao) });
         } else if (!silencioso) {
-          setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
+          setAviso({ tipo: 'error', texto: t(...mensagemDeErro(r?.motivo)) });
         }
         return r;
       } catch (erro) {
         // Rede caiu no meio. O estado que já está na tela vale mais que um painel
         // em branco, então ele fica como está.
-        if (!silencioso) setAviso({ tipo: 'error', texto: mensagemDeErro() });
+        if (!silencioso) setAviso({ tipo: 'error', texto: t(...mensagemDeErro()) });
         return null;
       }
     },
@@ -168,11 +173,12 @@ const App = () => {
         // Falhou ao fechar o timer anterior: ele continua de pé, no item dele.
         // O relógio otimista some junto — não há timer novo.
         aplicarEstado(anteriorNaTela);
-        setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
+        setAviso({ tipo: 'error', texto: t(...mensagemDeErro(r?.motivo)) });
       } else if (r.anterior?.gravado) {
         setAviso({
           tipo: 'success',
           texto: textoDoWorklog(
+            t,
             r.anterior.worklog,
             r.anterior.encerrado?.issueKey,
             r.anterior.jaEstavaGravado
@@ -181,12 +187,15 @@ const App = () => {
       } else if (r.anterior?.motivo === 'curto-demais') {
         setAviso({
           tipo: 'information',
-          texto: 'Your previous timer ran for under a minute, so nothing was logged.',
+          texto: t(
+            'painel.curtoAnterior',
+            'Your previous timer ran for under a minute, so nothing was logged.'
+          ),
         });
       }
     } catch (erro) {
       aplicarEstado(anteriorNaTela);
-      setAviso({ tipo: 'error', texto: mensagemDeErro() });
+      setAviso({ tipo: 'error', texto: t(...mensagemDeErro()) });
     }
 
     await carregar({ silencioso: true });
@@ -200,7 +209,7 @@ const App = () => {
       const r = await invoke('pararTimer', { confirmado });
 
       if (!r?.ok) {
-        setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
+        setAviso({ tipo: 'error', texto: t(...mensagemDeErro(r?.motivo)) });
       } else if (r.motivo === 'precisa-confirmar') {
         // O servidor se recusou a gravar sem alguém olhar o número. A tela
         // mostra o total e pede o segundo clique.
@@ -208,16 +217,16 @@ const App = () => {
       } else if (r.gravado) {
         setAviso({
           tipo: 'success',
-          texto: textoDoWorklog(r.worklog, r.encerrado?.issueKey, r.jaEstavaGravado),
+          texto: textoDoWorklog(t, r.worklog, r.encerrado?.issueKey, r.jaEstavaGravado),
         });
       } else if (r.motivo === 'curto-demais') {
         setAviso({
           tipo: 'information',
-          texto: 'That timer ran for under a minute, so nothing was logged.',
+          texto: t('painel.curto', 'That timer ran for under a minute, so nothing was logged.'),
         });
       }
     } catch (erro) {
-      setAviso({ tipo: 'error', texto: mensagemDeErro() });
+      setAviso({ tipo: 'error', texto: t(...mensagemDeErro()) });
     }
 
     setConfirmandoParada(null);
@@ -232,10 +241,15 @@ const App = () => {
     setAviso(null);
     try {
       const r = await invoke('descartarTimer');
-      if (r?.ok) setAviso({ tipo: 'information', texto: 'Timer discarded. Nothing was logged.' });
-      else setAviso({ tipo: 'error', texto: mensagemDeErro(r?.motivo) });
+      if (r?.ok) {
+        setAviso({
+          tipo: 'information',
+          texto: t('painel.descartado', 'Timer discarded. Nothing was logged.'),
+        });
+      }
+      else setAviso({ tipo: 'error', texto: t(...mensagemDeErro(r?.motivo)) });
     } catch (erro) {
-      setAviso({ tipo: 'error', texto: mensagemDeErro() });
+      setAviso({ tipo: 'error', texto: t(...mensagemDeErro()) });
     }
     setConfirmandoParada(null);
     setConfirmandoDescarte(false);
@@ -265,7 +279,7 @@ const App = () => {
   const salvar = async (valores) => {
     const envio = paraEnvio({ ...valores, id: formulario?.id || null });
     if (!envio.ok) {
-      setAviso({ tipo: 'error', texto: mensagemDoApontamento(envio.motivo) });
+      setAviso({ tipo: 'error', texto: t(...mensagemDoApontamento(envio.motivo)) });
       return;
     }
 
@@ -277,7 +291,7 @@ const App = () => {
       const r = await invoke(editando ? 'editarApontamento' : 'apontarManual', envio.payload);
 
       if (!r?.ok) {
-        setAviso({ tipo: 'error', texto: mensagemDoApontamento(r?.motivo) });
+        setAviso({ tipo: 'error', texto: t(...mensagemDoApontamento(r?.motivo)) });
       } else {
         // O formulário só fecha quando gravou. Fechar antes jogaria fora o que
         // a pessoa digitou justamente quando ela precisa corrigir e reenviar.
@@ -285,12 +299,12 @@ const App = () => {
         setAviso({
           tipo: 'success',
           texto: editando
-            ? `Entry updated to ${r.worklog?.duracao || ''}.`.replace('  ', ' ')
-            : `Logged ${r.worklog?.duracao || ''}${r.issueKey ? ` to ${r.issueKey}` : ''}.`,
+            ? preencher(t('painel.atualizado', 'Entry updated to {0}.'), [r.worklog?.duracao])
+            : textoDoWorklog(t, { duracao: r.worklog?.duracao }, r.issueKey, false),
         });
       }
     } catch (erro) {
-      setAviso({ tipo: 'error', texto: mensagemDoApontamento() });
+      setAviso({ tipo: 'error', texto: t(...mensagemDoApontamento()) });
     }
 
     await carregarApontamentos();
@@ -308,25 +322,25 @@ const App = () => {
     try {
       const r = await invoke('apagarApontamento', { worklogId: id });
       if (!r?.ok) {
-        setAviso({ tipo: 'error', texto: mensagemDoApontamento(r?.motivo) });
+        setAviso({ tipo: 'error', texto: t(...mensagemDoApontamento(r?.motivo)) });
       } else {
         setAviso({
           tipo: 'information',
           texto: r.jaNaoExistia
-            ? 'That entry had already been deleted in Jira.'
-            : 'Entry deleted from Jira.',
+            ? t('painel.jaApagado', 'That entry had already been deleted in Jira.')
+            : t('painel.apagado', 'Entry deleted from Jira.'),
         });
         if (formulario?.id === id) setFormulario(null);
       }
     } catch (erro) {
-      setAviso({ tipo: 'error', texto: mensagemDoApontamento() });
+      setAviso({ tipo: 'error', texto: t(...mensagemDoApontamento()) });
     }
     setApagando(null);
     await carregarApontamentos();
     definirOcupado(false);
   };
 
-  if (!estado && !aviso) return <Spinner label="Loading timer" />;
+  if (!estado && !aviso) return <Spinner label={t('painel.carregando', 'Loading timer')} />;
 
   const timer = estado?.timer;
   const falhou = (timer?.tentativas || 0) > 0;
@@ -353,39 +367,51 @@ const App = () => {
       {timer && estado.emOutroItem && (
         <SectionMessage
           appearance={presoEmOutroItem ? 'error' : 'warning'}
-          title={presoEmOutroItem ? 'That timer cannot be logged' : 'A timer is already running'}
+          title={
+            presoEmOutroItem
+              ? t('painel.preso.titulo', 'That timer cannot be logged')
+              : t('painel.outroItem.titulo', 'A timer is already running')
+          }
         >
           <Stack space="space.100">
             <Text>
-              {presoEmOutroItem ? (
-                <>
-                  Your timer on <Strong>{timer.issueKey || 'another work item'}</Strong> (
-                  {timer.duracao}) could not be written to Jira
-                  {timer.ultimaFalha === 'item-nao-encontrado'
-                    ? ' because that work item no longer exists'
-                    : ''}
-                  . Until it is dealt with, no new timer can start.
-                </>
-              ) : (
-                <>
-                  You have a timer running on <Strong>{timer.issueKey || 'another work item'}</Strong>{' '}
-                  ({timer.duracao}). Starting here logs that time to it first.
-                </>
+              {preencher(
+                presoEmOutroItem
+                  ? t(
+                      timer.ultimaFalha === 'item-nao-encontrado'
+                        ? 'painel.preso.corpoItemSumiu'
+                        : 'painel.preso.corpo',
+                      timer.ultimaFalha === 'item-nao-encontrado'
+                        ? 'Your timer on {0} ({1}) could not be written to Jira because that work item no longer exists. Until it is dealt with, no new timer can start.'
+                        : 'Your timer on {0} ({1}) could not be written to Jira. Until it is dealt with, no new timer can start.'
+                    )
+                  : t(
+                      'painel.outroItem.corpo',
+                      'You have a timer running on {0} ({1}). Starting here logs that time to it first.'
+                    ),
+                [
+                  timer.issueKey || t('painel.outroItemGenerico', 'another work item'),
+                  timer.duracao,
+                ]
               )}
             </Text>
 
             {confirmandoDescarte ? (
               <Inline space="space.100" alignBlock="center">
-                <Text>Throw away {timer.duracao} without logging it?</Text>
+                <Text>
+                    {preencher(t('painel.preso.confirmar', 'Throw away {0} without logging it?'), [
+                      timer.duracao,
+                    ])}
+                  </Text>
                 <Button appearance="danger" onClick={descartar} isDisabled={ocupado}>
-                  Discard it
+                  {t('painel.preso.sim', 'Discard it')}
                 </Button>
                 <Button
                   appearance="subtle"
                   onClick={() => setConfirmandoDescarte(false)}
                   isDisabled={ocupado}
                 >
-                  Keep it
+                  {t('painel.preso.nao', 'Keep it')}
                 </Button>
               </Inline>
             ) : (
@@ -394,7 +420,7 @@ const App = () => {
                 onClick={() => setConfirmandoDescarte(true)}
                 isDisabled={ocupado}
               >
-                Discard that timer
+                {t('painel.preso.descartar', 'Discard that timer')}
               </Button>
             )}
           </Stack>
@@ -404,52 +430,78 @@ const App = () => {
       {/* Permissão conferida na abertura: dizer agora, não depois de a pessoa
           cronometrar três horas que não terá onde gravar. */}
       {naoPodeApontar && (
-        <SectionMessage appearance="warning" title="You can't log work on this item">
+        <SectionMessage
+          appearance="warning"
+          title={t('painel.semPermissao.titulo', "You can't log work on this item")}
+        >
           <Text>
-            Your Jira permissions on this project don't include logging work, so a timer here
-            would have nowhere to go. Ask a project admin for the &quot;Work on issues&quot;
-            permission.
+            {t(
+              'painel.semPermissao.corpo',
+              "Your Jira permissions on this project don't include logging work, so a timer here would have nowhere to go. Ask a project admin for the Work on issues permission."
+            )}
           </Text>
         </SectionMessage>
       )}
 
       {/* Uma gravação já falhou neste timer: a pessoa precisa saber que pode insistir. */}
       {timer && falhou && (
-        <SectionMessage appearance="warning" title="This time has not been logged yet">
+        <SectionMessage
+          appearance="warning"
+          title={t('painel.naoGravadoAinda.titulo', 'This time has not been logged yet')}
+        >
           <Text>
-            {timer.duracao} on {timer.issueKey || 'this work item'} is still waiting to be written to
-            Jira. Press Stop to try again.
+            {preencher(
+              t(
+                'painel.naoGravadoAinda.corpo',
+                '{0} on {1} is still waiting to be written to Jira. Press Stop to try again.'
+              ),
+              [timer.duracao, timer.issueKey || t('painel.esteItem', 'this work item')]
+            )}
           </Text>
         </SectionMessage>
       )}
 
       {/* Timer esquecido: oferecer descartar antes de virar hora inventada. */}
       {timer && !estado.emOutroItem && timer.suspeito && !falhou && (
-        <SectionMessage appearance="warning" title="This timer has been running a long time">
-          <Text>Check the total before you log it.</Text>
+        <SectionMessage
+          appearance="warning"
+          title={t('painel.esquecido.titulo', 'This timer has been running a long time')}
+        >
+          <Text>{t('painel.esquecido.corpo', 'Check the total before you log it.')}</Text>
         </SectionMessage>
       )}
 
       {rodandoAqui ? (
         <Inline space="space.100" alignBlock="center">
           <Lozenge appearance={falhou ? 'moved' : 'inprogress'}>
-            {falhou ? 'Not logged' : 'Running'}
+            {falhou ? t('painel.naoGravado', 'Not logged') : t('painel.rodando', 'Running')}
           </Lozenge>
           <Strong>{formatarRelogio(decorrido)}</Strong>
         </Inline>
       ) : (
-        <Text>No timer running on this work item.</Text>
+        <Text>{t('painel.semTimer', 'No timer running on this work item.')}</Text>
       )}
 
       {/* Timer esquecido: o total por extenso e um segundo clique. Gravar 4d 6h
           em silêncio suja a folha de ponto de um jeito que só aparece na fatura. */}
       {confirmandoParada && (
-        <SectionMessage appearance="warning" title="Check this total before logging it">
+        <SectionMessage
+          appearance="warning"
+          title={t('painel.confirmarParada.titulo', 'Check this total before logging it')}
+        >
           <Stack space="space.100">
             <Text>
-              This timer has been running since {quandoLegivel(confirmandoParada.startedAt)}, which
-              is <Strong>{confirmandoParada.duracao}</Strong>. Log that to{' '}
-              {confirmandoParada.issueKey || 'this work item'}?
+              {preencher(
+                t(
+                  'painel.confirmarParada.corpo',
+                  'This timer has been running since {0}, which is {1}. Log that to {2}?'
+                ),
+                [
+                  quandoLegivel(confirmandoParada.startedAt),
+                  confirmandoParada.duracao,
+                  confirmandoParada.issueKey || t('painel.esteItem', 'this work item'),
+                ]
+              )}
             </Text>
             <Inline space="space.100" alignBlock="center">
               <Button
@@ -457,17 +509,19 @@ const App = () => {
                 onClick={() => parar({ confirmado: true })}
                 isDisabled={ocupado}
               >
-                Log {confirmandoParada.duracao}
+                {preencher(t('painel.confirmarParada.sim', 'Log {0}'), [
+                  confirmandoParada.duracao,
+                ])}
               </Button>
               <Button appearance="subtle" onClick={descartar} isDisabled={ocupado}>
-                Discard it instead
+                {t('painel.confirmarParada.descartar', 'Discard it instead')}
               </Button>
               <Button
                 appearance="subtle"
                 onClick={() => setConfirmandoParada(null)}
                 isDisabled={ocupado}
               >
-                Keep running
+                {t('painel.confirmarParada.continuar', 'Keep running')}
               </Button>
             </Inline>
           </Stack>
@@ -478,10 +532,12 @@ const App = () => {
         {rodandoAqui ? (
           <>
             <Button appearance="primary" onClick={() => parar()} isDisabled={ocupado}>
-              {falhou ? 'Stop and retry' : 'Stop'}
+              {falhou
+                ? t('painel.stopTentarDeNovo', 'Stop and retry')
+                : t('painel.stop', 'Stop')}
             </Button>
             <Button appearance="subtle" onClick={descartar} isDisabled={ocupado}>
-              Discard
+              {t('painel.descartar', 'Discard')}
             </Button>
           </>
         ) : (
@@ -489,7 +545,9 @@ const App = () => {
           // cronômetro que não tem onde gravar é a pior coisa que a tela faz.
           !naoPodeApontar && (
             <Button appearance="primary" onClick={iniciar} isDisabled={ocupado}>
-              {timer && estado.emOutroItem ? 'Start here' : 'Start timer'}
+              {timer && estado.emOutroItem
+                ? t('painel.startAqui', 'Start here')
+                : t('painel.start', 'Start timer')}
             </Button>
           )
         )}
@@ -497,7 +555,7 @@ const App = () => {
             esquecida não pode exigir parar o cronômetro de hoje. */}
         {!formulario && !naoPodeApontar && (
           <Button appearance="default" onClick={abrirNovo} isDisabled={ocupado}>
-            Log time manually
+            {t('painel.apontarManual', 'Log time manually')}
           </Button>
         )}
       </ButtonGroup>
@@ -518,12 +576,21 @@ const App = () => {
       {linhas.length > 0 && (
         <Stack space="space.100">
           <Strong>
-            Your time on this item: {formatarDuracao(apontamentos.totalSegundos)} in{' '}
-            {linhas.length} {linhas.length === 1 ? 'entry' : 'entries'}
+            {preencher(t('painel.lista.titulo', 'Your time on this item: {0} in {1}'), [
+              formatarDuracao(apontamentos.totalSegundos),
+              linhas.length === 1
+                ? t('painel.lista.umaEntrada', '1 entry')
+                : preencher(t('painel.lista.entradas', '{0} entries'), [linhas.length]),
+            ])}
           </Strong>
 
           {!apontamentos.completo && (
-            <Text>Showing the most recent entries only — this item has more than Nativelog lists here.</Text>
+            <Text>
+              {t(
+                'painel.lista.cortada',
+                'Showing the most recent entries only — this item has more than Nativelog lists here.'
+              )}
+            </Text>
           )}
 
           {linhas.map((linha) => (
@@ -537,12 +604,12 @@ const App = () => {
               {apagando === linha.id ? (
                 <Inline space="space.100" alignBlock="center">
                   {/* O dado é do Jira: apagar aqui apaga lá, sem lixeira. */}
-                  <Text>Delete this entry from Jira?</Text>
+                  <Text>{t('painel.apagar.pergunta', 'Delete this entry from Jira?')}</Text>
                   <Button appearance="danger" onClick={() => apagar(linha.id)} isDisabled={ocupado}>
-                    Delete
+                    {t('painel.apagar.sim', 'Delete')}
                   </Button>
                   <Button appearance="subtle" onClick={() => setApagando(null)} isDisabled={ocupado}>
-                    Keep
+                    {t('painel.apagar.nao', 'Keep')}
                   </Button>
                 </Inline>
               ) : (
@@ -555,12 +622,12 @@ const App = () => {
                       o Jira vai recusar. */}
                   {estado?.permissoes?.podeEditar !== false && (
                     <Button appearance="subtle" onClick={() => abrirEdicao(linha)} isDisabled={ocupado}>
-                      Edit
+                      {t('painel.editar', 'Edit')}
                     </Button>
                   )}
                   {estado?.permissoes?.podeApagar !== false && (
                     <Button appearance="subtle" onClick={() => setApagando(linha.id)} isDisabled={ocupado}>
-                      Delete
+                      {t('painel.apagar.sim', 'Delete')}
                     </Button>
                   )}
                 </Inline>
@@ -575,6 +642,10 @@ const App = () => {
 
 ForgeReconciler.render(
   <React.StrictMode>
-    <App />
+    {/* O provider carrega o idioma de quem está olhando. Sem ele o `t` ainda
+        funciona e devolve o inglês embutido — a tela nunca mostra a chave crua. */}
+    <I18nProvider>
+      <App />
+    </I18nProvider>
   </React.StrictMode>
 );

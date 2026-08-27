@@ -93,9 +93,12 @@ export function avisoDeMudanca(antes, depois) {
   const rodavaAqui = Boolean(antes?.timer) && !antes.emOutroItem;
   const rodaAqui = Boolean(depois?.timer) && !depois.emOutroItem;
   if (!rodavaAqui || rodaAqui) return null;
+  // Devolve chave e padrão, não a frase pronta: quem traduz é a tela. Ver o
+  // topo de `mensagens.js`.
   return {
     tipo: 'information',
-    texto:
+    chave: 'painel.mudouPorFora',
+    padrao:
       'This timer is no longer running here — it was stopped, discarded or moved somewhere else. Check the work log for the entry.',
   };
 }

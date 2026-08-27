@@ -132,7 +132,9 @@ describe('avisoDeMudanca', () => {
   it('o timer sumiu enquanto a aba estava parada: a pessoa é avisada', () => {
     const aviso = avisoDeMudanca(rodando, { timer: null, emOutroItem: false });
     expect(aviso?.tipo).toBe('information');
-    expect(aviso.texto).toMatch(/no longer running here/);
+    // Chave e padrão, não a frase pronta — quem traduz é a tela.
+    expect(aviso.chave).toBe('painel.mudouPorFora');
+    expect(aviso.padrao).toMatch(/no longer running here/);
   });
 
   it('o timer foi para outro item: o relógio some daqui e a tela explica', () => {

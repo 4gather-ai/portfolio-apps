@@ -23,6 +23,24 @@ modules:
     - key: resolver
       handler: index.handler
 
+# i18n desde o dia 1 (regra 9 do CLAUDE.md). O padrão em inglês também fica
+# embutido em cada chamada de `t`, então uma tradução que falhe ao carregar
+# mostra inglês em vez de mostrar a chave crua para o usuário.
+translations:
+  resources:
+    - key: en-US
+      path: locales/en-US.json
+    - key: pt-BR
+      path: locales/pt-BR.json
+    - key: es-ES
+      path: locales/es-ES.json
+    - key: de-DE
+      path: locales/de-DE.json
+    - key: fr-FR
+      path: locales/fr-FR.json
+  fallback:
+    default: en-US
+
 resources:
   - key: main
     path: src/frontend/index.jsx

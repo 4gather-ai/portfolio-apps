@@ -11,8 +11,10 @@ import ForgeReconciler, {
   Strong,
   Select,
   Text,
+  I18nProvider,
   TextArea,
   Toggle,
+  useTranslation,
 } from '@forge/react';
 import { invoke } from '@forge/bridge';
 import { agruparPorDia, chaveDoDia, formatarDuracao, limitesDaSemana } from '../lib/time.js';
@@ -20,7 +22,7 @@ import { filtrarProjetos, paraCSV, projetosDe } from '../lib/csv.js';
 import { porPessoa, totalDoTime } from './equipeUi.js';
 import { FormularioApontamento } from './FormularioApontamento.jsx';
 import { formularioDe, paraEnvio } from './formulario.js';
-import { mensagemDaSemana, mensagemDoApontamento } from './mensagens.js';
+import { mensagemDaSemana, mensagemDoApontamento, preencher } from './mensagens.js';
 import { diasDaSemana, tituloDaSemana } from './semanaUi.js';
 
 /**
@@ -33,6 +35,7 @@ import { diasDaSemana, tituloDaSemana } from './semanaUi.js';
  * seguinte, e a pessoa veria horas num dia em que não trabalhou.
  */
 const Semana = () => {
+  const { t } = useTranslation();
   const [dados, setDados] = useState(null);
   const [erro, setErro] = useState(null);
   const [carregando, setCarregando] = useState(true);
@@ -74,9 +77,9 @@ const Semana = () => {
         ate: fim.toISOString(),
       });
       if (r?.ok) setDados({ ...r, inicio, fim });
-      else setErro(mensagemDaSemana(r?.motivo));
+      else setErro(t(...mensagemDaSemana(r?.motivo)));
     } catch (e) {
-      setErro(mensagemDaSemana());
+      setErro(t(...mensagemDaSemana()));
     }
     setCarregando(false);
   }, []);
@@ -127,7 +130,7 @@ const Semana = () => {
   const salvar = async (valores) => {
     const envio = paraEnvio({ ...valores, id: editando.id });
     if (!envio.ok) {
-      setAviso({ tipo: 'error', texto: mensagemDoApontamento(envio.motivo) });
+      setAviso({ tipo: 'error', texto: t(...mensagemDoApontamento(envio.motivo)) });
       return;
     }
 
@@ -141,15 +144,18 @@ const Semana = () => {
       });
 
       if (!r?.ok) {
-        setAviso({ tipo: 'error', texto: mensagemDoApontamento(r?.motivo) });
+        setAviso({ tipo: 'error', texto: t(...mensagemDoApontamento(r?.motivo)) });
       } else {
         // Só fecha quando gravou: fechar antes jogaria fora o que a pessoa
         // digitou justamente quando ela precisa corrigir e reenviar.
         setEditando(null);
-        setAviso({ tipo: 'success', texto: `Entry updated to ${r.worklog?.duracao || ''}.` });
+        setAviso({
+          tipo: 'success',
+          texto: preencher(t('painel.atualizado', 'Entry updated to {0}.'), [r.worklog?.duracao]),
+        });
       }
     } catch (e) {
-      setAviso({ tipo: 'error', texto: mensagemDoApontamento() });
+      setAviso({ tipo: 'error', texto: t(...mensagemDoApontamento()) });
     }
 
     await carregar(deslocamento);
@@ -166,7 +172,7 @@ const Semana = () => {
         issueKey: entrada.issueKey,
       });
       if (!r?.ok) setAviso({ tipo: 'error', texto: mensagemDoApontamento(r?.motivo) });
-      else setAviso({ tipo: 'information', texto: 'Entry deleted from Jira.' });
+      else setAviso({ tipo: 'information', texto: t('painel.apagado', 'Entry deleted from Jira.') });
     } catch (e) {
       setAviso({ tipo: 'error', texto: mensagemDoApontamento() });
     }
@@ -176,7 +182,7 @@ const Semana = () => {
     setOcupado(false);
   };
 
-  if (carregando && !dados) return <Spinner label="Loading your week" />;
+  if (carregando && !dados) return <Spinner label={t('semana.carregando', 'Loading your week')} />;
 
   const entradas = dados?.entradas || [];
   // Agrupamento no fuso local — ver o comentário no topo.
@@ -185,7 +191,9 @@ const Semana = () => {
   );
   const dias = dados ? diasDaSemana(dados.inicio) : [];
   const diasDoTime = time ? diasDaSemana(time.inicio) : [];
-  const linhasDoTime = time ? porPessoa(time.entradas, diasDoTime) : [];
+  const linhasDoTime = time
+    ? porPessoa(time.entradas, diasDoTime, t('semana.autorDesconhecido', 'Unknown user'))
+    : [];
   const projetos = projetosDe(entradas);
   const paraExportar = filtrarProjetos(entradas, { modo: 'excluir', chaves: projetosFora });
   const csv = exportando ? paraCSV(paraExportar) : '';
@@ -205,7 +213,7 @@ const Semana = () => {
             }}
             isDisabled={carregando}
           >
-            My week
+            {t('semana.minha', 'My week')}
           </Button>
           <Button
             appearance={aba === 'time' ? 'primary' : 'default'}
@@ -219,7 +227,7 @@ const Semana = () => {
             }}
             isDisabled={carregando}
           >
-            Team
+            {t('semana.time', 'Team')}
           </Button>
         </ButtonGroup>
       </Inline>
@@ -228,7 +236,7 @@ const Semana = () => {
         <Stack space="space.100">
           <Select
             id="nativelog-projeto-time"
-            placeholder="Choose a project"
+            placeholder={t('semana.escolherProjeto', 'Choose a project')}
             options={projetosDisponiveis.map((p) => ({
               label: `${p.nome} (${p.chave})`,
               value: p.chave,
@@ -246,9 +254,10 @@ const Semana = () => {
             onChange={(opcao) => setProjetoDoTime(opcao?.value || '')}
           />
           <Text>
-            Read-only. Nativelog shows you what Jira already lets you see, and never lets you
-            change someone else&apos;s hours — do that from the work item&apos;s Work log tab if
-            you have permission.
+            {t(
+              'semana.somenteLeitura',
+              "Read-only. Nativelog shows you what Jira already lets you see, and never lets you change someone else's hours — do that from the work item's Work log tab if you have permission."
+            )}
           </Text>
         </Stack>
       )}
@@ -256,16 +265,16 @@ const Semana = () => {
       <Inline space="space.100" alignBlock="center">
         <ButtonGroup>
           <Button onClick={() => setDeslocamento((d) => d - 1)} isDisabled={carregando}>
-            Previous week
+            {t('semana.anterior', 'Previous week')}
           </Button>
           <Button onClick={() => setDeslocamento(0)} isDisabled={carregando || deslocamento === 0}>
-            This week
+            {t('semana.esta', 'This week')}
           </Button>
           <Button
             onClick={() => setDeslocamento((d) => d + 1)}
             isDisabled={carregando || deslocamento >= 0}
           >
-            Next week
+            {t('semana.proxima', 'Next week')}
           </Button>
         </ButtonGroup>
         <Button
@@ -275,7 +284,7 @@ const Semana = () => {
           }
           isDisabled={carregando}
         >
-          Refresh
+          {t('semana.atualizar', 'Refresh')}
         </Button>
       </Inline>
 
@@ -293,19 +302,32 @@ const Semana = () => {
 
       {/* O que a lista não tem, dito em vez de escondido atrás de um total. */}
       {dados?.cortada && (
-        <SectionMessage appearance="warning" title="This week is only partly shown">
+        <SectionMessage
+          appearance="warning"
+          title={t('semana.cortada.titulo', 'This week is only partly shown')}
+        >
           <Text>
-            You logged time on more work items than Nativelog reads in one go, so the total below
-            is lower than your real week.
+            {t(
+              'semana.cortada.corpo',
+              'You logged time on more work items than Nativelog reads in one go, so the total below is lower than your real week.'
+            )}
           </Text>
         </SectionMessage>
       )}
 
       {dados?.falhas?.length > 0 && (
-        <SectionMessage appearance="warning" title="Some items could not be read">
+        <SectionMessage
+          appearance="warning"
+          title={t('semana.falhas.titulo', 'Some items could not be read')}
+        >
           <Text>
-            {dados.falhas.join(', ')} could not be read just now, so any time on them is missing
-            from this total.
+            {preencher(
+              t(
+                'semana.falhas.corpo',
+                '{0} could not be read just now, so any time on them is missing from this total.'
+              ),
+              [dados.falhas.join(', ')]
+            )}
           </Text>
         </SectionMessage>
       )}
@@ -314,17 +336,17 @@ const Semana = () => {
       {aba === 'time' && time && projetoDoTime && (
         <Stack space="space.150">
           <Inline space="space.100" alignBlock="center">
-            <Strong>Team total</Strong>
+            <Strong>{t('semana.totalTime', 'Team total')}</Strong>
             <Lozenge appearance={time.totalSegundos > 0 ? 'success' : 'default'}>
               {time.totalSegundos > 0
                 ? formatarDuracao(time.totalSegundos)
-                : 'nothing logged'}
+                : t('semana.nada', 'nothing logged')}
             </Lozenge>
-            {carregando && <Spinner size="small" label="Refreshing" />}
+            {carregando && <Spinner size="small" label={t('semana.atualizando', 'Refreshing')} />}
           </Inline>
 
           {linhasDoTime.length === 0 ? (
-            <Text>Nobody logged time on this project during this week.</Text>
+            <Text>{t('semana.timeVazio', 'Nobody logged time on this project during this week.')}</Text>
           ) : (
             linhasDoTime.map((pessoa) => (
               <Stack key={pessoa.id} space="space.050">
@@ -344,10 +366,15 @@ const Semana = () => {
           )}
 
           {time.cortada && (
-            <SectionMessage appearance="warning" title="This week is only partly shown">
+            <SectionMessage
+              appearance="warning"
+              title={t('semana.cortada.titulo', 'This week is only partly shown')}
+            >
               <Text>
-                The team logged time on more work items than Nativelog reads in one go, so the
-                total above is lower than the real week.
+                {t(
+                  'semana.cortadaTime.corpo',
+                  'The team logged time on more work items than Nativelog reads in one go, so the total above is lower than the real week.'
+                )}
               </Text>
             </SectionMessage>
           )}
@@ -357,11 +384,11 @@ const Semana = () => {
       {/* Daqui para baixo é a minha semana. */}
       {aba === 'minha' && (
       <Inline space="space.100" alignBlock="center">
-        <Strong>Total</Strong>
+        <Strong>{t('semana.total', 'Total')}</Strong>
         <Lozenge appearance={total > 0 ? 'success' : 'default'}>
-          {total > 0 ? formatarDuracao(total) : 'nothing logged'}
+          {total > 0 ? formatarDuracao(total) : t('semana.nada', 'nothing logged')}
         </Lozenge>
-        {carregando && <Spinner size="small" label="Refreshing" />}
+        {carregando && <Spinner size="small" label={t('semana.atualizando', 'Refreshing')} />}
       </Inline>
       )}
 
@@ -389,16 +416,16 @@ const Semana = () => {
                 {apagando === e.id ? (
                   <Inline space="space.100" alignBlock="center">
                     {/* O dado é do Jira: apagar aqui apaga lá, sem lixeira. */}
-                    <Text>Delete this entry from Jira?</Text>
+                    <Text>{t('painel.apagar.pergunta', 'Delete this entry from Jira?')}</Text>
                     <Button appearance="danger" onClick={() => apagar(e)} isDisabled={ocupado}>
-                      Delete
+                      {t('painel.apagar.sim', 'Delete')}
                     </Button>
                     <Button
                       appearance="subtle"
                       onClick={() => setApagando(null)}
                       isDisabled={ocupado}
                     >
-                      Keep
+                      {t('painel.apagar.nao', 'Keep')}
                     </Button>
                   </Inline>
                 ) : (
@@ -413,7 +440,7 @@ const Semana = () => {
                         }}
                         isDisabled={ocupado}
                       >
-                        Edit
+                        {t('painel.editar', 'Edit')}
                       </Button>
                       <Button
                         appearance="subtle"
@@ -424,7 +451,7 @@ const Semana = () => {
                         }}
                         isDisabled={ocupado}
                       >
-                        Delete
+                        {t('painel.apagar.sim', 'Delete')}
                       </Button>
                     </Inline>
                   )
@@ -438,7 +465,7 @@ const Semana = () => {
                   <FormularioApontamento
                     key={e.id}
                     inicial={formularioDe(e)}
-                    titulo={`Edit ${e.issueKey}`}
+                    titulo={preencher(t('form.editarItem', 'Edit {0}'), [e.issueKey])}
                     ocupado={ocupado}
                     aoSalvar={salvar}
                     aoCancelar={() => setEditando(null)}
@@ -456,12 +483,16 @@ const Semana = () => {
         <Stack space="space.100">
           <Inline space="space.100" alignBlock="center">
             <Button onClick={() => setExportando((v) => !v)} isDisabled={carregando}>
-              {exportando ? 'Hide export' : 'Export CSV'}
+              {exportando ? t('csv.esconder', 'Hide export') : t('csv.exportar', 'Export CSV')}
             </Button>
             {exportando && (
               <Text>
-                {paraExportar.length} of {entradas.length}{' '}
-                {entradas.length === 1 ? 'entry' : 'entries'}
+                {preencher(t('csv.contagem', '{0} of {1}'), [
+                  paraExportar.length,
+                  entradas.length === 1
+                    ? t('painel.lista.umaEntrada', '1 entry')
+                    : preencher(t('painel.lista.entradas', '{0} entries'), [entradas.length]),
+                ])}
               </Text>
             )}
           </Inline>
@@ -470,7 +501,7 @@ const Semana = () => {
             <Stack space="space.100">
               {projetos.length > 1 && (
                 <Stack space="space.050">
-                  <Strong>Projects to include</Strong>
+                  <Strong>{t('csv.projetos', 'Projects to include')}</Strong>
                   {/* Incluir e excluir são o mesmo gesto: tudo marcado por
                       padrão, e desmarcar tira o projeto. Quem fatura por
                       cliente sabe listar os dois projetos que NÃO quer muito
@@ -498,15 +529,19 @@ const Semana = () => {
 
               {paraExportar.length === 0 ? (
                 <SectionMessage appearance="warning">
-                  <Text>Every project is unticked, so there is nothing to export.</Text>
+                  <Text>
+                    {t('csv.nenhumProjeto', 'Every project is unticked, so there is nothing to export.')}
+                  </Text>
                 </SectionMessage>
               ) : (
                 <Stack space="space.050">
                   {/* Não há download de arquivo dentro de um app Forge, então
                       dizemos isso em vez de fingir um botão que não baixa. */}
                   <Text>
-                    Select all of the box below and copy it, then paste into a spreadsheet or save
-                    it as a .csv file. Jira apps can&apos;t hand your browser a file directly.
+                    {t(
+                      'csv.instrucao',
+                      "Select all of the box below and copy it, then paste into a spreadsheet or save it as a .csv file. Jira apps can't hand your browser a file directly."
+                    )}
                   </Text>
                   <TextArea
                     id="nativelog-csv"
@@ -527,8 +562,10 @@ const Semana = () => {
       {/* O JQL do passo 1 passa pelo índice de busca do Jira, que atrasa alguns
           segundos. Dizer isso é mais barato que alguém achar que perdeu horas. */}
       <Text>
-        Time logged in the last few seconds can take a moment to appear here. Use Refresh if
-        something you just logged is missing.
+        {t(
+          'semana.atrasoIndice',
+          'Time logged in the last few seconds can take a moment to appear here. Use Refresh if something you just logged is missing.'
+        )}
       </Text>
     </Stack>
   );
@@ -536,6 +573,10 @@ const Semana = () => {
 
 ForgeReconciler.render(
   <React.StrictMode>
-    <Semana />
+    {/* O provider carrega o idioma de quem está olhando. Sem ele o `t` ainda
+        funciona e devolve o inglês embutido — a tela nunca mostra a chave crua. */}
+    <I18nProvider>
+      <Semana />
+    </I18nProvider>
   </React.StrictMode>
 );

@@ -12,7 +12,9 @@ import {
   Textfield,
   TimePicker,
   useForm,
+  useTranslation,
 } from '@forge/react';
+
 
 /**
  * O formulário de apontamento, usado pelo painel do item e pela folha da semana.
@@ -38,36 +40,45 @@ import {
  * reaproveitaria os valores da primeira.
  */
 export const FormularioApontamento = ({ inicial, ocupado, titulo, aoSalvar, aoCancelar }) => {
+  const { t } = useTranslation();
   const { handleSubmit, register, getFieldId } = useForm({ defaultValues: inicial });
 
   return (
     <Form onSubmit={handleSubmit(aoSalvar)}>
       {/* `FormHeader` e não um `Strong` solto: dentro do `FormSection`, o texto
           solto encostava no primeiro rótulo e saía "Log timeTime spent". */}
-      <FormHeader title={titulo || (inicial.id ? 'Edit entry' : 'Log time')} />
+      <FormHeader
+        title={
+          titulo ||
+          (inicial.id ? t('form.editar', 'Edit entry') : t('form.novo', 'Log time'))
+        }
+      />
       <FormSection>
-        <Label labelFor={getFieldId('duracao')}>Time spent</Label>
-        <Textfield placeholder="1h 30m" {...register('duracao', { required: true })} />
+        <Label labelFor={getFieldId('duracao')}>{t('form.duracao', 'Time spent')}</Label>
+        <Textfield
+          placeholder={t('form.duracaoExemplo', '1h 30m')}
+          {...register('duracao', { required: true })}
+        />
 
-        <Label labelFor={getFieldId('data')}>Date started</Label>
+        <Label labelFor={getFieldId('data')}>{t('form.data', 'Date started')}</Label>
         <DatePicker {...register('data', { required: true })} />
 
-        <Label labelFor={getFieldId('hora')}>Time started</Label>
+        <Label labelFor={getFieldId('hora')}>{t('form.hora', 'Time started')}</Label>
         {/* `timeIsEditable` porque a lista pronta só oferece de 30 em 30
             minutos, e trabalho não começa em número redondo. */}
         <TimePicker timeIsEditable {...register('hora')} />
 
-        <Label labelFor={getFieldId('comentario')}>Description</Label>
-        <TextArea placeholder="Optional" {...register('comentario')} />
+        <Label labelFor={getFieldId('comentario')}>{t('form.descricao', 'Description')}</Label>
+        <TextArea placeholder={t('form.opcional', 'Optional')} {...register('comentario')} />
       </FormSection>
 
       <FormFooter>
         <ButtonGroup>
           <Button type="submit" appearance="primary" isDisabled={ocupado}>
-            {inicial.id ? 'Save changes' : 'Log time'}
+            {inicial.id ? t('form.salvar', 'Save changes') : t('form.gravar', 'Log time')}
           </Button>
           <Button appearance="subtle" onClick={aoCancelar} isDisabled={ocupado}>
-            Cancel
+            {t('form.cancelar', 'Cancel')}
           </Button>
         </ButtonGroup>
       </FormFooter>

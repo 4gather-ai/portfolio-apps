@@ -18,7 +18,7 @@ import { chaveDoDia } from '../lib/time.js';
  * Ordena por total decrescente: quem coordena abre esta tela para achar quem
  * está fora do esperado, nos dois sentidos, e o alfabético esconde isso.
  */
-export function porPessoa(entradas = [], dias = []) {
+export function porPessoa(entradas = [], dias = [], nomeDesconhecido = 'Unknown user') {
   const chavesDosDias = dias.map((d) => chaveDoDia(d.data));
   const pessoas = new Map();
 
@@ -28,7 +28,7 @@ export function porPessoa(entradas = [], dias = []) {
       pessoas.set(id, {
         id,
         // Sem nome, mostrar o id seria pior que dizer que não se sabe.
-        nome: e.autorNome || 'Unknown user',
+        nome: e.autorNome || nomeDesconhecido,
         porDia: {},
         total: 0,
       });
