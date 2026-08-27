@@ -122,5 +122,8 @@
   "csv.projetos": "Projects to include",
   "csv.nenhumProjeto": "Every project is unticked, so there is nothing to export.",
   "csv.instrucao": "Select all of the box below and copy it, then paste into a spreadsheet or save it as a .csv file. Jira apps can't hand your browser a file directly.",
-  "semana.erro.precisaPro": "The team view is part of the Pro edition. Everything about your own time stays available on every edition."
+  "semana.erro.precisaPro": "The team view is part of the Pro edition. Everything about your own time stays available on every edition.",
+  "semana.diaVazio": "nothing logged",
+  "csv.rotulo": "CSV to copy",
+  "form.duracaoAjuda": "Use Jira notation: 1h 30m, 45m, or 2 for two hours."
 }

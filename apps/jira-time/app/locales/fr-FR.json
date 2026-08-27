@@ -122,5 +122,8 @@
   "csv.projetos": "Projets à inclure",
   "csv.nenhumProjeto": "Tous les projets sont décochés, il n'y a donc rien à exporter.",
   "csv.instrucao": "Sélectionnez tout le contenu de la zone ci-dessous et copiez-le, puis collez-le dans un tableur ou enregistrez-le comme fichier .csv. Les apps Jira ne peuvent pas remettre directement un fichier à votre navigateur.",
-  "semana.erro.precisaPro": "La vue d'équipe fait partie de l'édition Pro. Tout ce qui concerne votre propre temps reste disponible dans toutes les éditions."
+  "semana.erro.precisaPro": "La vue d'équipe fait partie de l'édition Pro. Tout ce qui concerne votre propre temps reste disponible dans toutes les éditions.",
+  "semana.diaVazio": "rien de saisi",
+  "csv.rotulo": "CSV à copier",
+  "form.duracaoAjuda": "Utilisez la notation Jira : 1h 30m, 45m, ou 2 pour deux heures."
 }

@@ -122,5 +122,8 @@
   "csv.projetos": "Einzubeziehende Projekte",
   "csv.nenhumProjeto": "Alle Projekte sind abgewählt, es gibt also nichts zu exportieren.",
   "csv.instrucao": "Markiere den gesamten Kasten unten und kopiere ihn, füge ihn dann in eine Tabelle ein oder speichere ihn als .csv-Datei. Jira-Apps können deinem Browser keine Datei direkt übergeben.",
-  "semana.erro.precisaPro": "Die Teamansicht gehört zur Pro-Edition. Alles rund um deine eigene Zeit bleibt in jeder Edition verfügbar."
+  "semana.erro.precisaPro": "Die Teamansicht gehört zur Pro-Edition. Alles rund um deine eigene Zeit bleibt in jeder Edition verfügbar.",
+  "semana.diaVazio": "nichts erfasst",
+  "csv.rotulo": "CSV zum Kopieren",
+  "form.duracaoAjuda": "Jira-Notation verwenden: 1h 30m, 45m oder 2 für zwei Stunden."
 }

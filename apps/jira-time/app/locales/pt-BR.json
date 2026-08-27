@@ -122,5 +122,8 @@
   "csv.projetos": "Projetos a incluir",
   "csv.nenhumProjeto": "Todos os projetos estão desmarcados, então não há nada para exportar.",
   "csv.instrucao": "Selecione tudo na caixa abaixo e copie, depois cole numa planilha ou salve como um arquivo .csv. Apps do Jira não conseguem entregar um arquivo direto ao seu navegador.",
-  "semana.erro.precisaPro": "A visão de equipe faz parte da edition Pro. Tudo que é sobre o seu próprio tempo continua disponível em qualquer edition."
+  "semana.erro.precisaPro": "A visão de equipe faz parte da edition Pro. Tudo que é sobre o seu próprio tempo continua disponível em qualquer edition.",
+  "semana.diaVazio": "nada apontado",
+  "csv.rotulo": "CSV para copiar",
+  "form.duracaoAjuda": "Use a notação do Jira: 1h 30m, 45m, ou 2 para duas horas."
 }

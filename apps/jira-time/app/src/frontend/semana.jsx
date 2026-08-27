@@ -12,6 +12,7 @@ import ForgeReconciler, {
   Select,
   Text,
   I18nProvider,
+  Label,
   TextArea,
   Toggle,
   useTranslation,
@@ -200,7 +201,15 @@ const Semana = () => {
 
   return (
     <Stack space="space.200">
-      <Heading as="h2">{dados ? tituloDaSemana(dados.inicio, dados.fim) : 'My week'}</Heading>
+      {/* Dois níveis de título: o que a tela é, e de que semana ela fala.
+          Sem isso, quem navega por cabeçalho só encontra um intervalo de datas
+          e não sabe em que aba está. */}
+      <Heading as="h2">
+        {aba === 'time' ? t('semana.time', 'Team') : t('semana.minha', 'My week')}
+      </Heading>
+      <Heading as="h3">
+        {dados ? tituloDaSemana(dados.inicio, dados.fim) : t('semana.carregando', 'Loading your week')}
+      </Heading>
 
       {/* D9 — duas abas. A de equipe é somente leitura, e a tela diz isso. */}
       <Inline space="space.100" alignBlock="center">
@@ -357,7 +366,10 @@ const Semana = () => {
                 <Inline space="space.100">
                   {diasDoTime.map((dia, i) => (
                     <Text key={chaveDoDia(dia.data)}>
-                      {dia.rotulo}: {pessoa.dias[i] > 0 ? formatarDuracao(pessoa.dias[i]) : '—'}
+                      {dia.rotulo}:{' '}
+                      {pessoa.dias[i] > 0
+                        ? formatarDuracao(pessoa.dias[i])
+                        : t('semana.diaVazio', 'nothing logged')}
                     </Text>
                   ))}
                 </Inline>
@@ -401,7 +413,13 @@ const Semana = () => {
           <Stack key={chave} space="space.050">
             <Inline space="space.100" alignBlock="center">
               <Strong>{dia.rotulo}</Strong>
-              <Text>{segundosDoDia > 0 ? formatarDuracao(segundosDoDia) : '—'}</Text>
+              {/* Travessão sozinho não é texto: um leitor de tela lê "traço"
+                  ou nada. Dia vazio diz que está vazio. */}
+              <Text>
+                {segundosDoDia > 0
+                  ? formatarDuracao(segundosDoDia)
+                  : t('semana.diaVazio', 'nothing logged')}
+              </Text>
             </Inline>
 
             {doDia.map((e) => (
@@ -519,9 +537,9 @@ const Semana = () => {
                           )
                         }
                       />
-                      <Text>
+                      <Label labelFor={`projeto-${p.chave}`}>
                         {p.nome} ({p.chave})
-                      </Text>
+                      </Label>
                     </Inline>
                   ))}
                 </Stack>
@@ -543,6 +561,7 @@ const Semana = () => {
                       "Select all of the box below and copy it, then paste into a spreadsheet or save it as a .csv file. Jira apps can't hand your browser a file directly."
                     )}
                   </Text>
+                  <Label labelFor="nativelog-csv">{t('csv.rotulo', 'CSV to copy')}</Label>
                   <TextArea
                     id="nativelog-csv"
                     isReadOnly

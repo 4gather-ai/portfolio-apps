@@ -7,7 +7,9 @@ import {
   FormFooter,
   FormHeader,
   FormSection,
+  HelperMessage,
   Label,
+  RequiredAsterisk,
   TextArea,
   Textfield,
   TimePicker,
@@ -54,13 +56,25 @@ export const FormularioApontamento = ({ inicial, ocupado, titulo, aoSalvar, aoCa
         }
       />
       <FormSection>
-        <Label labelFor={getFieldId('duracao')}>{t('form.duracao', 'Time spent')}</Label>
+        <Label labelFor={getFieldId('duracao')}>
+          {t('form.duracao', 'Time spent')}
+          <RequiredAsterisk />
+        </Label>
         <Textfield
           placeholder={t('form.duracaoExemplo', '1h 30m')}
           {...register('duracao', { required: true })}
         />
+        {/* O formato como `HelperMessage` e não só como placeholder: o
+            placeholder some ao digitar e nem sempre é anunciado. Quem mais
+            precisa do exemplo é quem não conhece a notação do Jira. */}
+        <HelperMessage>
+          {t('form.duracaoAjuda', 'Use Jira notation: 1h 30m, 45m, or 2 for two hours.')}
+        </HelperMessage>
 
-        <Label labelFor={getFieldId('data')}>{t('form.data', 'Date started')}</Label>
+        <Label labelFor={getFieldId('data')}>
+          {t('form.data', 'Date started')}
+          <RequiredAsterisk />
+        </Label>
         <DatePicker {...register('data', { required: true })} />
 
         <Label labelFor={getFieldId('hora')}>{t('form.hora', 'Time started')}</Label>
