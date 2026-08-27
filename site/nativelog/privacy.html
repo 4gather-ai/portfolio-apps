@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nativelog — Privacy Policy</title>
+    <meta
+      name="description"
+      content="Privacy policy for Nativelog, time tracking for Jira Cloud. Nativelog stores no logged hours: your time lives in Jira's native worklog."
+    />
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <main>
+      <p class="crumb"><a href="../index.html">Northstack Apps</a> / Nativelog</p>
+      <h1>Nativelog — Privacy Policy</h1>
+      <p class="meta">Last updated: 27 August 2026</p>
+
+      <div class="callout">
+        <p>
+          <strong>The short version.</strong> Nativelog does not keep a copy of your hours. Every
+          entry it creates is a native Jira worklog, written as you, and it stays in your Jira site.
+          The only thing Nativelog stores is the timer you currently have running, and that record
+          is deleted the moment the timer stops. The app runs entirely on Atlassian infrastructure
+          and sends nothing to any third party.
+        </p>
+      </div>
+
+      <h2>Who we are</h2>
+      <p>
+        Nativelog is developed by Northstack Apps. For anything in this policy, contact
+        <a href="mailto:support@northstackapps.com">support@northstackapps.com</a>.
+      </p>
+      <p>
+        For the purposes of the GDPR, the customer who installs Nativelog into their Jira site is
+        the <strong>data controller</strong>. Northstack Apps acts as a
+        <strong>data processor</strong> for the small amount of data described below.
+      </p>
+
+      <h2>Where the app runs</h2>
+      <p>
+        Nativelog is an Atlassian Forge app. It runs inside Atlassian's own cloud infrastructure and
+        is eligible for Atlassian's <strong>Runs on Atlassian</strong> programme, which means app
+        data is stored on Atlassian-operated infrastructure in the same way your Jira data is. There
+        is no Northstack Apps server involved in running the app, and no data is transferred to one.
+      </p>
+
+      <h2>What Nativelog stores</h2>
+      <p>Exactly one kind of record, and only while a timer is running:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Why</th>
+            <th>How long</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Your Atlassian account ID</td>
+            <td>To keep your running timer separate from anyone else's</td>
+            <td>Until the timer stops or is discarded</td>
+          </tr>
+          <tr>
+            <td>The work item ID the timer is running on</td>
+            <td>To know where to log the time when you stop</td>
+            <td>Until the timer stops or is discarded</td>
+          </tr>
+          <tr>
+            <td>The instant the timer started</td>
+            <td>To calculate the duration</td>
+            <td>Until the timer stops or is discarded</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        When you stop a timer, that record becomes a native Jira worklog and the stored record is
+        deleted. <strong>No logged hour is ever kept in Nativelog's own storage.</strong>
+      </p>
+
+      <h2>What Nativelog reads</h2>
+      <p>
+        To show your timesheet, Nativelog reads worklogs, work items and project data from your Jira
+        site through Atlassian's official APIs, using <strong>your own permissions</strong> — it can
+        never see anything in Jira that you could not see yourself. This data is read at the moment
+        you open a screen, used to draw that screen, and not retained afterwards.
+      </p>
+      <p>
+        Nativelog also asks Jira which permissions you hold on a work item, so it can tell you up
+        front whether you are able to log work there.
+      </p>
+
+      <h2>What Nativelog writes</h2>
+      <p>
+        Native Jira worklogs, created, edited and deleted <strong>as you</strong> rather than as the
+        app. That is the entire point of the product: your time appears under your name in Jira's
+        own Work log tab and in reports, and it survives the app being uninstalled. Nativelog only
+        ever edits or deletes worklogs whose author is you.
+      </p>
+
+      <h2>What Nativelog does not do</h2>
+      <ul>
+        <li>No analytics, tracking pixels, or usage telemetry.</li>
+        <li>No cookies beyond what Atlassian itself sets to run Jira.</li>
+        <li>No advertising, and no selling or sharing of data with anyone.</li>
+        <li>No third-party sub-processors. There is no service beyond Atlassian in the path.</li>
+        <li>No AI or machine-learning training on your data.</li>
+        <li>No copy of your worklog history in any database of ours, because there is no database of ours.</li>
+      </ul>
+
+      <h2>Data retention and deletion</h2>
+      <p>
+        A running-timer record is deleted when the timer stops or is discarded. If you uninstall
+        Nativelog, any remaining running-timer records for your site are removed by Atlassian as
+        part of the app's storage being torn down.
+      </p>
+      <p>
+        <strong>Worklogs are not deleted when you uninstall</strong>, because they are not ours to
+        delete: they are ordinary Jira worklogs and they stay in your Jira site exactly as if they
+        had been entered by hand. This is deliberate, and it is the main reason the product exists.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        Because Nativelog stores almost nothing, most requests are answered by Jira itself: your
+        logged hours are Jira data, and your Jira administrator can export, correct or delete them
+        through Atlassian's own tools. For the running-timer record, stopping or discarding the
+        timer deletes it immediately.
+      </p>
+      <p>
+        For any request under the GDPR, LGPD, CCPA or similar legislation — access, correction,
+        deletion, portability, or objection — write to
+        <a href="mailto:support@northstackapps.com">support@northstackapps.com</a> and we will
+        respond within 30 days.
+      </p>
+
+      <h2>Security</h2>
+      <p>
+        Nativelog holds no credentials of its own. Every call to Jira is made through Atlassian's
+        authenticated APIs on your behalf, and the app requests the narrowest set of permissions it
+        can work with: read your user identity, read work items and worklogs, write worklogs, and
+        use Forge storage for the running timer.
+      </p>
+
+      <h2>Beta programme</h2>
+      <p>
+        During the private beta, the same rules apply without exception. We do not read your
+        worklog data, and we have no way to: the app runs in your site and reports nothing back to
+        us. Feedback reaches us only when a participant sends it.
+      </p>
+
+      <h2>Changes to this policy</h2>
+      <p>
+        If this policy changes in a way that affects what is stored or who can see it, the date at
+        the top changes and participants in the beta are told directly.
+      </p>
+
+      <hr />
+      <p class="meta">
+        <a href="support.html">Support</a> · <a href="../index.html">Northstack Apps</a>
+      </p>
+    </main>
+  </body>
+</html>

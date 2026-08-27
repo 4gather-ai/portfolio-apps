@@ -535,6 +535,49 @@ Iniciar um timer em outro item grava o worklog do anterior primeiro. **Se essa g
 
 ---
 
+## 2026-08-27 — A folha da semana lê em dois passos, e o segundo não se otimiza
+
+**Decisão:** "Minha semana" usa **JQL para descobrir quais itens** têm worklog meu na janela e o **endpoint do item para ler as entradas**. As duas chamadas são obrigatórias e há teste segurando cada uma no lugar.
+**Motivo:** o JQL seleciona **itens, nunca lançamentos**, e a coluna Time Spent do resultado é o total da vida inteira do item. Quem "otimizar" isso numa chamada só transforma a folha da semana em totais vitalícios — e **ninguém percebe olhando a tela**, porque os números continuam parecendo números. É o mesmo mal-entendido que a resposta 2 da Community explica para outra pessoa.
+**Custo aceito:** uma chamada por item na janela, com teto de 60 itens e aviso quando corta.
+**Reversível?** Não deveria ser revertido. Está registrado como regra do app em `apps/jira-time/STATUS.md`.
+
+---
+
+## 2026-08-27 — Permissão é perguntada na abertura do painel
+
+**Decisão:** o painel consulta `mypermissions` ao abrir e **não oferece o botão Start** a quem não pode apontar naquele item. **Consulta que falha libera**, marcada como não conferida.
+**Motivo:** tratar bem um 403 depois de a pessoa cronometrar três horas **não devolve as três horas**. E o inverso — trancar alguém fora da própria folha porque uma consulta *nossa* falhou — seria transformar um problema nosso no problema da pessoa. A gravação de verdade ainda recusa com frase clara, e nesse caminho nada se perde.
+**Custo aceito:** uma chamada a mais por abertura de painel. Entra na conta do `CUSTOS.md`.
+**Reversível?** Sim, mas devolveria o pior desfecho possível do produto.
+
+---
+
+## 2026-08-27 — Timer esquecido não vira worklog sem alguém olhar o número
+
+**Decisão:** parar um timer de mais de 12 h devolve "confira antes" e exige um segundo clique, com o total escrito por extenso e a opção de descartar. **Trocar de item não pergunta de novo.**
+**Motivo:** um cronômetro que ficou a semana ligada não mede trabalho, mede esquecimento. Gravar 4d 6h em silêncio suja a folha de um jeito que só aparece na fatura, e *"o app inventou horas"* é a reputação que este produto não pode ter. Na troca de item o aviso já mostra o total antes do clique — pedir confirmação duas vezes é atrito sem ganho.
+**Reversível?** Sim: `suspeito` em `lib/time.js` e a guarda em `pararTimer`. **Revisitar no beta** junto com o mínimo de 1 minuto e o máximo de 24 h.
+
+---
+
+## 2026-08-27 — Site estático sem nada de terceiros
+
+**Decisão:** `northstackapps.com` é HTML estático puro no Cloudflare Pages. **Sem fonte remota, sem analytics, sem script de terceiro.**
+**Motivo:** a política de privacidade afirma que o app não rastreia ninguém. Um site que carrega Google Fonts **contradiz a própria política na primeira linha** — e é o tipo de incoerência que um revisor atento encontra. De quebra, abre instantâneo e passa em revisão de segurança sem conversa.
+**Reversível?** Sim, mas exigiria reescrever a política junto.
+
+---
+
+## 2026-08-27 — A política de privacidade é curta porque o produto tem pouco a declarar
+
+**Decisão:** a política declara **um único registro armazenado** (o cronômetro em andamento) e afirma que nenhuma hora apontada mora em armazenamento nosso.
+**Motivo:** é a cunha aparecendo como **vantagem comercial**, não só técnica. *"Nativelog não guarda cópia das suas horas"* é uma frase que concorrente com banco próprio **não consegue escrever**. Vale mais na página de privacidade, onde o comprador cético vai olhar, do que em qualquer texto de marketing.
+**Consequência:** se algum dia o app passar a guardar qualquer coisa além do timer, **a página muda no mesmo commit**. Está escrito no `site/README.md`.
+**Reversível?** Só junto com a arquitetura.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: em construção.** D1 e D2 entregues. Nenhuma decisão em aberto bloqueia o código.

@@ -1,45 +1,158 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-26 (sessão 11) · Dia 1 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
+**Última atualização:** 2026-08-27 (sessão 12) · Dia 2 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
-## 🟢 A CUNHA ESTÁ PROVADA NO PRODUTO, NÃO SÓ NO SPIKE
-
-**Você apontou tempo e o worklog nasceu com o seu nome.** 2 minutos gravados como **Amarildo Pereira** ao trocar de ticket, na `northstack-dev`, pelo app — não pelo spike. Era o único critério do D3 que eu não conseguia fechar sozinho, e o mais importante do produto inteiro: **é isso que faz `worklogAuthor = currentUser()` achar as horas.** Se tivesse aparecido o nome do app, o plano mudava por inteiro. Não apareceu.
-
----
-
-## ▶️ EM CONSTRUÇÃO — Nativelog · **D4 de 14 concluído**
+## ▶️ Nativelog · **D7 de 14 concluído** · 292 testes · deploy 2.13.0
 
 | Dia | Marco | Estado |
 |---|---|---|
-| **D1** · 26/08 | Scaffold Forge, manifest, CI, núcleo de tempo com testes | ✅ |
-| **D2** · 26/08 | Painel do item: timer inicia, para, descarta · **um timer por pessoa** | ✅ |
-| **D3** · 26/08 | O timer vira worklog nativo do Jira, via `asUser()`, com início retroativo | ✅ **verificado por você** |
-| **D3.1** · 26/08 | Os 2 defeitos que o seu teste achou — corrigidos e verificados no navegador | ✅ |
-| **D4** · 26/08 | **Apontamento manual: criar, corrigir e apagar a própria entrada** | ✅ **entregue hoje** · 231 testes |
-| **D5** · 30/08 | Erros do núcleo: permissão negada, item apagado, timer órfão, fuso | ▶️ próximo |
+| **D1–D4** · 26/08 | Scaffold, timer, worklog nativo via `asUser()`, apontamento manual | ✅ |
+| **D5** · 27/08 | **Erros do núcleo:** permissão, timer preso, timer esquecido, fuso | ✅ **hoje** |
+| **D6** · 27/08 | **"Minha semana":** folha remontada do Jira, totais por dia | ✅ **hoje** |
+| **D7** · 27/08 | **Navegação de semanas + corrigir e apagar a partir da folha** | ✅ **hoje** |
+| **D8** · 02/09 | Exportação CSV com incluir/**excluir** projetos | ▶️ próximo |
 
-**Quatro dias de marco entregues no primeiro dia de calendário**, mais uma rodada de correção. As datas seguintes ficam como estavam: a compressão para 14 dias tirou todo o amortecedor, e folga vale mais que antecipação.
+**Sete dias de marco em dois dias de calendário.** As datas seguintes ficam como estavam: a folga ganha vale mais como amortecedor que como antecipação — o beta e a fila da Atlassian não comprimem.
 
-**O que mudou de verdade hoje não foi a velocidade — foi o método.** Nesta sessão o Chrome chegou até mim pela primeira vez, e **três defeitos apareceram no navegador que 231 testes automatizados não pegavam**, todos com a mesma assinatura: a nossa lógica estava certa, a plataforma é que se comporta diferente. Passei a abrir o app no navegador ao fim de cada marco.
+**Os três marcos de hoje foram verificados no navegador, um a um** (regra 17). O que o navegador achou nesta sessão está registrado em cada seção abaixo.
 
 ---
 
-## 🔴 PRECISA DE VOCÊ — 2 itens
+## 🔴 PRECISA DE VOCÊ
 
-| # | O quê | Quando | Bloqueia |
+### Agora — 3 itens, todos rápidos
+
+| # | O quê | Quanto tempo | Bloqueia |
 |---|---|---|---|
-| 1 | **Publicar as 4 respostas técnicas da Atlassian Community** — prontas em [`COMMUNITY.md`](apps/jira-time/COMMUNITY.md), uma por dia, D2–D5 | **começa amanhã** | O beta (canal 1 de prioridade) |
-| 2 | Definir a tabela de faixas de preço no Developer Console | D11 · 05/09 | Billing |
+| 1 | **Publicar a resposta 2 da Community** — texto pronto em [`COMMUNITY.md`](apps/jira-time/COMMUNITY.md), já em texto puro para colar | 5 min | O beta |
+| 2 | **Publicar o site no Cloudflare Pages** — passo a passo em [`site/README.md`](site/README.md). Build vazio, output `site` | 10 min | **D14 (beta)** |
+| 3 | **Criar `support@northstackapps.com`** no Email Routing do Cloudflare | 5 min | **As 3 páginas do site prometem esse endereço** |
 
-**Saiu da lista:** o critério do D3 — você fechou. Nada mais está bloqueando o código.
+> **O item 3 é o mais fácil e o mais perigoso de esquecer.** A página de suporte é **item obrigatório** da revisão da Atlassian, e as três páginas já apontam para esse e-mail. Sem ele, o site promete um canal que não responde.
+
+### Por marco, daqui até a submissão
+
+| Marco | Data | O que precisa de você | Se não fizer |
+|---|---|---|---|
+| **D8** · Exportação CSV | 02/09 | Nada | — |
+| **D9** · Visão de equipe (Pro) | 03/09 | Nada — mas **decida se a v1 tem visão de equipe**. É o que separa Standard de Pro | Sem ela, o Pro perde a razão de existir e o preço muda |
+| **D10** · i18n (EN, pt-BR, ES, DE, FR) | 04/09 | Nada. Traduzo e você revisa o **pt-BR** se quiser | Fica como eu escrevi |
+| **D11** · Editions + licença | 05/09 | **Definir a tabela de faixas de preço no Developer Console.** Eu preparo os números; a tela exige sua conta | **Billing não existe.** É o único item que trava a submissão |
+| **D12** · Instância grande | 06/09 | Nada | — |
+| **D13** · Acessibilidade e textos | 07/09 | Nada | — |
+| **D14** · Empacotar o beta | 08/09 | **Site no ar** (itens 2 e 3 acima) · **publicar o anúncio do beta** ([`BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md)) · **gerar o link de instalação** no Developer Console | **O beta não começa** |
+| **Beta** · dias 15–35 | 09/09–29/09 | **Recrutar e acompanhar 5–10 instâncias reais.** Me traga toda thread técnica: eu escrevo a réplica | **A regra 16 não deixa listar.** É o risco real do plano |
+| **Submissão** · ~D36 | ~04/10 | Submeter, aceitar termos, responder a revisão | — |
+
+**Resumo honesto:** de hoje até o D14 você tem **3 itens de 5 a 10 minutos** e **1 decisão de preço**. Depois disso, o trabalho é seu e é o mais difícil do projeto: achar as instâncias.
 
 ---
 
-## ✅ D4 — apontamento manual: criar, corrigir e apagar a própria entrada
+## 📦 Kit do beta — pronto hoje, esperando você publicar
+
+Usei a folga dos marcos adiantados para preparar tudo que o D14 vai precisar. **Nada disso depende de mais código.**
+
+| Arquivo | O que é |
+|---|---|
+| [`site/index.html`](site/index.html) | northstackapps.com |
+| [`site/nativelog/privacy.html`](site/nativelog/privacy.html) | **Política de privacidade** — obrigatória na Marketplace |
+| [`site/nativelog/support.html`](site/nativelog/support.html) | **Página de suporte** — obrigatória na Marketplace |
+| [`site/nativelog/beta.html`](site/nativelog/beta.html) | **Guia de instalação do beta, em EN** — é o link que vai nos anúncios |
+| [`site/style.css`](site/style.css) | Folha única, tema claro e escuro |
+| [`apps/jira-time/BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md) | **Anúncio do beta** para a Community e o r/jira, em texto puro |
+
+**Duas escolhas do kit que valem explicação:**
+
+**1. O site não carrega nada de fora.** Sem fonte remota, sem analytics, sem script de terceiro. A política de privacidade afirma que o app não rastreia ninguém — um site que carrega Google Fonts contradiz a própria política na primeira linha. Também abre instantâneo e passa em revisão de segurança sem conversa.
+
+**2. A política de privacidade é curta porque o produto tem pouco a declarar.** É a cunha aparecendo de novo, agora como vantagem comercial: *"Nativelog não guarda cópia das suas horas. O único registro que existe é o cronômetro em andamento, e ele some quando você para."* Concorrente que mantém banco próprio não consegue escrever essa frase.
+
+**O texto do r/jira lista as limitações antes que alguém as encontre** — Cloud only, só o próprio tempo, um timer por vez, app novo de um desenvolvedor só. No Reddit, admitir limitação é o que dá credibilidade; esconder é o que faz o post virar alvo.
+
+---
+
+## ✅ D7 — corrigir a folha sem sair da folha
+
+Navegação de semanas (anterior / esta / próxima) e **Edit e Delete em cada entrada da semana**. Corrigir o lançamento de sexta não devia exigir caçar o item de sexta.
+
+**Duas coisas precisaram mudar de lugar, e uma delas valeu por si:**
+
+O formulário virou arquivo próprio, porque a segunda tela passou a precisar dele. Duas cópias de um formulário que grava hora sairiam de sincronia na primeira mudança de regra — e a cópia atrasada gravaria errado sem ninguém notar.
+
+E editar/apagar passaram a aceitar o id do item **pelo payload**, porque uma `globalPage` não tem item no contexto do Forge. **Isso não afrouxa nada, e o código explica por quê:** a identidade continua vindo do contexto e nunca do cliente, e as duas operações continuam passando pela conferência de autoria que lê o worklog no Jira. Um id forjado só alcança worklogs cujo autor é quem está pedindo — os próprios, que a pessoa já pode editar. Tem teste que manda `accountId` no payload e confirma que é ignorado.
+
+### 🐞 Achado antes de ir para o ar
+
+**As entradas da semana não carregavam a descrição.** Editar a partir da folha abriria o formulário com Description vazio, e **salvar apagaria o que a pessoa escreveu** — em silêncio, porque para o app é uma edição legítima com descrição em branco. Apareceu enquanto eu ligava o formulário na tela; corrigido no leitor, com teste que diz para que serve.
+
+**Verificado no navegador:** Edit numa entrada de 1m abre preenchido na própria linha → 1m para 5m → o dia vai de 9m para 13m e a semana de 3h 9m para 3h 13m → Cancel descarta limpo → Previous week mostra a semana vazia anterior com os sete dias.
+
+---
+
+## ✅ D6 — "Minha semana"
+
+Uma `globalPage` com a folha de ponto da semana por dia. **Não existe tabela nossa por trás dela:** a semana é remontada do worklog nativo a cada abertura.
+
+**São dois passos, e o segundo é o ponto.** O JQL descobre *quais itens* têm worklog meu na janela — esse é o uso legítimo do JQL, busca ampla. O endpoint do item devolve *as entradas*. O JQL não sabe fazer a segunda parte: ele seleciona itens, nunca lançamentos, e a coluna Time Spent do resultado é o total da vida inteira do item, não o da semana. **Quem "otimizasse" isso numa chamada só transformaria a folha em totais vitalícios, e ninguém perceberia olhando.** Os testes seguram as duas chamadas no lugar.
+
+**O fuso é o motivo de o D5 ter escrito um contrato para isto.** O resolver devolve instantes e nunca dias; quem decide em que dia cada hora cai é o navegador, a única parte do sistema que conhece o fuso de quem está olhando. A janela do JQL é de propósito um dia e meio mais larga de cada lado — o JQL resolve `worklogDate` no fuso da instância, e o corte fino acontece no passo 2, pelo instante real. Alargar é barato; perder um dia de apontamento não é.
+
+**O que a lista não tem é dito, não escondido atrás de um total:** item que não pôde ser lido aparece pelo nome, e lista cortada avisa que o total está abaixo da semana real. A página também diz que hora apontada há segundos pode não ter chegado ao índice de busca ainda — mais barato que alguém achar que perdeu horas.
+
+**Verificado no navegador:** a página abre pelo menu Apps e mostrou **3h 9m** da semana real, com as seis entradas de quarta agrupadas no dia local certo e **3h de quinta no SCRUM-3 "Teste Workratio"** — o item que você criou ontem para conferir a identidade do `workratio`, achado sozinho pela busca de dois passos.
+
+---
+
+## ✅ D5 — erros do núcleo
+
+### 🐞 O beco sem saída, que era o achado de verdade
+
+Timer rodando no item A, e A é apagado ou você perde permissão nele: gravar dá 404 para sempre, e o painel do item B oferecia **só "Start here"**, que também falha. **Não havia botão de descartar em lugar nenhum**, porque o Discard só aparecia quando o timer era do item que você estava olhando. Resultado: sem poder apontar em item nenhum, sem nada na tela para fazer a respeito. O aviso agora **sempre** traz uma saída, e diz qual foi a falha.
+
+### Permissão perguntada na abertura, não na hora de gravar
+
+Tratar bem um 403 depois de a pessoa cronometrar três horas **não devolve as três horas**. Sem `WORK_ON_ISSUES` o botão Start nem aparece, com uma frase dizendo por quê; Edit e Delete seguem as permissões de worklog próprio do mesmo jeito.
+
+**E uma consulta de permissão que falha nunca tranca ninguém.** Se o Jira não responde, o app assume que sim e segue: a gravação de verdade ainda recusa com frase clara, e nesse caminho nada se perde. Trancar alguém fora da própria folha de ponto por causa de uma consulta *nossa* que falhou seria transformar um problema nosso no problema da pessoa.
+
+### Timer esquecido não vira worklog sozinho
+
+Parar um timer de mais de 12 horas devolve "confira antes" e a tela mostra o total por extenso, com **Log / Discard / Keep running**. Gravar 4d 6h em silêncio suja a folha de um jeito que só aparece na fatura. Trocar de item **não** pergunta de novo — o aviso já mostra o total antes do clique, e perguntar duas vezes é atrito sem ganho.
+
+**Este é o único caminho do D5 que não deu para verificar no navegador:** reproduzir exige um timer de 12 horas. Está coberto por 5 testes, e digo isso em vez de deixar implícito.
+
+### Fuso
+
+O dia de um apontamento é o dia que a pessoa viveu. O resolver do Forge roda em UTC e não tem como saber que 23h30 de terça em São Paulo ainda é terça. **Agrupar por dia é do navegador** — virou contrato escrito no topo de `painel.js` porque o D6 e o D7 dependiam disso, com testes que valem em qualquer fuso em vez de só em UTC.
+
+---
+
+## 📣 Community — resposta 1 publicada em 27/08
+
+**[A resposta está no ar.](https://community.atlassian.com/forums/Jira-questions/JIRA-Time-Tracking-How-to-filter-Issues-where-logged-time-gt/qaa-p/3281287#M1190210)** O texto publicado ficou melhor que o rascunho, e a diferença vale como método.
+
+O rascunho respondia **a pergunta**. O publicado responde **a situação** — ele estava usando o Structure, e daí saíram as três adições:
+
+| Adição | Por quê |
+|---|---|
+| **`workratio > 100`** | O Structure marca 100% quando o *remaining* zera, não quando passa do estimado. Quem reclama de "passou do previsto" quer os itens **acima do estimado**. **Provavelmente é esta linha que resolve o problema dele** |
+| **Original Estimate editado depois de apontar** | Segunda forma de a identidade quebrar, e mais comum que a primeira |
+| **Filter by Formula do Structure** | Ele **já tem** a ferramenta que faz a comparação direta que o JQL não faz. Mandá-lo ao JQL quando a resposta está no app que ele já paga seria a resposta pior |
+
+**A lição para as próximas três:** olhar o que a pessoa mencionou de passagem — a ferramenta, a versão, o time — costuma valer mais que a técnica.
+
+**Aprendizado de formato, já aplicado:** o editor da Community recusa `×` e HTML de colagem, e sinal de comparação em prosa sai errado. As respostas 2, 3 e 4 estão agora em **blocos de texto puro, só ASCII**, conferidos por script — é copiar e colar.
+
+**Vale acompanhar a resposta 1 alguns dias.** É a que tem mais chance de virar resposta aceita: a thread estava sem uma, e o `workratio > 100` provavelmente é o que ele queria. Se for aceita, o anúncio do beta parte de outro patamar.
+
+---
+
+## 📄 Histórico — D4 e as sessões anteriores
+
+### D4 — apontamento manual: criar, corrigir e apagar a própria entrada
 
 Entregue e **verificado no navegador, na `northstack-dev`**, não só em teste. Deploy **2.9.0**, ainda elegível a Runs on Atlassian. **231 testes.**
 

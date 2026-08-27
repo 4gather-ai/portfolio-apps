@@ -118,15 +118,15 @@ Pós-compra por micro-segmento, outros marketplaces (WordPress, Chrome, Atlassia
 - Política de privacidade e página de suporte publicadas.
 - Checklist de revisão da Shopify conferido item a item.
 
-## Estado atual (atualizado em 26/08/2026)
+## Estado atual (atualizado em 27/08/2026)
 
-**App em construção: `Nativelog`** — apontamento de horas para Jira Cloud, em `apps/jira-time/`. Regra 8 cumprida na rodada 5 do `PESQUISA.md`, plano aprovado. **D1 a D4 de 14 concluídos; o próximo é o D5.** Deploy 2.9.0 na `northstack-dev`, 231 testes.
+**App em construção: `Nativelog`** — apontamento de horas para Jira Cloud, em `apps/jira-time/`. Regra 8 cumprida na rodada 5 do `PESQUISA.md`, plano aprovado. **D1 a D7 de 14 concluídos; o próximo é o D8.** Deploy 2.13.0 na `northstack-dev`, 292 testes.
 
 **A cunha está provada no produto, não só no spike:** em 26/08/2026 o Amarildo apontou tempo pelo app e o worklog nasceu com o nome dele na aba Work log do Jira.
 
 Ler nesta ordem: `STATUS.md` → `apps/jira-time/STATUS.md` (estado do app, arquitetura e regras que não se quebra) → `apps/jira-time/PLANO-V1.md` (marcos por dia).
 
-**O risco aberto não é técnico, é o beta (regra 16):** achar 5–10 instâncias reais. O recrutamento roda em paralelo ao código desde o D1 — ver `apps/jira-time/BETA-RECRUTAMENTO.md` e `apps/jira-time/COMMUNITY.md`.
+**O risco aberto não é técnico, é o beta (regra 16):** achar 5–10 instâncias reais. O kit está pronto desde 27/08 — páginas em `site/` (privacidade, suporte, guia de instalação) e os anúncios em `apps/jira-time/BETA-ANUNCIO.md`. **Falta o humano publicar o site no Cloudflare Pages e criar `support@northstackapps.com`.**
 
 ~~**Bloqueio: escolher o próximo app.**~~ Resolvido em 26/08/2026. O histórico dos candidatos reprovados fica em `PESQUISA.md`.
 
@@ -141,3 +141,6 @@ Ler nesta ordem: `STATUS.md` → `apps/jira-time/STATUS.md` (estado do app, arqu
 - `forge deploy`/`forge install` funcionam sem TTY com `--non-interactive`; o `install` precisa de `--site` e `--product`
 - **UI Kit 2: campo de formulário controlado engole o que a pessoa digita.** `value` + `setState` por tecla faz sobrar **só a última letra** — o componente é desenhado pelo Jira do outro lado de uma ponte assíncrona, e o `value` do re-render volta depois da tecla seguinte. Usar **`useForm` do `@forge/react`** (campos não-controlados). Não aparece em teste nem no `forge lint`; só no navegador
 - **Chrome/browser chegou ao Claude Code em 26/08/2026.** Antes disso o navegador não estava disponível e marcos ficaram dependendo do humano para conferir. Ver a **regra 17**
+- **Editor da Atlassian Community recusa `×` e HTML de colagem**, e sinal de comparação em prosa sai errado. Texto para lá vai em **ASCII puro**, com a comparação escrita por extenso e o sinal só dentro da linha de JQL — nunca no começo da linha
+- **`/rest/api/3/search/jql`** é o endpoint de busca atual (o `/rest/api/3/search` saiu). Confirmado funcionando na `northstack-dev` em 27/08
+- Site estático em `site/`, publicado pelo **Cloudflare Pages**: build vazio, output `site` — ver `site/README.md`

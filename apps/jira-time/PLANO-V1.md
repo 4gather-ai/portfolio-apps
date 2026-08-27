@@ -1,6 +1,6 @@
 # Nativelog — Plano da v1
 
-> **✅ Aprovado pelo Amarildo em 26/08/2026.** Em construção — **D1, D2, D3 e D4 concluídos**, D5 é o próximo.
+> **✅ Aprovado pelo Amarildo em 26/08/2026.** Em construção — **D1 a D7 concluídos**, D8 é o próximo.
 > Base: cunha provada no spike de 26/08/2026 (`STATUS.md`). Escopo fechado em `PESQUISA.md`, rodada 5.
 
 ---
@@ -90,10 +90,10 @@ permissions:
 | ~~**D2**~~ ✅ | **26/08** *(adiantado)* | `issuePanel`: timer inicia, para e é descartado; estado no KVS; um timer por pessoa. 60 testes | — |
 | ~~**D3**~~ ✅ | **26/08** *(adiantado)* | Gravação do worklog no "parar", `started` retroativo, via `asUser()`. 97 testes | ✅ **Critério fechado em 26/08:** worklog gravado com o nome do Amarildo, conferido na aba Work log |
 | ~~**D4**~~ ✅ | **26/08** *(adiantado)* | Apontamento manual, editar e apagar entrada própria. 231 testes. **Só a própria entrada, conferido no servidor** | — |
-| **D5** ▶️ | 30/08 | Erros do núcleo: permissão negada, item apagado, timer órfão, fuso | — |
-| **D6** | 31/08 | `globalPage` "Minha semana": leitura via `/issue/{key}/worklog`, totais por dia | — |
-| **D7** | 01/09 | Navegação de semanas, edição a partir da folha | — |
-| **D8** | 02/09 | Exportação CSV com incluir/**excluir** projetos. **Critério de "pronto" da rodada 5 completo** | — |
+| ~~**D5**~~ ✅ | **27/08** *(adiantado)* | Erros do núcleo: permissão conferida na abertura, timer preso com saída, timer esquecido com confirmação, fuso virou contrato | — |
+| ~~**D6**~~ ✅ | **27/08** *(adiantado)* | `globalPage` "Minha semana": busca em dois passos, totais por dia no fuso local | — |
+| ~~**D7**~~ ✅ | **27/08** *(adiantado)* | Navegação de semanas, corrigir e apagar a partir da folha | — |
+| **D8** ▶️ | 02/09 | Exportação CSV com incluir/**excluir** projetos. **Critério de "pronto" da rodada 5 completo** | — |
 | **D9** | 03/09 | Visão de equipe (Pro), leitura por grupo/projeto | — |
 | **D10** | 04/09 | i18n: EN, pt-BR, ES, DE, FR | — |
 | **D11** | 05/09 | Editions Free/Standard/Pro + checagem de licença | **Definir a tabela de faixas de preço** no Developer Console — eu preparo os números |
@@ -132,7 +132,7 @@ permissions:
 | **D2–D5** | **Publicar as 4 respostas técnicas** — prontas em `COMMUNITY.md` | O canal de recrutamento nº 1 |
 | **D1 em diante** | **Recrutar 5–10 instâncias reais** — ver `BETA-RECRUTAMENTO.md`. **Canal 1 descartado em 26/08**; prioridade agora é Community → r/jira → Solution Partners | **Dia 15**. É o caminho crítico |
 | D11 (05/09) | Definir a tabela de faixas de preço | Billing |
-| D14 (08/09) | Privacidade e suporte no ar em `northstackapps.com` *(domínio **registrado no Cloudflare** em 26/08)* | **Beta** |
+| **Agora** | **Publicar `site/` no Cloudflare Pages e criar `support@northstackapps.com`** — páginas prontas em 27/08, ver `site/README.md` | **Beta (D14)** |
 | ~D36 | Submeter e aceitar termos | Publicação |
 
 ### O recrutamento do beta é o risco real do plano

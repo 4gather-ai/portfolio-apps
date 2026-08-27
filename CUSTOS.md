@@ -13,7 +13,7 @@ Todo gasto real e previsto do portfólio. Regra 5 do CLAUDE.md: **nunca gastar s
 
 | Data | Item | US$ | R$ | Pago por | Nota |
 |---|---|---|---|---|---|
-| — | *(nenhum até 26/08/2026)* | 0,00 | 0,00 | — | — |
+| — | *(nenhum até 27/08/2026)* | 0,00 | 0,00 | — | — |
 
 **Total real: R$ 0,00**
 
@@ -90,6 +90,7 @@ Se o caminho for o Atlassian Marketplace, **a estrutura de custo muda para melho
 | **Banco de dados** | **R$ 0** | Forge KVS / Forge SQL, dentro da franquia |
 | Forge — consumo além da franquia | variável | Ver franquias abaixo |
 | Domínio | ~R$ 66/ano | Ainda necessário para suporte e política de privacidade |
+| **Cloudflare Pages + Email Routing** | **R$ 0** | Free tier cobre site estático e redirecionamento de e-mail |
 | Selo Runs on Atlassian | R$ 0 | Automático para apps Forge elegíveis |
 | Selo Cloud Fortified | **não orçado** | Exige Bug Bounty pago + plantão 24 h. **Fora da v1** |
 
@@ -115,10 +116,12 @@ Se o caminho for o Atlassian Marketplace, **a estrutura de custo muda para melho
 |---|---|---|
 | Invocação por clique (start/stop/descartar/apontar/editar/apagar) | Só na ação | Poucas por pessoa por dia |
 | **Reconsulta do painel a cada 30 s** | **Só enquanto há relógio correndo na tela** | Decisão do D3.1 — sem ela a tela mente "Running" para timer já encerrado. Ver `DECISOES.md` |
+| Consulta de permissão | Uma por abertura de painel | Decisão do D5 — evita a pessoa cronometrar onde não pode apontar |
+| **Folha da semana** | Uma busca JQL + **uma chamada por item da semana** | Decisão do D6. Teto de 60 itens. É a operação mais cara do app, e só roda quando alguém abre a página |
 | Leitura da lista de apontamentos | Ao abrir o painel e depois de cada gravação | Endpoint do item, não JQL |
 | Escrita em KVS | Só o timer em andamento | **Nenhuma hora apontada mora no KVS** — vira worklog nativo e o registro some |
 
-**O ponto a vigiar no beta é a reconsulta de 30 s**, porque é o único consumo que cresce com o tempo que o painel fica aberto, e não com o número de cliques. Se a franquia apertar, **o número sobe antes de qualquer outra coisa ser cortada** — a alternativa (voltar a não reconsultar) traz de volta um defeito que custa confiança.
+**Dois pontos a vigiar no beta:** a **reconsulta de 30 s**, único consumo que cresce com o tempo que o painel fica aberto e não com cliques; e a **folha da semana**, que gasta uma chamada por item — barata para uma pessoa, multiplicada por um time inteiro abrindo a folha na segunda de manhã. Se a franquia apertar, **o número sobe antes de qualquer outra coisa ser cortada** — a alternativa (voltar a não reconsultar) traz de volta um defeito que custa confiança.
 
 ### Taxa do marketplace — comparação honesta
 

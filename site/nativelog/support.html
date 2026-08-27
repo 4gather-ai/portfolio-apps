@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nativelog — Support</title>
+    <meta
+      name="description"
+      content="Support for Nativelog, time tracking for Jira Cloud. How to get help, what to include, and answers to the questions that come up most."
+    />
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <main>
+      <p class="crumb"><a href="../index.html">Northstack Apps</a> / Nativelog</p>
+      <h1>Nativelog — Support</h1>
+      <p class="meta">Last updated: 27 August 2026</p>
+
+      <div class="callout">
+        <p>
+          <strong>Email <a href="mailto:support@northstackapps.com">support@northstackapps.com</a>.</strong>
+          One person reads it, and that person built the app. Expect a reply within one business
+          day; during the private beta, usually the same day.
+        </p>
+      </div>
+
+      <h2>What to include</h2>
+      <p>Any of these that you have makes the answer faster and more likely to be right:</p>
+      <ul>
+        <li>Your Jira site URL (the <code>something.atlassian.net</code> part).</li>
+        <li>The work item key, if it happened on one.</li>
+        <li>What you expected, and what appeared instead.</li>
+        <li>A screenshot of the panel or the week view.</li>
+        <li>Roughly when it happened, with your timezone — it helps to find the matching request.</li>
+      </ul>
+      <p>
+        Please do not send passwords or API tokens. Nativelog never needs them, and no genuine
+        support request will ever ask you for one.
+      </p>
+
+      <h2>If something goes wrong with your time</h2>
+      <p>
+        Nativelog is built so that this is recoverable, and it is worth knowing why. Your hours are
+        ordinary Jira worklogs. They are visible in the <strong>Work log</strong> tab of the work
+        item and editable there, with or without this app. If Nativelog is broken, unavailable, or
+        uninstalled, your logged time is still in Jira and still yours.
+      </p>
+      <p>
+        If a timer failed to save, the app keeps the timer running rather than throwing the time
+        away, and the panel says so. Press <strong>Stop</strong> again once the problem clears —
+        it checks for a duplicate before writing anything.
+      </p>
+
+      <h2>Questions that come up</h2>
+
+      <h3>Why does my time appear under my name and not the app's?</h3>
+      <p>
+        Because Nativelog writes worklogs as you, using Atlassian's <code>asUser</code> mechanism.
+        It is the reason the app exists. It means <code>worklogAuthor = currentUser()</code> finds
+        your hours, native reports count them, and nothing is orphaned if the app goes away.
+      </p>
+
+      <h3>Can I log time for someone else?</h3>
+      <p>
+        No. Nativelog only creates, edits and deletes <em>your own</em> entries, and that check runs
+        on the server. If you hold Jira's "edit any worklog" permission you can still do it — from
+        Jira's own Work log tab. This app is deliberately your timesheet rather than a tool for
+        administering other people's hours.
+      </p>
+
+      <h3>Why can I only have one timer running?</h3>
+      <p>
+        One timer per person, across every work item. Starting a timer somewhere else logs the
+        previous one first and tells you where it went. Multiple simultaneous timers are the most
+        common source of orphaned, forgotten hours in time-tracking tools.
+      </p>
+
+      <h3>I just logged time and my week view does not show it.</h3>
+      <p>
+        Jira's search index takes a few seconds to catch up, and the week view has to search to know
+        which items to read. Press <strong>Refresh</strong>. The worklog itself is already saved —
+        you can confirm that immediately in the item's Work log tab, which does not go through the
+        index.
+      </p>
+
+      <h3>A timer ran overnight by mistake.</h3>
+      <p>
+        Stopping a timer that has been running for more than twelve hours will not log it silently.
+        The app shows the total and asks you to confirm, and offers to discard it instead.
+      </p>
+
+      <h3>Why is the Start button missing on some items?</h3>
+      <p>
+        Your Jira permissions on that project do not include logging work, so a timer there would
+        have nowhere to go. The panel says so rather than letting you time work you cannot save.
+        Ask a project administrator for the "Work on issues" permission.
+      </p>
+
+      <h3>What happens to my hours if I uninstall?</h3>
+      <p>
+        Nothing. They are native Jira worklogs and they stay exactly where they are. There is no
+        export step and no lock-in, by design.
+      </p>
+
+      <h2>Reporting a security issue</h2>
+      <p>
+        Email <a href="mailto:support@northstackapps.com">support@northstackapps.com</a> with
+        "security" in the subject line. Please give us a reasonable window to fix the issue before
+        disclosing it publicly, and we will keep you informed while we do.
+      </p>
+
+      <hr />
+      <p class="meta">
+        <a href="privacy.html">Privacy policy</a> · <a href="../index.html">Northstack Apps</a>
+      </p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nativelog — Private Beta</title>
+    <meta
+      name="description"
+      content="How to install and try Nativelog, time tracking for Jira Cloud whose data is the native Jira worklog. Free during the private beta."
+    />
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <main>
+      <p class="crumb"><a href="../index.html">Northstack Apps</a> / Nativelog</p>
+      <h1>Nativelog — private beta</h1>
+      <p class="meta">Time tracking for Jira Cloud whose data is the Jira worklog.</p>
+
+      <div class="callout">
+        <p>
+          <strong>What makes it different.</strong> Every hour Nativelog records is a native Jira
+          worklog, written under <em>your</em> name. It shows up in the Work log tab, in
+          <code>worklogAuthor = currentUser()</code>, and in native reports. There is no second copy
+          of your hours in an app database, so there is nothing to export and nothing to lose if you
+          stop using it.
+        </p>
+      </div>
+
+      <h2>Before you install</h2>
+      <ul>
+        <li>You need <strong>Jira Cloud</strong>. Server and Data Center are not supported.</li>
+        <li>
+          Installing an app requires a <strong>Jira administrator</strong>. If that is not you, this
+          page is the thing to forward.
+        </li>
+        <li>
+          It is <strong>free for the whole beta</strong>, and for at least a month afterwards. You
+          will never be charged without being asked first.
+        </li>
+        <li>
+          Try it on a real site with real work if you can. A sandbox will not surface the things a
+          beta is for.
+        </li>
+      </ul>
+
+      <h2>Installing</h2>
+      <ol>
+        <li>Open the install link we sent you, while signed in as a Jira administrator.</li>
+        <li>
+          Review the permissions. Nativelog asks for four: read your user identity, read work items
+          and worklogs, write worklogs, and app storage. Nothing else.
+        </li>
+        <li>Confirm the install. It takes a few seconds and needs no configuration.</li>
+      </ol>
+      <p>
+        There is no setup, no project selection and no onboarding wizard. When it is installed, it
+        works.
+      </p>
+
+      <h2>What you should see</h2>
+      <h3>1. On any work item</h3>
+      <p>
+        A <strong>Nativelog</strong> panel with a <strong>Start timer</strong> button, a
+        <strong>Log time manually</strong> button, and a list of your entries on that item. Start a
+        timer, wait a minute, press Stop.
+      </p>
+      <p>
+        <strong>Then open the item's Work log tab.</strong> The entry should be there, under your
+        name, not the app's. That single check is the whole product — if it ever shows the app's
+        name instead of yours, tell us immediately.
+      </p>
+
+      <h3>2. Your week</h3>
+      <p>
+        In the Jira sidebar, <strong>Apps → Nativelog</strong> opens your timesheet for the week:
+        totals per day, every entry, and Previous / This / Next week. You can correct or delete any
+        of your entries directly from there.
+      </p>
+
+      <h2>What we would like you to try</h2>
+      <ul>
+        <li>Use it for a normal week, on the work you were doing anyway.</li>
+        <li>Log a day you forgot, using manual entry with a past date.</li>
+        <li>Switch a running timer from one item to another and see where the previous one went.</li>
+        <li>Correct an entry from the week view, including its description.</li>
+        <li>If you work across timezones, check that entries land on the day you actually worked.</li>
+        <li>Compare a week in Nativelog against the same week in Jira's own Time Tracking Report.</li>
+      </ul>
+
+      <h2>What we most want to hear</h2>
+      <p>The useful feedback is rarely "I like it". It is usually one of these:</p>
+      <ul>
+        <li><strong>A number that looked wrong</strong>, even if you are not sure it was.</li>
+        <li><strong>Something you expected to be there and wasn't.</strong></li>
+        <li><strong>A moment you had to stop and think</strong> about what the screen meant.</li>
+        <li><strong>The thing that made you go back to your old way of doing it.</strong> This one matters most, and it is the one people politely leave out.</li>
+      </ul>
+      <p>
+        Blunt is welcome. We would rather fix it now than read it in a review later.
+      </p>
+
+      <h2>If something breaks</h2>
+      <p>
+        Your hours are ordinary Jira worklogs, so they are safe in Jira whatever the app does. If a
+        save fails, Nativelog keeps your timer running instead of discarding it and tells you so on
+        screen — press Stop again once the problem clears.
+      </p>
+      <p>
+        Email <a href="mailto:support@northstackapps.com">support@northstackapps.com</a> with your
+        site URL, the item key, and what you saw. During the beta you will usually hear back the
+        same day.
+      </p>
+
+      <h2>Leaving the beta</h2>
+      <p>
+        Uninstall from <strong>Manage apps</strong> in Jira. Nothing else is needed, and
+        <strong>your logged hours stay in Jira</strong> — they are native worklogs, not our records.
+        No export, no migration, no lock-in. If you leave, we would still like to know what made you
+        leave.
+      </p>
+
+      <hr />
+      <p class="meta">
+        <a href="privacy.html">Privacy policy</a> · <a href="support.html">Support</a> ·
+        <a href="../index.html">Northstack Apps</a>
+      </p>
+    </main>
+  </body>
+</html>
