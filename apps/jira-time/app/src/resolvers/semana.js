@@ -12,6 +12,7 @@
  */
 
 import { formatarDuracao } from '../lib/time.js';
+import { recursosDoContexto } from '../lib/licenca.js';
 
 function quemEstaPedindo(req) {
   const accountId = req?.context?.accountId;
@@ -60,6 +61,13 @@ export function criarVisaoSemana({ semana }) {
      */
     semanaDoTime: seguro(async (req) => {
       quemEstaPedindo(req);
+
+      // D11 — a única função com paywall. Se a licença não puder ser lida, a
+      // conferência libera: bloquear um cliente pagante por um campo que não
+      // soubemos ler é pior que alguém ver o Pro de graça por um tempo.
+      const recursos = recursosDoContexto(req?.context);
+      if (!recursos.verEquipe) return { ok: false, motivo: 'precisa-pro' };
+
       const { projetoChave, desde, ate } = req?.payload || {};
 
       const r = await semana.semanaDoTime({ projetoChave, desde, ate });
@@ -74,6 +82,12 @@ export function criarVisaoSemana({ semana }) {
         falhas: r.falhas,
         somenteLeitura: true,
       };
+    }),
+
+    /** O que esta edition libera, para a tela nem oferecer o que não dá. */
+    recursos: seguro(async (req) => {
+      quemEstaPedindo(req);
+      return { recursos: recursosDoContexto(req?.context) };
     }),
 
     /** Os projetos que esta pessoa enxerga, para o seletor. */

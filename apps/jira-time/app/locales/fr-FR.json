@@ -10,7 +10,6 @@
   "timer.erro.semUsuario": "Nativelog n'a pas pu vous identifier. Essayez de recharger la page.",
   "timer.erro.confirmar": "Ce minuteur tourne depuis longtemps. Vérifiez le total avant de le saisir.",
   "timer.erro.generico": "Quelque chose s'est mal passé. Votre temps continue de tourner — réessayez.",
-
   "apontamento.erro.duracao": "Saisissez une durée comme 1h 30m, 45m ou 2 (c'est-à-dire deux heures).",
   "apontamento.erro.curto": "Jira compte en minutes, une entrée doit donc durer au moins une minute.",
   "apontamento.erro.longo": "Une entrée ne peut pas dépasser 24 heures. Répartissez-la sur les jours où le travail a réellement eu lieu.",
@@ -26,7 +25,6 @@
   "apontamento.erro.rede": "La requête n'a pas abouti, elle a donc pu être enregistrée ou non. Vérifiez la liste ci-dessous avant de réessayer.",
   "apontamento.erro.recusado": "Jira a refusé l'entrée, rien n'a donc été enregistré. Merci de nous le signaler.",
   "apontamento.erro.generico": "Quelque chose s'est mal passé et rien n'a été enregistré. Réessayez.",
-
   "semana.erro.janela": "Nativelog n'a pas pu déterminer quelle semaine afficher. Rechargez la page.",
   "semana.erro.busca": "Jira a refusé la recherche de votre semaine. Merci de nous le signaler.",
   "semana.erro.semPermissao": "Vos permissions Jira n'autorisent pas la recherche d'éléments, votre semaine ne peut donc pas être construite.",
@@ -35,13 +33,11 @@
   "semana.erro.rede": "La requête n'a pas abouti. Appuyez sur Actualiser pour réessayer.",
   "semana.erro.semUsuario": "Nativelog n'a pas pu vous identifier. Essayez de recharger la page.",
   "semana.erro.generico": "Votre semaine n'a pas pu être chargée. Appuyez sur Actualiser pour réessayer.",
-
   "worklog.gravado": "{0} saisi sur {1} en tant que {2}.",
   "worklog.gravadoSemAutor": "{0} saisi sur {1}.",
   "worklog.gravadoSimples": "{0} saisi.",
   "worklog.jaGravado": "Déjà saisi : {0} sur {1} en tant que {2}. Rien n'a été écrit deux fois.",
   "worklog.jaGravadoSemItem": "Déjà saisi : {0}. Rien n'a été écrit deux fois.",
-
   "painel.carregando": "Chargement du minuteur",
   "painel.semTimer": "Aucun minuteur ne tourne sur cet élément.",
   "painel.rodando": "En cours",
@@ -87,7 +83,6 @@
   "painel.apagado": "Entrée supprimée de Jira.",
   "painel.jaApagado": "Cette entrée avait déjà été supprimée dans Jira.",
   "painel.atualizado": "Entrée modifiée en {0}.",
-
   "form.editar": "Modifier l'entrée",
   "form.novo": "Saisir du temps",
   "form.editarItem": "Modifier {0}",
@@ -100,7 +95,6 @@
   "form.salvar": "Enregistrer les modifications",
   "form.gravar": "Saisir le temps",
   "form.cancelar": "Annuler",
-
   "semana.carregando": "Chargement de votre semaine",
   "semana.minha": "Ma semaine",
   "semana.time": "Équipe",
@@ -122,11 +116,11 @@
   "semana.atrasoIndice": "Le temps saisi il y a quelques secondes peut mettre un instant à apparaître ici. Utilisez Actualiser s'il manque quelque chose que vous venez de saisir.",
   "semana.timeVazio": "Personne n'a saisi de temps sur ce projet pendant cette semaine.",
   "semana.autorDesconhecido": "Utilisateur inconnu",
-
   "csv.exportar": "Exporter en CSV",
   "csv.esconder": "Masquer l'export",
   "csv.contagem": "{0} sur {1}",
   "csv.projetos": "Projets à inclure",
   "csv.nenhumProjeto": "Tous les projets sont décochés, il n'y a donc rien à exporter.",
-  "csv.instrucao": "Sélectionnez tout le contenu de la zone ci-dessous et copiez-le, puis collez-le dans un tableur ou enregistrez-le comme fichier .csv. Les apps Jira ne peuvent pas remettre directement un fichier à votre navigateur."
+  "csv.instrucao": "Sélectionnez tout le contenu de la zone ci-dessous et copiez-le, puis collez-le dans un tableur ou enregistrez-le comme fichier .csv. Les apps Jira ne peuvent pas remettre directement un fichier à votre navigateur.",
+  "semana.erro.precisaPro": "La vue d'équipe fait partie de l'édition Pro. Tout ce qui concerne votre propre temps reste disponible dans toutes les éditions."
 }

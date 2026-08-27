@@ -188,6 +188,12 @@ export function mensagemDaSemana(motivo) {
       return ['semana.erro.rede', "The request didn't complete. Press Refresh to try again."];
     case 'sem-usuario':
       return ['semana.erro.semUsuario', 'Nativelog could not identify you. Try reloading the page.'];
+    case 'precisa-pro':
+      // Não é erro: é a única função paga do produto dizendo que é paga.
+      return [
+        'semana.erro.precisaPro',
+        'The team view is part of the Pro edition. Everything about your own time stays available on every edition.',
+      ];
     default:
       return ['semana.erro.generico', "Your week couldn't be loaded. Press Refresh to try again."];
   }

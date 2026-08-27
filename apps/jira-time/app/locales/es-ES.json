@@ -10,7 +10,6 @@
   "timer.erro.semUsuario": "Nativelog no pudo identificarte. Prueba a recargar la página.",
   "timer.erro.confirmar": "Este cronómetro lleva mucho tiempo corriendo. Comprueba el total antes de registrarlo.",
   "timer.erro.generico": "Algo salió mal. Tu tiempo sigue corriendo — inténtalo otra vez.",
-
   "apontamento.erro.duracao": "Escribe una duración como 1h 30m, 45m o 2 (que significa dos horas).",
   "apontamento.erro.curto": "Jira trabaja en minutos, así que una entrada tiene que durar al menos un minuto.",
   "apontamento.erro.longo": "Una entrada no puede superar las 24 horas. Repártela entre los días en que el trabajo ocurrió realmente.",
@@ -26,7 +25,6 @@
   "apontamento.erro.rede": "La petición no se completó, así que puede haberse guardado o no. Comprueba la lista de abajo antes de intentarlo otra vez.",
   "apontamento.erro.recusado": "Jira rechazó la entrada, así que no se guardó nada. Por favor, avísanos.",
   "apontamento.erro.generico": "Algo salió mal y no se guardó nada. Inténtalo otra vez.",
-
   "semana.erro.janela": "Nativelog no pudo determinar qué semana mostrar. Recarga la página.",
   "semana.erro.busca": "Jira rechazó la búsqueda de tu semana. Por favor, avísanos.",
   "semana.erro.semPermissao": "Tus permisos de Jira no permiten buscar elementos, así que no se puede construir tu semana.",
@@ -35,13 +33,11 @@
   "semana.erro.rede": "La petición no se completó. Pulsa Actualizar para intentarlo otra vez.",
   "semana.erro.semUsuario": "Nativelog no pudo identificarte. Prueba a recargar la página.",
   "semana.erro.generico": "No se pudo cargar tu semana. Pulsa Actualizar para intentarlo otra vez.",
-
   "worklog.gravado": "{0} registrado en {1} como {2}.",
   "worklog.gravadoSemAutor": "{0} registrado en {1}.",
   "worklog.gravadoSimples": "{0} registrado.",
   "worklog.jaGravado": "Ya estaba registrado: {0} en {1} como {2}. No se escribió nada dos veces.",
   "worklog.jaGravadoSemItem": "Ya estaba registrado: {0}. No se escribió nada dos veces.",
-
   "painel.carregando": "Cargando el cronómetro",
   "painel.semTimer": "No hay ningún cronómetro corriendo en este elemento.",
   "painel.rodando": "En marcha",
@@ -87,7 +83,6 @@
   "painel.apagado": "Entrada borrada de Jira.",
   "painel.jaApagado": "Esa entrada ya se había borrado en Jira.",
   "painel.atualizado": "Entrada cambiada a {0}.",
-
   "form.editar": "Editar entrada",
   "form.novo": "Registrar tiempo",
   "form.editarItem": "Editar {0}",
@@ -100,7 +95,6 @@
   "form.salvar": "Guardar cambios",
   "form.gravar": "Registrar tiempo",
   "form.cancelar": "Cancelar",
-
   "semana.carregando": "Cargando tu semana",
   "semana.minha": "Mi semana",
   "semana.time": "Equipo",
@@ -122,11 +116,11 @@
   "semana.atrasoIndice": "El tiempo registrado en los últimos segundos puede tardar un momento en aparecer aquí. Usa Actualizar si falta algo que acabas de registrar.",
   "semana.timeVazio": "Nadie registró tiempo en este proyecto durante esta semana.",
   "semana.autorDesconhecido": "Usuario desconocido",
-
   "csv.exportar": "Exportar CSV",
   "csv.esconder": "Ocultar exportación",
   "csv.contagem": "{0} de {1}",
   "csv.projetos": "Proyectos a incluir",
   "csv.nenhumProjeto": "Todos los proyectos están desmarcados, así que no hay nada que exportar.",
-  "csv.instrucao": "Selecciona todo el cuadro de abajo y cópialo, luego pégalo en una hoja de cálculo o guárdalo como archivo .csv. Las apps de Jira no pueden entregar un archivo directamente a tu navegador."
+  "csv.instrucao": "Selecciona todo el cuadro de abajo y cópialo, luego pégalo en una hoja de cálculo o guárdalo como archivo .csv. Las apps de Jira no pueden entregar un archivo directamente a tu navegador.",
+  "semana.erro.precisaPro": "La vista de equipo forma parte de la edición Pro. Todo lo relativo a tu propio tiempo sigue disponible en cualquier edición."
 }

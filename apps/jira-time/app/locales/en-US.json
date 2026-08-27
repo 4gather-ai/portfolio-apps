@@ -10,7 +10,6 @@
   "timer.erro.semUsuario": "Nativelog could not identify you. Try reloading the page.",
   "timer.erro.confirmar": "This timer has been running a long time. Check the total before logging it.",
   "timer.erro.generico": "Something went wrong. Your time is still running — try again.",
-
   "apontamento.erro.duracao": "Enter a duration like 1h 30m, 45m, or 2 (meaning two hours).",
   "apontamento.erro.curto": "Jira works in minutes, so an entry has to be at least one minute long.",
   "apontamento.erro.longo": "A single entry can't be longer than 24 hours. Split it across the days the work actually happened.",
@@ -26,7 +25,6 @@
   "apontamento.erro.rede": "The request didn't complete, so it may or may not have been saved. Check the list below before trying again.",
   "apontamento.erro.recusado": "Jira rejected the entry, so nothing was saved. Please report this.",
   "apontamento.erro.generico": "Something went wrong and nothing was saved. Try again.",
-
   "semana.erro.janela": "Nativelog could not work out which week to show. Reload the page.",
   "semana.erro.busca": "Jira rejected the search for your week. Please report this.",
   "semana.erro.semPermissao": "Your Jira permissions don't allow searching work items, so your week can't be built.",
@@ -35,13 +33,11 @@
   "semana.erro.rede": "The request didn't complete. Press Refresh to try again.",
   "semana.erro.semUsuario": "Nativelog could not identify you. Try reloading the page.",
   "semana.erro.generico": "Your week couldn't be loaded. Press Refresh to try again.",
-
   "worklog.gravado": "Logged {0} to {1} as {2}.",
   "worklog.gravadoSemAutor": "Logged {0} to {1}.",
   "worklog.gravadoSimples": "Logged {0}.",
   "worklog.jaGravado": "Already logged: {0} to {1} as {2}. Nothing was written twice.",
   "worklog.jaGravadoSemItem": "Already logged: {0}. Nothing was written twice.",
-
   "painel.carregando": "Loading timer",
   "painel.semTimer": "No timer running on this work item.",
   "painel.rodando": "Running",
@@ -87,7 +83,6 @@
   "painel.apagado": "Entry deleted from Jira.",
   "painel.jaApagado": "That entry had already been deleted in Jira.",
   "painel.atualizado": "Entry updated to {0}.",
-
   "form.editar": "Edit entry",
   "form.novo": "Log time",
   "form.editarItem": "Edit {0}",
@@ -100,7 +95,6 @@
   "form.salvar": "Save changes",
   "form.gravar": "Log time",
   "form.cancelar": "Cancel",
-
   "semana.carregando": "Loading your week",
   "semana.minha": "My week",
   "semana.time": "Team",
@@ -122,11 +116,11 @@
   "semana.atrasoIndice": "Time logged in the last few seconds can take a moment to appear here. Use Refresh if something you just logged is missing.",
   "semana.timeVazio": "Nobody logged time on this project during this week.",
   "semana.autorDesconhecido": "Unknown user",
-
   "csv.exportar": "Export CSV",
   "csv.esconder": "Hide export",
   "csv.contagem": "{0} of {1}",
   "csv.projetos": "Projects to include",
   "csv.nenhumProjeto": "Every project is unticked, so there is nothing to export.",
-  "csv.instrucao": "Select all of the box below and copy it, then paste into a spreadsheet or save it as a .csv file. Jira apps can't hand your browser a file directly."
+  "csv.instrucao": "Select all of the box below and copy it, then paste into a spreadsheet or save it as a .csv file. Jira apps can't hand your browser a file directly.",
+  "semana.erro.precisaPro": "The team view is part of the Pro edition. Everything about your own time stays available on every edition."
 }

@@ -10,7 +10,6 @@
   "timer.erro.semUsuario": "Nativelog konnte dich nicht identifizieren. Lade die Seite neu.",
   "timer.erro.confirmar": "Dieser Timer läuft schon sehr lange. Prüfe die Summe, bevor du sie erfasst.",
   "timer.erro.generico": "Etwas ist schiefgelaufen. Deine Zeit läuft weiter — versuche es erneut.",
-
   "apontamento.erro.duracao": "Gib eine Dauer wie 1h 30m, 45m oder 2 (also zwei Stunden) ein.",
   "apontamento.erro.curto": "Jira rechnet in Minuten, ein Eintrag muss also mindestens eine Minute lang sein.",
   "apontamento.erro.longo": "Ein einzelner Eintrag darf nicht länger als 24 Stunden sein. Verteile ihn auf die Tage, an denen die Arbeit wirklich stattfand.",
@@ -26,7 +25,6 @@
   "apontamento.erro.rede": "Die Anfrage wurde nicht abgeschlossen, sie kann also gespeichert worden sein oder nicht. Prüfe die Liste unten, bevor du es erneut versuchst.",
   "apontamento.erro.recusado": "Jira hat den Eintrag abgelehnt, deshalb wurde nichts gespeichert. Bitte melde das.",
   "apontamento.erro.generico": "Etwas ist schiefgelaufen und nichts wurde gespeichert. Versuche es erneut.",
-
   "semana.erro.janela": "Nativelog konnte nicht ermitteln, welche Woche gezeigt werden soll. Lade die Seite neu.",
   "semana.erro.busca": "Jira hat die Suche nach deiner Woche abgelehnt. Bitte melde das.",
   "semana.erro.semPermissao": "Deine Jira-Berechtigungen erlauben keine Vorgangssuche, deshalb lässt sich deine Woche nicht aufbauen.",
@@ -35,13 +33,11 @@
   "semana.erro.rede": "Die Anfrage wurde nicht abgeschlossen. Drücke Aktualisieren, um es erneut zu versuchen.",
   "semana.erro.semUsuario": "Nativelog konnte dich nicht identifizieren. Lade die Seite neu.",
   "semana.erro.generico": "Deine Woche konnte nicht geladen werden. Drücke Aktualisieren, um es erneut zu versuchen.",
-
   "worklog.gravado": "{0} auf {1} als {2} erfasst.",
   "worklog.gravadoSemAutor": "{0} auf {1} erfasst.",
   "worklog.gravadoSimples": "{0} erfasst.",
   "worklog.jaGravado": "War bereits erfasst: {0} auf {1} als {2}. Es wurde nichts doppelt geschrieben.",
   "worklog.jaGravadoSemItem": "War bereits erfasst: {0}. Es wurde nichts doppelt geschrieben.",
-
   "painel.carregando": "Timer wird geladen",
   "painel.semTimer": "Auf diesem Vorgang läuft kein Timer.",
   "painel.rodando": "Läuft",
@@ -87,7 +83,6 @@
   "painel.apagado": "Eintrag aus Jira gelöscht.",
   "painel.jaApagado": "Dieser Eintrag war in Jira bereits gelöscht.",
   "painel.atualizado": "Eintrag auf {0} geändert.",
-
   "form.editar": "Eintrag bearbeiten",
   "form.novo": "Zeit erfassen",
   "form.editarItem": "{0} bearbeiten",
@@ -100,7 +95,6 @@
   "form.salvar": "Änderungen speichern",
   "form.gravar": "Zeit erfassen",
   "form.cancelar": "Abbrechen",
-
   "semana.carregando": "Deine Woche wird geladen",
   "semana.minha": "Meine Woche",
   "semana.time": "Team",
@@ -122,11 +116,11 @@
   "semana.atrasoIndice": "Zeit, die vor wenigen Sekunden erfasst wurde, kann einen Moment brauchen, bis sie hier erscheint. Nutze Aktualisieren, wenn etwas fehlt, das du gerade erfasst hast.",
   "semana.timeVazio": "In dieser Woche hat niemand Zeit auf dieses Projekt erfasst.",
   "semana.autorDesconhecido": "Unbekannte Person",
-
   "csv.exportar": "CSV exportieren",
   "csv.esconder": "Export ausblenden",
   "csv.contagem": "{0} von {1}",
   "csv.projetos": "Einzubeziehende Projekte",
   "csv.nenhumProjeto": "Alle Projekte sind abgewählt, es gibt also nichts zu exportieren.",
-  "csv.instrucao": "Markiere den gesamten Kasten unten und kopiere ihn, füge ihn dann in eine Tabelle ein oder speichere ihn als .csv-Datei. Jira-Apps können deinem Browser keine Datei direkt übergeben."
+  "csv.instrucao": "Markiere den gesamten Kasten unten und kopiere ihn, füge ihn dann in eine Tabelle ein oder speichere ihn als .csv-Datei. Jira-Apps können deinem Browser keine Datei direkt übergeben.",
+  "semana.erro.precisaPro": "Die Teamansicht gehört zur Pro-Edition. Alles rund um deine eigene Zeit bleibt in jeder Edition verfügbar."
 }
