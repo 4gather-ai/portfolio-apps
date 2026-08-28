@@ -1,6 +1,6 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-28 (sessão 15) · Dia 3 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
+**Última atualização:** 2026-08-28 (sessão 16) · Dia 3 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
@@ -12,6 +12,9 @@
 | **D1–D14** · 26–27/08 | ✅ os 14 dias de código, produção 2.0.0 no ar |
 | **Link de instalação** | ✅ **gerado por você em 28/08** |
 | **Ensaio geral em site novo** (`nativelog-beta-zero`) | ✅ instalou, apontou, tudo certo — [`BETA.md`](apps/jira-time/BETA.md) |
+| **`support@` enviando, não só recebendo** | ✅ 28/08 — sem isso o canal de parceiros não existia |
+| **Conta no Reddit + aquecimento** | ▶️ `u/amarildo_dev`, 1 comentário técnico publicado em 28/08 |
+| **10 Solution Partners, com e-mail pronto para cada um** | ✅ [`BETA-PARCEIROS.md`](apps/jira-time/BETA-PARCEIROS.md) |
 | **Convidar 5–10 instâncias reais** | 🔴 **é aqui que o projeto está parado, e não é problema de código** |
 
 ---
@@ -91,13 +94,29 @@ Textos prontos e conferidos em [`COMMUNITY.md`](apps/jira-time/COMMUNITY.md).
 
 Você gerou e testou, mas eu não tenho a URL. **Ela não está colada em texto nenhum ainda** — o post do r/jira e o e-mail para os parceiros dependem dela.
 
-### 5. Postar no r/jira — **agora é o canal principal**
+### 5. r/jira — **é comentário no megathread, não post**
 
-Texto pronto em [`BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md). As regras da Atlassian não valem lá; as do sub, sim — leia a barra lateral antes. **Se sua conta do Reddit for nova, comente em outras threads por alguns dias antes de postar.** Conta sem histórico postando link é removida como spam.
+Você anotou a regra 5 ("Recruitment is allowed") como possível encaixe. **Fui ler: ela é sobre vaga de emprego** — pede que se declare salário — e contém *"do not attempt to recruit unpaid work"*. **Pedir testadores não pagos por ali seria invocar a regra que nos pune.**
 
-### 6. Escrever para 10 Solution Partners — o de maior alavancagem
+O caminho é a regra 1. O megathread fixado diz, no corpo escrito pela moderação, que ele é *"the only place on the sub where you should post the following: advertising, market research, **feedback requests**"*. Convite de beta é exatamente um *feedback request*.
 
-Texto em [`BETA-RECRUTAMENTO.md`](apps/jira-time/BETA-RECRUTAMENTO.md), canal 5. **Resposta é lenta, então é o primeiro a começar.** Um parceiro pode trazer 3–5 instâncias de uma vez.
+**Onde:** https://old.reddit.com/r/jira/comments/1s0oeox/product_selfpromotion_megathread/ — comentário de primeiro nível. Texto pronto em [`BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md), com a seção sobre como não parecer texto de IA (regra 2 do sub).
+
+**Seu aquecimento é o que compra a tolerância.** A regra 1 diz: *"If you have a history of contribution to the sub, mistakes will be met with a warning. If you do not, they will be met with a ban."* A semana que você começou hoje não é formalidade.
+
+**⚠️ E um alerta de expectativa:** o megathread tem 5 meses, 95 comentários, e os mais votados têm **3 pontos**. **É um depósito, não uma vitrine.** Poste, mas não conte o canal como resolvido depois de postar — o valor real do r/jira está nos comentários técnicos como o que você publicou hoje.
+
+### 6. Escrever para os 10 Solution Partners — **prontos, um a um**
+
+**➜ [`BETA-PARCEIROS.md`](apps/jira-time/BETA-PARCEIROS.md).** Dez parceiros brasileiros, cada um com site, nível, o motivo de ter sido escolhido e **o e-mail já escrito para ele**, na ordem de envio. Um por dia, pelo `support@`.
+
+**Mudei o pedido, e isso importa mais que o texto.** O canal 5 pedia que o parceiro levasse o app **aos clientes dele**. Ninguém faz isso: nenhum parceiro instala app não listado, sem revisão, de um desconhecido, no Jira de produção de quem paga a conta dele.
+
+**O pedido agora é a instância do próprio parceiro.** Consultoria fatura hora — todos eles têm um Jira interno onde os consultores apontam por cliente e alguém fecha no fim do mês. Risco zero, uma pessoa decide, e ele ganha uma ferramenta que resolve um problema dele. **E é justamente o tipo de instância que o beta precisa:** dados sujos de anos, muitos projetos, e alguém que confere os números porque eles viram fatura.
+
+**Duas coisas que eu não fiz, de propósito:**
+- **Não inventei nenhum endereço de e-mail.** Chutar `contato@` é a via rápida para o spam. O arquivo indica o botão **Contact** do perfil no Partner Directory e o caminho pelo LinkedIn.
+- **Descartei a CSP Tech**, que caberia bem no perfil, porque eles publicam apps de Jira na Marketplace. É a única da lista com motivo e capacidade para construir o nosso. O arquivo explica e sugere um substituto — **e se você discordar, a decisão é sua.**
 
 ---
 
@@ -135,6 +154,8 @@ O código já está pronto para os dois mundos: `lib/licenca.js` trata ausência
 **Caminho crítico, em dias:** 21 dias de beta + 10 a 15 dias úteis de fila de revisão da Atlassian. Os 14 dias de código foram a parte fácil, e a mais rápida.
 
 **O contador que importa não é de testes, é este:** `0 de 5` instâncias reais usando de verdade.
+
+**O que se moveu em 28/08:** o `support@` passou a enviar, a conta do Reddit existe e já tem uma contribuição técnica no ar, e os dez e-mails para parceiros estão escritos. **Nada disso é uma instância ainda** — é a infraestrutura de conseguir a primeira. O canal com a maior chance de virar número é o de parceiros, e ele é o mais lento; por isso começa hoje.
 
 ---
 

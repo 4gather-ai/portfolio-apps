@@ -58,20 +58,34 @@ Decisão dele, e é dele para tomar. Fica registrado o que se perde: era o canal
 
 **O humano faz:** ajustar o perfil (passo a passo em `BETA-ANUNCIO.md`) e publicar uma resposta por dia.
 
-### 3. r/jira — **PRIORIDADE 1 desde 28/08/2026**
-**Onde:** `reddit.com/r/jira`, ~40 mil membros, tolerante a "estou construindo isto, querem testar?" quando é honesto.
-**Como:** post único, primeira pessoa, sem link de vendas — só o convite e um e-mail de contato.
-**O humano faz:** postar de uma conta com algum histórico. **Conta nova postando link é removida por spam.** Se não tiver conta antiga, pular este canal.
+### 3. r/jira — **PRIORIDADE 1 desde 28/08/2026** · ▶️ em aquecimento
+
+**Onde:** `reddit.com/r/jira`. **Conta criada em 28/08: `u/amarildo_dev`**, inscrita em r/jira e r/atlassian.
+
+**⚠️ Correção de 28/08: não é um post, é um comentário.** As regras do sub concentram anúncio, pesquisa de mercado e **pedido de feedback** num megathread fixado. Post separado de anúncio é removido, e a regra 1 diz que sem histórico de contribuição a punição é **banimento, não aviso**. Análise e texto em [`BETA-ANUNCIO.md`](BETA-ANUNCIO.md).
+
+**⚠️ E a regra 5 ("Recruitment is allowed") não serve:** ela é sobre **vaga de emprego**, e contém *"do not attempt to recruit unpaid work"* — invocá-la para pedir testadores não pagos seria pedir a punição.
+
+**Aquecimento em andamento:** primeiro comentário publicado em 28/08 numa thread de "Tempo alternative" — checklist neutro de avaliação de app, sem citar o Nativelog. **~1 semana antes do anúncio.** É o que compra o direito ao aviso em vez do banimento, e é a diferença entre a regra 1 ser tolerante ou não.
+
+**Expectativa realista:** o megathread tem 5 meses, 95 comentários, e os mais votados têm 3 pontos. **É um depósito, não uma vitrine.** O valor do r/jira está mais nos comentários técnicos do que no anúncio.
+
+**O humano faz:** continuar comentando por uma semana e depois postar no megathread.
 
 ### 4. LinkedIn (D5–D10) — prioridade menor
 **Onde:** post do Amarildo + grupos de Atlassian.
 **Como:** post curto contando o achado técnico (o worklog `asApp` que quebra JQL). Conteúdo técnico honesto circula; anúncio não.
 **O humano faz:** publicar. É o canal mais dependente de você — é a sua rede.
 
-### 5. Solution Partners pequenos (D7–D14) — **PRIORIDADE 3** · o de maior alavancagem
-**Onde:** `partnerdirectory.atlassian.com`, filtrando por parceiros pequenos e regionais.
-**Por quê:** um parceiro atende várias instâncias. Um "sim" pode virar 3–5 betas de uma vez, e vira canal de venda depois.
-**O humano faz:** escrever para 10 parceiros. Resposta é lenta (dias), por isso começar cedo.
+### 5. Solution Partners — **PRIORIDADE 2 desde 28/08** · ✅ os 10 alvos e os e-mails estão prontos
+
+**➜ [`BETA-PARCEIROS.md`](BETA-PARCEIROS.md)** — dez parceiros brasileiros com nome, site, país, o motivo de cada um e o e-mail personalizado, na ordem de envio.
+
+**⚠️ O pedido mudou, e o antigo não funcionaria.** O texto original pedia, na prática, que o parceiro levasse o app **aos clientes dele**. Nenhum parceiro instala app não listado, sem revisão, de um desconhecido, no Jira de produção de quem paga a conta dele.
+
+**O pedido novo é para a instância do próprio parceiro.** Consultoria fatura hora: todos eles têm um Jira interno onde os consultores apontam por cliente, e alguém que fecha isso no fim do mês. Risco zero, uma pessoa decide, e ele ganha uma ferramenta que resolve um problema dele. **De quebra é o perfil de instância que o beta precisa:** anos de dados sujos, vários projetos por cliente, e alguém que confere os números porque eles viram fatura.
+
+**O humano faz:** enviar um por dia pelo `support@`. Resposta é lenta (dias), por isso começar cedo.
 
 ### 6. Atlassian Developer Community (D4–D10) — **NOVO em 26/08/2026** · canal de credibilidade, não de volume
 **Onde:** `community.developer.atlassian.com`, categorias `Jira Cloud` e `Forge`.
@@ -165,9 +179,9 @@ Decisão dele, e é dele para tomar. Fica registrado o que se perde: era o canal
 | Prio | Canal | Responsável | Início | Meta | Status |
 |---|---|---|---|---|---|
 | — | ~~Rede pessoal~~ | — | — | — | 🚫 descartado em 26/08 |
-| **1** | Atlassian Community | Amarildo (textos prontos em `COMMUNITY.md`) | D2 | 4 respostas + 1 post | ⬜ |
-| **2** | r/jira | Amarildo | D3 | 1 post | ⬜ |
-| **3** | Solution Partners | Amarildo (textos meus) | D7 | 10 contatos → 2 sins | ⬜ |
+| — | Atlassian Community | Amarildo (textos em `COMMUNITY.md`) | D2 | 3 respostas, **sem anúncio** | 🟡 1 de 3 · rebaixado a reputação em 28/08 |
+| **1** | r/jira | Amarildo (`u/amarildo_dev`) | 28/08 | 1 comentário no megathread | 🟡 em aquecimento, 1 comentário técnico |
+| **2** | Solution Partners | Amarildo (10 e-mails em `BETA-PARCEIROS.md`) | 28/08 | 10 contatos → 2 sins | ⬜ prontos para enviar |
 | 4 | Developer Community | Amarildo (textos meus) | D4 | 1 contribuição técnica | ⬜ |
 | 5 | LinkedIn | Amarildo | D5 | 1 post + 5 DMs | ⬜ |
 

@@ -655,6 +655,40 @@ Iniciar um timer em outro item grava o worklog do anterior primeiro. **Se essa g
 
 ---
 
+## 2026-08-28 — No r/jira o anúncio é um comentário no megathread, não um post
+
+**Decisão:** o convite do beta vai como **comentário no "Product Self-promotion megathread"** do r/jira, e não como post próprio. A regra 5 do sub ("Recruitment is allowed") **não** será invocada.
+
+**Motivo:** o corpo do megathread, escrito pela moderação, diz que aquele é *"the only place on the sub where you should post the following: advertising, market research, feedback requests"*. **Convite de beta é literalmente um "feedback request".**
+
+**E a regra 5 é uma armadilha, não uma saída.** Ela trata de vaga de emprego — pede que se declare salário — e contém a frase *"do not attempt to recruit unpaid work"*. Enquadrar um pedido de testadores não pagos como *recruitment* seria invocar a regra que nos condena.
+
+**O que a regra 1 acrescenta, e justifica o aquecimento:** *"If you have a history of contribution to the sub, mistakes will be met with a warning. If you do not, they will be met with a ban."* A semana de comentários técnicos antes do anúncio é o que compra o direito ao aviso.
+
+**Expectativa registrada agora, para não ser reinterpretada depois:** o megathread tem 5 meses, 95 comentários e os mais votados têm 3 pontos. **É um depósito, não uma vitrine.** Um comentário ali não traz cinco instâncias, e o canal não deve ser considerado resolvido depois de postado.
+
+**Reversível?** Sim, mas errar custa banimento numa conta sem histórico.
+
+---
+
+## 2026-08-28 — O pedido aos Solution Partners muda de alvo: a instância deles, não a dos clientes
+
+**Decisão:** o e-mail do canal 5 deixa de pedir que o parceiro leve o app **aos clientes** e passa a pedir que ele instale **na própria instância**, com as horas dos próprios consultores. Os dez alvos e os textos estão em [`BETA-PARCEIROS.md`](apps/jira-time/BETA-PARCEIROS.md).
+
+**Motivo:** o pedido antigo era um pedido que só um parceiro imprudente aceitaria. **Ninguém instala um app não listado, sem revisão da Marketplace, de um desenvolvedor desconhecido, dentro do Jira de produção de um cliente que paga a conta dele.** E parceiro imprudente não é quem queremos no beta.
+
+**Por que o pedido novo é melhor, e não só mais fácil:** toda consultoria fatura hora e tem um Jira interno onde os consultores apontam por cliente. O risco vira zero, a decisão passa a caber a uma pessoa, e ele ganha uma ferramenta que resolve um problema real dele. **De quebra é o perfil de instância que o beta precisa** — anos de dados sujos, muitos projetos por cliente, e alguém que confere os números porque eles viram fatura.
+
+**O caminho para os clientes não some, muda de ordem:** ele se abre sozinho depois da listagem, se o parceiro tiver gostado.
+
+**Escolha registrada: os dez são brasileiros.** Otimiza taxa de resposta — mesma língua, mesmo fuso, call que acontece. **O que se perde é diversidade de fuso**, que é um dos seis riscos do `BETA.md`; o e-Core (times em BR, MX e EUA) é a única aposta da lista contra isso. Se estes dez renderem 3 ou 4 instâncias, **as vagas restantes devem sair de outro fuso**.
+
+**Um alvo foi descartado de propósito:** a CSP Tech é Gold Solution Partner **e Marketplace Partner**, com apps próprios de Jira no ar. É a única empresa da lista com motivo e capacidade para construir o nosso produto. Dar acesso ao beta antes da listagem é uma escolha, não um descuido — e não é a que eu faria.
+
+**Reversível?** Sim.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: em construção.** D1 e D2 entregues. Nenhuma decisão em aberto bloqueia o código.
