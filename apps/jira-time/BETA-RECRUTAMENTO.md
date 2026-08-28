@@ -3,6 +3,10 @@
 **Meta: 5 a 10 instâncias reais usando de verdade** por 2–3 semanas (regra 16).
 **Começa no D1 (26/08/2026), em paralelo com o código** — não no D15. É o caminho crítico do projeto.
 
+> **Atualizado em 28/08/2026.** O **canal 2 (Atlassian Community) saiu do recrutamento** — as regras do fórum não permitem anunciar um beta que vive fora da Marketplace. Ele continua como canal de **reputação**. A ordem de prioridade passa a ser **3 → 5 → 4**, com o canal 6 no fim. Detalhe e citações em [`BETA-ANUNCIO.md`](BETA-ANUNCIO.md).
+>
+> **Com os canais 1 e 2 fora, o recrutamento inteiro depende de público frio e do canal de parceiros.** É o momento de reabrir a conversa sobre o canal 1 — não porque a decisão foi errada, mas porque o custo dela subiu depois que ela foi tomada.
+
 > **Atualizado em 26/08/2026 (D1).** O Amarildo **descartou o canal 1 (rede pessoal)**. A ordem de prioridade passa a ser **2 → 3 → 5**, com o **canal 6 (fórum de desenvolvedores)** somado. A numeração dos canais foi mantida para não quebrar as referências no `COMMUNITY.md`.
 >
 > **O que isso custa, dito claramente:** o canal 1 era o de maior conversão e o único que não dependia de estranhos confiarem num app desconhecido. Sem ele, as primeiras duas ou três instâncias — as que destravam a confiança para as outras — ficam mais caras e mais lentas. Os canais restantes são todos de público frio. **O ponto de decisão do D14 fica mais provável de bater**, e a resposta continua sendo trocar de canal, não encurtar o beta.
@@ -42,13 +46,19 @@ Do corpus de 1.174 avaliações lidas na rodada 5, as palavras que os insatisfei
 ### ~~1. Rede pessoal e clientes~~ — **DESCARTADO pelo Amarildo em 26/08/2026**
 Decisão dele, e é dele para tomar. Fica registrado o que se perde: era o canal de maior conversão e o único de público quente. Se em D14 faltarem candidatos, este é o primeiro lugar para reabrir a conversa.
 
-### 2. Atlassian Community (D2–D5) — **PRIORIDADE 1** · o mais qualificado dos públicos
-**Onde:** `community.atlassian.com`, tags `jira-cloud`, `time-tracking`, `worklogs`, `forge`.
-**Como:** responder perguntas reais sobre worklog e JQL **primeiro**, sem vender. Depois de 3–4 respostas úteis, um post no espaço de apps anunciando o beta.
-**O humano faz:** criar a conta e postar. **As 4 respostas técnicas estão escritas e prontas em [`COMMUNITY.md`](COMMUNITY.md)** — uma por dia, D2 a D5, com o que conferir antes de cada uma.
-**Cuidado:** a comunidade tem regras contra autopromoção. Postar direto vira remoção e queima o canal — daí a ordem "ajudar antes de pedir".
+### 2. Atlassian Community — ❌ **REBAIXADO em 28/08/2026: não é mais canal de recrutamento**
 
-### 3. r/jira (D3–D7) — **PRIORIDADE 2**
+> **O que mudou:** li as regras escritas do fórum. **Não existe forma de anunciar o beta ali sem violá-las** — o único destino de link permitido é a Atlassian Marketplace, e nós não temos listagem. Análise completa, com as citações, em [`BETA-ANUNCIO.md`](BETA-ANUNCIO.md).
+
+**O que o canal ainda é:** reputação. Responder bem as três perguntas de [`COMMUNITY.md`](COMMUNITY.md), com o perfil identificado (`Amarildo Pereira _Northstack Apps_`) e o site no campo **My website** do perfil. Quem achar a resposta útil consegue chegar até nós em um clique. **É passivo e lento, e é o único uso legítimo do canal hoje.**
+
+**O que se perdeu, dito sem enfeite:** este era o público mais qualificado da lista e estava em primeiro lugar. Ele sai da conta de recrutamento inteiro. **O risco do beta — achar 5 instâncias reais — subiu por causa disto.** Com o canal 1 já descartado, sobraram só públicos frios e o canal de parceiros.
+
+**Volta a valer quando?** Depois da listagem na Marketplace. Aí o link permitido existe, e uma conta com respostas úteis e lozenge vale muito mais do que uma conta criada no dia do lançamento — o trabalho de agora não é perdido, é adiantado.
+
+**O humano faz:** ajustar o perfil (passo a passo em `BETA-ANUNCIO.md`) e publicar uma resposta por dia.
+
+### 3. r/jira — **PRIORIDADE 1 desde 28/08/2026**
 **Onde:** `reddit.com/r/jira`, ~40 mil membros, tolerante a "estou construindo isto, querem testar?" quando é honesto.
 **Como:** post único, primeira pessoa, sem link de vendas — só o convite e um e-mail de contato.
 **O humano faz:** postar de uma conta com algum histórico. **Conta nova postando link é removida por spam.** Se não tiver conta antiga, pular este canal.

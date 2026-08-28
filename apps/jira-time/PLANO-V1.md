@@ -101,7 +101,7 @@ permissions:
 | ~~**D11**~~ ✅ | **27/08** | Editions + checagem de licença | ▶️ **Aprovar `PRECO.md`** — a tabela está pronta com os números propostos |
 | ~~**D12**~~ ✅ | **27/08** | Instância grande: paginação de verdade, leitura em lotes | — |
 | ~~**D13**~~ ✅ | **27/08** | Acessibilidade, revisão de UI, textos finais | — |
-| ~~**D14**~~ ✅ | **27/08** | Empacotar para o beta: produção no ar, `BETA.md`, guia publicado | ▶️ **Gerar o link de instalação** no Developer Console |
+| ~~**D14**~~ ✅ | **27/08** | Empacotar para o beta: produção no ar, `BETA.md`, guia publicado | ~~Gerar o link de instalação~~ ✅ **feito em 28/08, e testado num site novo** |
 
 > **Um dia de folga recuperado.** O D2 saiu em 26/08, no dia do D1. As datas seguintes ficam como estavam de propósito: o aviso abaixo diz que a compressão para 14 dias tirou todo o amortecedor, então o dia ganho vale mais como folga do que como antecipação.
 

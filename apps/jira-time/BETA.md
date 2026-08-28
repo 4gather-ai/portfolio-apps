@@ -4,9 +4,26 @@
 
 > **O beta não termina por prazo.** Se menos de 5 instâncias reais usarem de verdade, ele continua. Três semanas com dois curiosos não é beta — é espera.
 
-**Status:** ⬜ não começou · aguardando o link de instalação (ver `../../STATUS.md`)
+**Status:** ⬜ não começou · **link de instalação pronto e testado em 28/08** · falta convidar gente
 **App em produção:** versão 2.0.0, implantada em 27/08/2026 16:01 UTC
-**Última atualização deste arquivo:** 27/08/2026
+**Última atualização deste arquivo:** 28/08/2026
+
+---
+
+## ✅ Ensaio geral — 28/08/2026 · `nativelog-beta-zero.atlassian.net`
+
+O Amarildo criou um site Jira novo e gratuito, do zero, e instalou pelo link — **exatamente o caminho que um participante vai percorrer**, sem nada de dev store por baixo.
+
+| O que foi verificado | Resultado |
+|---|---|
+| Instalação pelo link privado, em site recém-criado | ✅ |
+| Timer começa a contar **na hora** do clique | ✅ **o defeito do cold start do D2 está corrigido em produção** |
+| Apontamento de 1 min gravado | ✅ |
+| "Minha semana" correta, em **pt-BR** | ✅ o i18n do D10 funciona fora da máquina de quem o escreveu |
+
+**Um defeito encontrado:** na tela de instalação o app aparecia como `nativelog`, minúsculo. Causa e correção em `../../DECISOES.md`, 28/08. **É o quinto defeito que só apareceu no navegador** (regra 17) — e o primeiro que só apareceu **de fora**, porque nenhuma tela nossa mostra esse nome.
+
+> **Isto não conta como instância de beta, e a distinção importa.** É o nosso próprio site, criado para testar, sem trabalho real dentro. Serve para provar que o caminho de instalação funciona — nada além disso. Contar um ensaio como participante é exatamente como um beta mal medido chega a "cinco".
 
 ---
 

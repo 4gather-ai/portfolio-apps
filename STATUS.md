@@ -1,140 +1,119 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-27 (sessão 14) · Dia 2 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
+**Última atualização:** 2026-08-28 (sessão 15) · Dia 3 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
-## ✅ Nativelog · **os 14 dias de código acabaram** · 405 testes
+## ▶️ Nativelog · código pronto · **o beta pode começar** · 405 testes
 
-| Dia | Marco | Estado |
-|---|---|---|
-| **D1–D7** · 26–27/08 | Timer, worklog nativo, apontamento manual, erros do núcleo, "Minha semana" | ✅ |
-| **D8–D13** · 27/08 | CSV, visão de equipe, i18n, editions, instância grande, acessibilidade | ✅ |
-| **D14** · 27/08 | **Beta empacotado** — produção no ar, `BETA.md`, guia publicado | ✅ **hoje** |
-
-**Produção implantada:** versão **2.0.0** do ambiente `production`, em 27/08 16:01 UTC. O `development` continua em 2.23.0 e é onde eu conferi tudo.
-
-**Por que dois ambientes:** `development` é onde eu implanto dez vezes por dia. Participante de beta apontado para lá veria o produto mudar embaixo dele no meio de uma semana de trabalho.
+| Etapa | Estado |
+|---|---|
+| **D1–D14** · 26–27/08 | ✅ os 14 dias de código, produção 2.0.0 no ar |
+| **Link de instalação** | ✅ **gerado por você em 28/08** |
+| **Ensaio geral em site novo** (`nativelog-beta-zero`) | ✅ instalou, apontou, tudo certo — [`BETA.md`](apps/jira-time/BETA.md) |
+| **Convidar 5–10 instâncias reais** | 🔴 **é aqui que o projeto está parado, e não é problema de código** |
 
 ---
 
-## 🔴 O QUE VOCÊ PRECISA FAZER — passo a passo
+## 🔴 A notícia ruim da sessão: a Atlassian Community saiu do recrutamento
 
-### ⚠️ Antes de tudo: uma coisa que **não** se deve fazer ainda
+Fui ler as regras escritas do fórum antes de ajustar o texto do anúncio. **Não existe versão do anúncio que caiba nelas.** Não é redação ruim, é impossibilidade estrutural:
 
-**Não ligue a licença no manifest, e não submeta à Marketplace, antes de o beta terminar.** Li isto na própria tela do Developer Console hoje:
+| O que o anúncio precisa fazer | O que a regra diz |
+|---|---|
+| Mandar a pessoa para `northstackapps.com` | *"Do only link to the Atlassian Marketplace or Partner Directory, not an external website"* |
+| Dizer "me mande um e-mail e envio o link" | *"Don't link to lead-capture or gated assets (for example: forms, contact us pages, or downloads that require an email)."* |
+| Dizer que é grátis durante o beta | *"Do not mention special pricing or discounts, including free trials."* |
+| Existir como post de anúncio | *"Posts with the explicit intent to sell a product or service, or to drive people to a form or a website, will be removed at the discretion of our moderators."* |
+
+**O único link permitido é o da Marketplace — e a nossa listagem é justamente o que o beta precede.** Não há saída: um anúncio de beta é, por definição, um post que leva a pessoa para fora da Atlassian.
+
+**O que isso custa:** era o canal número 1 do recrutamento, o público mais qualificado que tínhamos. Com o canal 1 (sua rede pessoal) já descartado em 26/08, **sobrou público frio e parceiros**. O risco do beta subiu, e ele já era o risco do projeto. Registrado em [`DECISOES.md`](DECISOES.md).
+
+**O que a Community ainda é:** canal de reputação. As três respostas técnicas continuam valendo e ficam melhores — quem gosta de uma resposta chega até nós pelo perfil, que é o caminho permitido.
+
+**Vale reabrir uma conversa:** com dois dos cinco canais fora, o **canal 1 (rede pessoal)** deixou de ser "o mais caro de abrir mão" e passou a ser talvez o único jeito de conseguir as duas ou três primeiras instâncias. A decisão é sua e continua sendo sua — só mudou o preço dela.
+
+### E uma regra que pegou mais três perguntas
+
+**Necroposting:** *"posting on threads that are six months old or more"*. Você me pediu para trocar a pergunta 2 (fechada pela moderação) e conferir a 3 e a 4. **A 3 e a 4 aceitam resposta — e mesmo assim tiveram que sair**, com 12 e 16 meses de idade.
+
+Troquei as três por perguntas de **junho, abril e junho de 2026**, todas conferidas no navegador: abertas, sem resposta aceita, dentro da janela. Estão em [`COMMUNITY.md`](apps/jira-time/COMMUNITY.md).
+
+**Sobre a resposta 1, que já está publicada:** a thread do Jamil tinha 6 meses e 9 dias. Pela letra da regra, foi necropost. **Recomendo deixar publicada** — ela não cita app nenhum, ajuda quem perguntou, e apagar uma resposta útil para consertar um erro de processo nosso piora as duas coisas. O que muda é daqui para frente.
+
+**⚠️ E um detalhe que engana:** o botão azul **Answer** continua aparecendo no topo de uma thread fechada. O que diz a verdade é o aviso acima da lista de respostas: *"Comments for this post are closed"*. Conferir pelo botão leva à conclusão contrária da correta.
+
+---
+
+## 🔴 O QUE VOCÊ PRECISA FAZER
+
+### 1. Corrigir o nome do app — 2 minutos
+
+Na tela de instalação ele aparece como `nativelog`. **Não quebra nada corrigir**, e explico por quê antes de você clicar.
+
+**São duas strings diferentes, e só uma era nossa.** O painel dentro do item mostra o `title` do `manifest.yml`, que sempre foi `Nativelog` — por isso ninguém percebeu. A tela de instalação mostra o **nome do app no Developer Console**, que o `forge register` criou a partir do nome do diretório e nasceu minúsculo. Nunca escrevemos esse segundo nome; ele só aparece para quem instala de fora, e você foi a primeira pessoa a fazer isso.
+
+**Onde:** developer.atlassian.com/console → **Northstack Apps** → o app → menu lateral → **Settings** → campo do **nome do app** → trocar para `Nativelog` → salvar.
+
+**Por que não quebra o link de instalação:** a tela de distribuição lista **duas** condições que desligam o link — licença no manifest, ou submissão à Marketplace. Renomear não é nenhuma das duas; o link se resolve por app id e ambiente, não por nome.
+
+**⚠️ Um porém conhecido:** existe um defeito da Atlassian (**FRGE-525**) em que o nome novo não se propaga para os ambientes `staging`/`production`. **Depois de salvar, abra o link de instalação numa aba anônima e confira.** Se continuar minúsculo, me avise: eu reimplanto a produção, e se nem assim mudar, o caminho é abrir ticket — foi o que a Atlassian respondeu a quem teve o mesmo sintoma.
+
+### 2. Ajustar o perfil da Community — 10 minutos, antes de qualquer resposta
+
+Passo a passo com os nomes de campo em [`BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md), seção "O que mudar no perfil". Resumo:
+
+| Onde | O quê |
+|---|---|
+| **id.atlassian.com** (pelo link "Edit in Atlassian account") | Nome público: `Amarildo Pereira _Northstack Apps_` |
+| Community → **Edit profile** → About me | **Company** `Northstack Apps`, **Current position** `Founder`, **Short bio** (texto pronto no arquivo) |
+| Community → **Edit profile** → Where to find me | **My website**: `https://northstackapps.com` |
+
+**Por que o campo My website resolve meio problema:** a regra proíbe link externo **dentro do post**. O campo de perfil é do perfil. É o caminho legítimo para alguém que gostou de uma resposta chegar até nós — **ser encontrável não é anunciar**.
+
+**Por que antes e não depois:** a regra é *"disclose your company affiliation in the text of your post as well as your profile name"*. Responder identificado desde a primeira resposta é honesto; acrescentar a empresa depois, na véspera de pedir o lozenge, é o que parece disfarce.
+
+### 3. Publicar as respostas — uma por dia
+
+Textos prontos e conferidos em [`COMMUNITY.md`](apps/jira-time/COMMUNITY.md).
+
+| # | Pergunta | Detalhe |
+|---|---|---|
+| 2 | [Total Time Spent by user and by organization](https://community.atlassian.com/forums/Jira-Service-Management/Total-Time-Spent-by-user-and-by-organization/qaq-p/3243332) | O autor diz que testou vários apps e **nenhum mostrava o número certo**. Ninguém na thread explicou por quê. Nós explicamos |
+| 3 | [log all of my work for the week in one place](https://community.atlassian.com/forums/Jira-questions/Is-there-any-way-to-log-all-of-my-work-for-the-week-in-one-place/qaq-p/3225964) | É literalmente a pergunta que o nosso produto responde — **e por isso a resposta não pode terminar em "instale o meu app"** |
+| 4 | [client invoicing from Jira worklogs](https://community.atlassian.com/forums/App-Central-questions/How-does-your-team-handle-client-invoicing-from-Jira-worklogs/qaq-p/3253898) | **Clique em "Join group" antes** — é no App Central, que é um grupo |
+
+**Cada uma tem um "⚠️ conferir antes de postar".** São coisas que eu não pude confirmar na nossa instância; a que mais importa é a da resposta 3 (o parágrafo do painel de detalhe). **Se não confirmar, corte o parágrafo** — a resposta se sustenta sem ele, e é melhor perder um parágrafo do que ensinar um caminho que não existe.
+
+### 4. Me mande o link de instalação
+
+Você gerou e testou, mas eu não tenho a URL. **Ela não está colada em texto nenhum ainda** — o post do r/jira e o e-mail para os parceiros dependem dela.
+
+### 5. Postar no r/jira — **agora é o canal principal**
+
+Texto pronto em [`BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md). As regras da Atlassian não valem lá; as do sub, sim — leia a barra lateral antes. **Se sua conta do Reddit for nova, comente em outras threads por alguns dias antes de postar.** Conta sem histórico postando link é removida como spam.
+
+### 6. Escrever para 10 Solution Partners — o de maior alavancagem
+
+Texto em [`BETA-RECRUTAMENTO.md`](apps/jira-time/BETA-RECRUTAMENTO.md), canal 5. **Resposta é lenta, então é o primeiro a começar.** Um parceiro pode trazer 3–5 instâncias de uma vez.
+
+---
+
+### ⚠️ E uma coisa que **não** se deve fazer ainda
+
+**Não ligue a licença no manifest, e não submeta à Marketplace, antes de o beta terminar.** Da própria tela do Developer Console:
 
 > *"once your app has a license in the app manifest, or has been submitted for listing on Marketplace, **it can't be shared via installation link**."*
 
-Ligar a licença agora **mata o beta**: o link de instalação privado para de funcionar no instante em que a licença existe. A saída que a Atlassian sugere é manter duas cópias do app, o que produz divergência entre o que se testa e o que se vende.
-
-**A ordem certa é:** beta sem licença → beta termina → aí liga a licença e insere as faixas de preço → submete. Registrado em [`DECISOES.md`](DECISOES.md).
-
----
-
-### Passo a passo — gerar o link de instalação privado
-
-**Onde:** https://developer.atlassian.com/console/myapps/22d863f1-cb08-4d77-a7b9-bd4098ede2b2/manage/distribution
-
-*(Ou: **developer.atlassian.com/console** → **Northstack Apps** → **nativelog** → menu lateral, seção **Manage** → **Distribution**.)*
-
-A produção já está implantada, então o pré-requisito da tela — *"deploy your app to production"* — já está cumprido. Ela mostra **Last deployed to production: Aug 27, 2026 16:01:16 UTC**.
-
-#### 1. Abra o formulário
-
-No cartão **"Distribution controls"**, clique em **Edit** (canto superior direito do cartão).
-
-#### 2. Distribution status
-
-Marque **Sharing** *(o rádio de cima; hoje está em "Not sharing")*.
-
-#### 3. App details
-
-Quatro campos. Os três com asterisco são obrigatórios:
-
-| Campo | O que preencher |
-|---|---|
-| **App owner** | Já vem preenchido: *Amarildo Pereira*. Não é editável |
-| **Company/Department** \* | `Northstack Apps` |
-| **Customer support contact** \* | `support@northstackapps.com` — o campo aceita e-mail ou URL |
-| **Privacy policy** \* | `https://northstackapps.com/nativelog/privacy.html` |
-| **Terms of service** | Deixe em branco. **Não é obrigatório** e nós não temos termos publicados — inventar uma URL que não existe é pior que deixar vazio |
-
-> A tela avisa: *"This information will be displayed to your customer on the app installation page."* Ou seja, é o que o admin do beta vai ler antes de instalar. As duas URLs precisam abrir — as duas já estão no ar.
-
-#### 4. Personal data declaration — ⚠️ **a única pergunta que eu não respondo por você**
-
-O campo é **"Does your app store personal data?"**, uma lista com Yes/No, hoje em **No**. O texto de ajuda da tela diz:
-
-> *Select "Yes" if you copy and store personal data associated with user references (e.g. AccountID) in your own systems or if you cache data for longer than 24 hours.*
-
-**Os fatos, para você decidir:**
-
-| A favor de "No" | A favor de "Yes" |
-|---|---|
-| O único dado guardado é o **cronômetro em andamento**: seu accountId, o id do item e o instante de início | O accountId **é** uma referência de usuário, e ele é a chave do registro |
-| Ele fica no **Forge KVS**, infraestrutura da própria Atlassian — não em "sistema nosso". É o ponto do *Runs on Atlassian* | Um cronômetro esquecido passa das 24 h com facilidade. O app tem função dedicada para esse caso, então **sabemos que acontece** |
-| Nenhuma hora apontada é guardada por nós: vira worklog nativo e o registro some | Declarar a mais custa nada; declarar a menos é problema de conformidade e risco na revisão |
-
-**Minha recomendação: marque "Yes".** É uma declaração legal em seu nome, e a assimetria é clara — o custo de declarar a mais é zero, o de declarar a menos não é. Nossa política de privacidade já descreve exatamente esse registro, então "Yes" fica coerente com o que está publicado.
-
-**Mas a decisão é sua, e por isso parei aqui.**
-
-#### 5. Salve
-
-Clique em **Save changes**.
-
-#### 6. Escolha o produto
-
-Role até o cartão **"Installation link"**, em **"Install this app onto"**. As caixas ficam habilitadas depois que os detalhes estão completos.
-
-**Marque apenas `Jira`.** As outras — Bitbucket, Compass, Confluence, Ecosystem — não se aplicam: o app declara só módulos de Jira no manifest.
-
-#### 7. Copie o link
-
-No mesmo cartão, em **"Installation link"**, o texto muda de *"No link available"* para a URL. **Esse é o link do beta.**
-
-**Me mande esse link.** Eu coloco nos textos de anúncio e no e-mail de convite, que já estão prontos.
-
----
-
-### Depois disso — na ordem
-
-| # | O quê | Onde |
-|---|---|---|
-| 1 | **Publicar a resposta 2 da Community** (a 3 e a 4 nos dias seguintes) | [`COMMUNITY.md`](apps/jira-time/COMMUNITY.md) |
-| 2 | Quando as quatro estiverem no ar, **publicar o anúncio do beta** | [`BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md) |
-| 3 | **Recrutar 5–10 instâncias reais** e registrar cada uma | [`BETA.md`](apps/jira-time/BETA.md) |
-| 4 | Beta termina → **ligar a licença** e inserir as faixas de preço | [`PRECO.md`](apps/jira-time/PRECO.md) |
-| 5 | Submeter à Marketplace | — |
-
----
-
-## ✅ D14 — o beta está empacotado
-
-| O quê | Onde | Estado |
-|---|---|---|
-| App em produção | ambiente `production`, 2.0.0 | ✅ |
-| Guia de instalação, em EN | https://northstackapps.com/nativelog/beta.html | ✅ no ar |
-| Política de privacidade | https://northstackapps.com/nativelog/privacy.html | ✅ no ar |
-| Página de suporte | https://northstackapps.com/nativelog/support.html | ✅ no ar |
-| `support@northstackapps.com` | Cloudflare Email Routing | ✅ testado por você |
-| Registro do beta | [`BETA.md`](apps/jira-time/BETA.md) | ✅ pronto para preencher |
-| Anúncios | [`BETA-ANUNCIO.md`](apps/jira-time/BETA-ANUNCIO.md) | ✅ prontos para colar |
-| **Link de instalação** | Developer Console | 🔴 **precisa de você** |
-
-### O `BETA.md` tem uma coisa que vale você ler antes de começar
-
-**A definição de "usando de verdade":** apontou horas em **três dias diferentes**, em trabalho real, sem ninguém do nosso lado pedindo. Instalar e abrir uma vez não conta — e é exatamente isso que um beta mal medido conta como sucesso.
-
-E as perguntas para os participantes já estão escritas, com uma regra: **não perguntar "está gostando?"**. A resposta é sempre sim e não serve para nada. A pergunta que importa é a 4 — *"você voltou para o jeito antigo em algum momento? qual foi a gota?"* — e é justamente a que as pessoas educadamente omitem.
+Ligar a licença agora **mata o beta**: o link privado para de funcionar no instante em que a licença existe. **Ordem certa:** beta sem licença → beta termina → licença e faixas de preço → submissão.
 
 ---
 
 ## 💰 Preço aprovado — duas editions
 
-Aprovado por você hoje, registrado em [`DECISOES.md`](DECISOES.md). **Não entra no Developer Console agora**, pelo motivo da licença acima.
+Aprovado por você em 27/08, registrado em [`DECISOES.md`](DECISOES.md). **Não entra no Developer Console agora**, pelo motivo acima.
 
 | Usuários | Standard | Pro | Clockwork Pro | Tempo |
 |---|---|---|---|---|
@@ -149,11 +128,13 @@ O código já está pronto para os dois mundos: `lib/licenca.js` trata ausência
 
 ## 📊 Onde o projeto está
 
-**Dois dias de calendário, 14 marcos, 405 testes, zero real gasto.** O código da v1 acabou.
+**Três dias de calendário, 14 marcos, 405 testes, zero real gasto. O código da v1 acabou** — e o ensaio geral de 28/08 provou que o caminho de instalação funciona numa instância criada do zero.
 
-**O que sobra é o que sempre foi o risco:** achar 5 a 10 instâncias reais. Isso não é trabalho de código, é trabalho de convencer estranhos a instalar um app novo de um desenvolvedor desconhecido — e a regra 16 não deixa pular.
+**O que sobra é o que sempre foi o risco, e ele piorou nesta sessão:** achar 5 a 10 instâncias reais, agora sem o canal mais qualificado. Isso não é trabalho de código — é convencer estranhos a instalar um app novo de um desenvolvedor desconhecido, e a regra 16 não deixa pular.
 
-**O caminho crítico real, em dias:** 21 dias de beta + 10 a 15 dias úteis de fila de revisão da Atlassian. Os 14 dias de código foram a parte fácil, e a mais rápida.
+**Caminho crítico, em dias:** 21 dias de beta + 10 a 15 dias úteis de fila de revisão da Atlassian. Os 14 dias de código foram a parte fácil, e a mais rápida.
+
+**O contador que importa não é de testes, é este:** `0 de 5` instâncias reais usando de verdade.
 
 ---
 
@@ -278,7 +259,9 @@ O rascunho respondia **a pergunta**. O publicado responde **a situação** — e
 
 **Aprendizado de formato, já aplicado:** o editor da Community recusa `×` e HTML de colagem, e sinal de comparação em prosa sai errado. As respostas 2, 3 e 4 estão agora em **blocos de texto puro, só ASCII**, conferidos por script — é copiar e colar.
 
-**Vale acompanhar a resposta 1 alguns dias.** É a que tem mais chance de virar resposta aceita: a thread estava sem uma, e o `workratio > 100` provavelmente é o que ele queria. Se for aceita, o anúncio do beta parte de outro patamar.
+**Vale acompanhar a resposta 1 alguns dias.** É a que tem mais chance de virar resposta aceita: a thread estava sem uma, e o `workratio > 100` provavelmente é o que ele queria.
+
+> **Corrigido em 28/08:** a última frase original desta seção dizia que uma resposta aceita faria "o anúncio do beta partir de outro patamar". **Não vai haver anúncio do beta na Community** — ver a seção no topo. Uma resposta aceita continua valendo, só que para outra coisa: para o dia da listagem, e para o pedido do Partner lozenge.
 
 ---
 

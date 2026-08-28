@@ -1,11 +1,48 @@
 # Atlassian Community — respostas técnicas para publicar antes do beta
 
-**Canal 2 do `BETA-RECRUTAMENTO.md`.** A regra desse canal é **ajudar antes de pedir**: 4 respostas úteis primeiro, o anúncio do beta depois. A comunidade remove autopromoção, e postar o anúncio direto queima o canal inteiro.
+**Canal 2 do `BETA-RECRUTAMENTO.md`.** A regra desse canal é **ajudar antes de pedir**.
+
+> **⚠️ Reescrito em 28/08/2026, depois de ler as regras escritas da Community.** Três das quatro perguntas escolhidas em 27/08 não podiam mais ser usadas, e a razão principal **não** foi a moderação da pergunta 2 — foi uma regra que eu não tinha lido: **necroposting**. As perguntas novas foram conferidas uma a uma no navegador em 28/08.
 
 **Quem publica:** Amarildo, com a conta dele em `community.atlassian.com`.
-**Ritmo:** uma resposta por dia. Quatro no mesmo dia, numa conta nova, parecem exatamente o que não queremos parecer.
+**Ritmo:** uma resposta por dia. Três no mesmo dia, numa conta com um post só, parecem exatamente o que não queremos parecer.
 
-**Estado:** 1 de 4 publicada (27/08/2026).
+**Estado:** 1 publicada (27/08/2026). As três seguintes trocaram de pergunta em 28/08.
+
+---
+
+## 🔴 As regras da Community, com o texto delas
+
+Lidas em 28/08/2026 em **[Atlassian Partners - Rules of Engagement](https://community.atlassian.com/forums/App-Central-articles/Atlassian-Partners-Rules-of-Engagement/ba-p/2899328)** e nas **[Rules of Engagement](https://community.atlassian.com/forums/custom/page/page-id/rules-of-engagement)** gerais. Citações literais:
+
+| Regra | Texto |
+|---|---|
+| **Necroposting** | *"No necroposting. Necroposting is defined as posting on threads that are six months old or more (raising threads from the dead)."* |
+| **Links** | *"Do only link to the Atlassian Marketplace or Partner Directory, not an external website"* |
+| **Captura de contato** | *"Don't link to lead-capture or gated assets (for example: forms, contact us pages, or downloads that require an email)."* |
+| **Preço** | *"Do not mention special pricing or discounts, including free trials."* |
+| **Identificação** | *"Do disclose your company affiliation in the text of your post as well as your profile name, and have the Partner lozenge added to your profile"* |
+| **Onde se pode falar de app** | *"Any articles that mention apps, solutions or services can be posted in App Central or Atlassian Solution Partners groups only."* |
+| **Venda (regra geral)** | *"Posts with the explicit intent to sell a product or service, or to drive people to a form or a website, will be removed at the discretion of our moderators."* |
+
+**Punição:** lembrete → advertência escrita → suspensão de privilégios → suspensão da conta. E, no limite, *"company/app added to content filter"* — a empresa entra num filtro que passa a esconder o conteúdo dela como spam automaticamente. **Esse último é o que não se desfaz.**
+
+### O que isso invalidou — e é mais do que você perguntou
+
+Você pediu para trocar a **pergunta 2** e conferir a **3** e a **4**. Conferi no navegador: **a 3 e a 4 aceitam respostas — e mesmo assim as duas tiveram que sair.**
+
+| # | Pergunta | Data | Aceita resposta? | Veredito |
+|---|---|---|---|---|
+| 1 | logged time > remaining time | 18/02/2026 | — | ⚠️ **já publicada, e era necropost por 9 dias** |
+| 2 | worklog per month | 10/01/2026 | ❌ **fechada pela moderação** | Trocada |
+| 3 | Automation sum worklogs | 18/08/2025 | ✅ aberta | **Trocada — 12 meses, necropost** |
+| 4 | worklog gadget | 01/05/2025 | ✅ aberta | **Trocada — 16 meses, necropost** |
+
+**A pergunta 2 está fechada**, e a tela avisa: *"Comments for this post are closed — Community moderators have prevented the ability to post new answers."*
+
+**Cuidado que vale registrar: o botão azul "Answer" continua aparecendo no topo da página de uma thread fechada.** O botão não é prova de que a thread aceita resposta; o aviso acima da lista de respostas é. Quem confere pelo botão conclui o contrário do que é verdade.
+
+**Sobre a resposta 1, dito sem rodeio:** a thread do Jamil tinha 6 meses e 9 dias quando respondemos. Pela letra da regra, **foi necropost**. Não foi promoção — a resposta não cita app nenhum, nosso nem de terceiro — e por isso a recomendação é **deixar publicada**: apagar uma resposta que ajuda alguém, para consertar um erro de processo nosso, piora as duas coisas. O que muda é a regra daqui para frente: **nada de responder thread com mais de 6 meses, nunca.** Quando a conta tiver o lozenge, o mesmo deslize custa bem mais caro.
 
 ---
 
@@ -13,19 +50,21 @@
 
 Descoberto na publicação da resposta 1, em 27/08/2026:
 
-1. **O editor rejeita `×` e outros símbolos especiais.** Use palavra ou `*`.
+1. **O editor rejeita o sinal de multiplicação e outros símbolos especiais.** Use palavra.
 2. **Colar de um documento formatado leva HTML junto e o editor recusa.** Cole **texto puro**.
 3. **Em prosa, escreva a comparação por extenso** — "greater than", não o sinal. O sinal só dentro da linha de JQL, e **nunca no começo da linha** (vira citação).
 
-Por isso as respostas 2, 3 e 4 abaixo estão em **blocos de texto puro, só ASCII**: copie o conteúdo do bloco e cole direto. Sem negrito, sem marcador, sem acento em símbolo, sem traço longo.
+As respostas abaixo estão em **blocos de texto puro, só ASCII**: copie o conteúdo do bloco e cole direto.
 
 ---
 
-## Três regras que valem para as quatro respostas
+## Regras nossas, que valem para as três respostas
 
-1. **Nenhum link para o Nativelog. Nenhuma menção ao app.** Nem "estou construindo algo assim". A resposta vale por si; o anúncio vem depois, num post separado.
-2. **Nenhum concorrente pelo nome.** Onde a resposta toca no problema de worklog gravado pelo app em vez da pessoa, ela fala do **sintoma** — "confira se o app grava worklog nativo" — e deixa quem tem o problema se reconhecer.
-3. **Não afirmar o que não medimos.** Cada resposta tem "⚠️ conferir antes de postar" quando há algo a checar.
+1. **Nenhum link. Nenhuma menção ao Nativelog.** Nem "estou construindo algo assim". O motivo agora tem texto: só se pode linkar para a Marketplace, e **nós não temos listagem para linkar**. Um link para `northstackapps.com` é violação direta.
+2. **Nenhum concorrente pelo nome.** Onde a resposta toca no problema do worklog gravado pelo app em vez da pessoa, ela fala do **sintoma** e deixa quem tem o problema se reconhecer.
+3. **A identificação vive no perfil, não no texto.** Com o nome público carregando `_Northstack Apps_`, quem quiser saber quem respondeu descobre em um clique. **Exceção: no App Central (resposta 4) a linha de identificação vai no texto** — é o espaço onde se fala de app, e ali omitir soa a disfarce.
+4. **Não afirmar o que não medimos.** Cada resposta tem "⚠️ conferir antes de postar" quando há algo a checar.
+5. **Nada de preço, nada de "grátis", nada de "beta".** Regra deles, e a que mais tenta a gente.
 
 ---
 
@@ -45,7 +84,7 @@ Por isso as respostas 2, 3 e 4 abaixo estão em **blocos de texto puro, só ASCI
 >
 > 1\. The literal question: Time Spent greater than Remaining Estimate.
 >
-> workratio = (timeSpent / originalEstimate) × 100. While the remaining estimate is Jira's auto-computed one (remaining = original - spent, which is what you get when nobody overrides "Remaining" while logging), "spent greater than remaining" reduces to "spent / original greater than 0.5", i.e.:
+> workratio = (timeSpent / originalEstimate) times 100. While the remaining estimate is Jira's auto-computed one (remaining = original - spent, which is what you get when nobody overrides "Remaining" while logging), "spent greater than remaining" reduces to "spent / original greater than 0.5", i.e.:
 >
 > project = "YOUR-PROJECT" AND workratio > 50
 >
@@ -71,176 +110,223 @@ Por isso as respostas 2, 3 e 4 abaixo estão em **blocos de texto puro, só ASCI
 >
 > One last thing: workratio reads Jira's native Time Spent field. If any part of the team logs hours through a tool that keeps them in its own store, those hours may not be in the native field and the filter will quietly under-report. Worth opening one item's Worklog tab and comparing against your report before rolling this out.
 
-### O que o texto publicado ganhou em relação ao rascunho — e por que importa
-
-O rascunho respondia a pergunta literal. O publicado responde **a pergunta que a pessoa tinha de verdade**, e as três adições vieram de olhar o contexto (ele estava no Structure):
+### O que o texto publicado ganhou em relação ao rascunho
 
 | Adição | Por que |
 |---|---|
-| **`workratio > 100`** | O Structure marca 100% quando o *remaining* zera, não quando o trabalho passa do estimado. Quem reclama de "passou do previsto" quase sempre quer os itens **acima do estimado** — que é `> 100`, não `> 50`. **Provavelmente é esta a linha que resolve o problema dele.** |
-| **Original Estimate editado depois de apontar** | Segunda forma de a identidade quebrar, e mais comum que a primeira: a partir daí o Jira mantém Remaining independente de Original. Omitir isso deixaria a fórmula parecendo mais confiável do que é. |
-| **Filter by Formula do Structure com `timeSpent > remainingEstimate`** | Ele **já tem** a ferramenta que faz a comparação direta que o JQL não faz. Mandar ele para o JQL quando a resposta certa está no app que ele já paga seria uma resposta pior — e é o tipo de coisa que faz alguém lembrar de quem respondeu. |
+| **`workratio > 100`** | O Structure marca 100% quando o *remaining* zera, não quando o trabalho passa do estimado. Quem reclama de "passou do previsto" quase sempre quer os itens **acima do estimado**. **Provavelmente é esta a linha que resolve o problema dele.** |
+| **Original Estimate editado depois de apontar** | Segunda forma de a identidade quebrar, e mais comum que a primeira. Omitir isso deixaria a fórmula parecendo mais confiável do que é. |
+| **Filter by Formula do Structure** | Ele **já tem** a ferramenta que faz a comparação direta que o JQL não faz. |
 
-**A lição para as próximas três:** a resposta boa não é a que responde o enunciado, é a que responde **a situação**. Olhar o que a pessoa mencionou de passagem — a ferramenta, a versão, o time — costuma valer mais que a técnica.
+**A lição:** a resposta boa não é a que responde o enunciado, é a que responde **a situação**.
 
 ---
 
-## Resposta 2 — próxima a publicar
+## Resposta 2 — próxima a publicar · **pergunta nova**
 
-**Pergunta:** [worklog per month time tracking](https://community.atlassian.com/forums/Jira-questions/worklog-per-month-time-tracking/qaq-p/3173461)
-**Autora:** Laura Fallon · **10/01/2026** · **tem resposta aceita** (que aponta para um app pago)
+**Pergunta:** [Total Time Spent by user and by organization](https://community.atlassian.com/forums/Jira-Service-Management/Total-Time-Spent-by-user-and-by-organization/qaq-p/3243332)
+**Autor:** Rafael Marin · **02/06/2026** · Jira Service Management Cloud, plano Premium
+**Conferido no navegador em 28/08:** **aberta**, 10 respostas, **sem resposta aceita**, sem aviso de moderação. 3 meses de idade — dentro dos 6.
 
-**Por que responder mesmo com resposta aceita:** a resposta aceita resolve comprando. A pergunta da Laura contém um mal-entendido específico — ela acha que o JQL devia devolver as 7h de janeiro — e ninguém explicou por que não devolve. Explicar o *porquê* é o que faz uma resposta ser lembrada.
+**Por que esta substitui a da Laura:** é a mesma pergunta — total de horas num período — mas viva, sem dono e com uma frase que a da Laura não tinha. Ele escreveu: *"I even tried several Jira apps, but none of them were able to display the correct amount of time spent."*
 
-**Antes de colar, aplique a lição da resposta 1:** veja se ela menciona a ferramenta que usa ou o tamanho do time. Se mencionar, vale uma frase específica para o caso dela.
+**Isso é o nosso assunto exato, e ninguém na thread tocou nele.** As 10 respostas existentes são recomendações de app; **nenhuma explica por que os números vinham errados**. Explicar isso é a única coisa que ele ainda não recebeu — e é o que faz uma resposta ser lembrada.
+
+**Ele também pergunta se existe app grátis.** Pela regra de preço, **não respondemos essa parte**. A resposta trata do "por que está errado" e de como obter o número certo sem comprar nada; quem escolher app depois já saberá o que perguntar.
 
 ```
-Worth naming the exact reason native Jira cannot do this, because it also explains
-why the JQL people usually suggest does not help either.
+Worth explaining why the numbers came out wrong, because the same reason explains
+why no native dashboard does this and why several apps disagreed with each other.
 
-JQL selects work items, never worklog entries. So a query like this one:
+JQL selects work items, never worklog entries. A filter like
 
-    worklogDate >= "2026-01-01" AND worklogDate < "2026-02-01" AND worklogAuthor = "Tom"
+    project = "YOUR-PROJECT" AND worklogDate >= startOfWeek()
 
-correctly finds the items Tom touched in January, but the Time Spent column in those
-results is still each item's lifetime total. In your example that is 11h, not the 7h
-you are after. There is no native column or gadget that renders the per-entry
-breakdown, which is why every answer here ends up at an app.
+correctly returns the items that had time logged this week. But the Time Spent
+column on those results is each item's lifetime total, not the part that falls
+inside your window. So the list of rows is right and every number on it is wrong,
+and nothing in the interface tells you that. Any dashboard built on a filter plus
+that column inherits the problem, which is very likely what you were seeing.
 
-If you want the number without buying anything, the REST route is two steps:
+What actually exists natively, so you can stop hunting for a setting:
 
-1. Run the JQL above through the issue search endpoint to get the item keys.
-2. For each key, call /rest/api/3/issue/{key}/worklog and sum the entries whose
-   started date falls in January.
+- Time Tracking Report (company-managed projects, under Reports): estimate against
+  logged, per project. No per-user breakdown and no date range over entries.
+- User Workload Report: remaining estimate per person. That is remaining, not
+  logged, which is a different question from yours.
+- Worklog pie chart gadget: slices totals by a field, with no date range.
+
+None of them answers "how much did each person log last week", because none of them
+render worklog entries. It is a data shape limit, not a configuration you are
+missing.
+
+The organization half has an extra wrinkle worth knowing before you build anything.
+Organizations is a field on the request, and worklogs belong to the item, not to the
+organization. So "time by organization" really means "sum the worklog entries of the
+items whose Organizations field contains X". JQL can select those items, but the
+totals have the same lifetime problem as above. And an item can carry more than one
+organization, in which case any per-organization total either double counts or needs
+a rule for splitting it. That rule is a decision on your side, and it is one reason a
+generic app can look wrong to you while being self-consistent.
+
+The way to get numbers you can defend, without buying anything:
+
+1. Search for the items in the window, once per report. For the per-user one that is
+   the worklogDate filter above; for the per-organization one add the Organizations
+   clause.
+2. For each item key, call /rest/api/3/issue/{key}/worklog and sum only the entries
+   whose started date falls in your window, grouping by author accountId.
+
+That is exact, because it reads Jira's own worklog records rather than a rolled-up
+field.
 
 One trap if you try to shortcut step 2: adding expand=worklog to the search returns
-at most 20 worklog entries per item, and it does not tell you that it truncated. On
-a long-running item you would get a partial sum with no error at all. The per-item
-worklog endpoint returns all of them.
+at most 20 worklog entries per item, and it does not tell you that it truncated. On a
+long-running item you get a partial sum and no error at all. The per-item worklog
+endpoint returns all of them.
 
-That is a short script, and it is exact, because it reads Jira's own worklog records.
-If scripting is not an option for you then an app is the honest answer. Just check
-that whichever one you pick reads native Jira worklogs, otherwise the report is about
-the app's copy of the hours rather than what is actually in Jira.
+Last thing, and it is worth doing before you trust any report, native or not: open
+one item's Work log tab and compare it against what your report says for that item.
+If part of the team logs hours through a tool that keeps them in its own store rather
+than writing native Jira worklogs, those hours are not in the field any of this reads,
+and no amount of configuration will make the totals agree.
 ```
 
-**⚠️ Conferido:** o limite de 20 worklogs por item no `expand=worklog` está documentado e foi confirmado como resposta aceita [nesta thread](https://community.atlassian.com/forums/Jira-questions/Missing-worklogs-on-API-call/qaq-p/3001402) (17/04/2025). O número do endpoint de busca fica de fora de propósito — a Atlassian trocou `/rest/api/3/search` por `/rest/api/3/search/jql` e "the issue search endpoint" está certo em qualquer versão.
+**⚠️ Conferido:** o limite de 20 worklogs por item no `expand=worklog` está documentado e foi confirmado como resposta aceita [nesta thread](https://community.atlassian.com/forums/Jira-questions/Missing-worklogs-on-API-call/qaq-p/3001402) (17/04/2025). O nome do endpoint de busca fica de fora de propósito — a Atlassian trocou `/rest/api/3/search` por `/rest/api/3/search/jql`, e "search for the items" está certo em qualquer versão.
+
+**⚠️ Conferir antes de postar:** que a cláusula `Organizations = "..."` funciona no JQL da instância dele. É JSM Premium, então deve existir; se você não conseguir confirmar, **troque a frase "JQL can select those items" por "you can filter by organization in the queue or the request list"** — o resto do parágrafo continua válido.
 
 ---
 
-## Resposta 3
+## Resposta 3 — **pergunta nova**
 
-**Pergunta:** [Help with Automation and JQL Query for Author Worklogs](https://community.atlassian.com/forums/Jira-Service-Management/Help-with-Automation-and-JQL-Query-for-Author-Worklogs/qaq-p/3091426)
-**Autor:** Colin Porter · **18/08/2025** · sem resposta aceita
+**Pergunta:** [Is there any way to log all of my work for the week in one place?](https://community.atlassian.com/forums/Jira-questions/Is-there-any-way-to-log-all-of-my-work-for-the-week-in-one-place/qaq-p/3225964)
+**Autora:** Barbara Homer · **23/04/2026** · Jira Cloud, plano Enterprise
+**Conferido no navegador em 28/08:** **aberta**, 10 respostas, **sem resposta aceita**. 4 meses de idade.
 
-**Por que esta:** as três respostas existentes discutem *como* somar. Nenhuma viu que a abordagem inteira falha justamente no caso que o Colin quer pegar. Achar o furo no enunciado é a resposta mais útil que existe.
+**Por que esta:** é, literalmente, a pergunta que o nosso produto responde — *"I currently have to open several tickets to log my work for the day or week."* E é por isso que ela exige mais disciplina que as outras: **a resposta tem que ser honesta e não pode terminar em "instale o meu app"**, senão vira exatamente o que a moderação fechou na thread da Laura.
+
+A resposta boa aqui é curta, admite o que o Jira não faz, e entrega **a única coisa nativa que realmente reduz o trabalho dela hoje**.
 
 ```
-There is a structural problem here worth spotting before you build it, because it
-will fail on exactly the case you care about.
+Short answer: Jira Cloud has no weekly timesheet. Logging work is per item, from
+the item, and there is no native screen where you enter a whole week at once. If
+someone tells you to enable something, it is not there to enable.
 
-Automation rules act on work items: the rule has to find items to run against. But
-the agent you most want to warn is the one who logged nothing yesterday, and that
-agent has no worklog, so there is no work item for the rule to find. Your JQL
-returns zero rows for them, which is indistinguishable from "nothing to do". A
-scheduled rule built on that JQL will silently skip precisely the people it is
-meant to catch.
+Two things do help, though, and they are different problems.
 
-So the rule has to be driven by your list of agents, not by a list of items.
+Seeing your week in one list. This filter gives you every item you logged to this
+week, in one place:
 
-Inside Automation: scheduled trigger with no JQL, then one branch per agent (or
-iterate a hardcoded list of account ids), and inside each branch a Lookup Issues
-action with that agent's JQL, then sum the worklog seconds.
+    worklogAuthor = currentUser() AND worklogDate >= startOfWeek()
 
-Two things that will bite you while building that:
+Save it and it becomes your weekly checklist. One caveat that matters, because it
+surprises people: the Time Spent column in those results is each item's lifetime
+total, not your hours this week. Use the list to see what you touched, not to add up
+what you logged. If you want the actual per-entry hours, the honest source is the
+Work log tab on each item, or /rest/api/3/issue/{key}/worklog if you can script.
 
-- Lookup Issues is capped, 100 items by default. An agent who logged across more
-  items than that gives you a low sum and a wrong warning.
-- The worklog list on an item contains every worklog on that item, not just
-  yesterday's and not just that agent's. So you have to filter on both the author
-  account id and the started date before summing. Drop either filter and you are
-  summing somebody else's hours. Build it against one item that has worklogs from
-  two different people on two different days, and watch the audit log to confirm
-  your smart value is filtering the way you think it is. That is the step where
-  these rules usually turn out wrong.
+Entering the week with fewer tabs. Open that filter in the detail view, where the
+list stays on the left and the item opens on the right. You can move down the list
+and log work on each one without leaving the page or opening a second tab. It is
+still one entry per item, but it is one screen instead of ten.
 
-Outside Automation: a scheduled script over /rest/api/3/issue/{key}/worklog is
-honestly less fiddly, and it lets you iterate the agent roster directly instead of
-iterating items. If you have anywhere to run a cron job, I would go that way.
-
-Either way: build the zero-hours case first, and test it with an agent who genuinely
-logged nothing. That is the one that fails quietly.
+Beyond that, entering a whole week on a single screen is the part Jira genuinely does
+not do, and it is why timesheet apps exist. If you go that way, there is one thing
+worth checking before you commit a team to it: that the app writes native Jira
+worklogs under your own name, rather than keeping the hours in its own database and
+showing you a summary. You can test it in a minute with a trial and the filter above.
+Log an hour through the app, then run that query. If your entry does not come back,
+the hours live outside Jira, and from then on the app's report and Jira's own reports
+answer to different data. That is a much bigger problem to discover in month six than
+in week one.
 ```
 
-**⚠️ Conferir antes de postar:** a resposta **não** dá a sintaxe exata do smart value de propósito — a forma do `.filter()` em listas mudou entre versões da Automation e não confirmei qual está valendo hoje. **Se alguém pedir a sintaxe exata nos comentários, me traz a thread** — eu confirmo na documentação em vez de chutar.
+**⚠️ Conferir antes de postar:** o parágrafo do "detail view" — confirme que a visão de lista com painel de detalhe permite abrir **Log work** sem sair da página no plano dela. Se não permitir, **corte esse parágrafo inteiro**; o resto da resposta se sustenta sozinho e é melhor perder um parágrafo do que ensinar um caminho que não existe.
+
+**Nota de estilo:** o último parágrafo é a nossa tese inteira, dita sem citar produto nenhum e com um **teste que ela pode rodar em um minuto**. É o formato mais útil que existe: quem tem o problema descobre sozinho, e o crédito fica com quem ensinou o teste.
 
 ---
 
-## Resposta 4
+## Resposta 4 — **pergunta nova** · em App Central
 
-**Pergunta:** [why am i not seeing worklog as a gadget to include on my dashboard](https://community.atlassian.com/forums/Jira-questions/why-am-i-not-seeing-worklog-as-a-gadget-to-include-on-my/qaq-p/3011120)
-**Autor:** kenny · **01/05/2025** · sem resposta aceita
+**Pergunta:** [How does your team handle client invoicing from Jira worklogs? Looking for honest feedback](https://community.atlassian.com/forums/App-Central-questions/How-does-your-team-handle-client-invoicing-from-Jira-worklogs/qaq-p/3253898)
+**Autor:** Justin Lo · **26/06/2026** · grupo **App Central**
+**Conferido no navegador em 28/08:** **aberta**, 8 respostas, sem resposta aceita. 2 meses de idade.
 
-**Por que esta:** pergunta de iniciante, respostas existentes vagas, e a resposta boa é curta. Serve para variar o tom — nem toda contribuição precisa ser um tratado.
+**⚠️ Passo extra:** App Central é um **grupo**. A página mostra **Join group** — é preciso entrar no grupo antes de responder. Entrar é grátis e não exige lozenge; **publicar artigo** ali é que exige.
+
+**Por que esta, e por que vale o passo extra:** o assunto é exportação de worklog para faturar, que é a parte onde a gente tem conhecimento próprio e caro — o `csv.js` do D8 existe por causa de cada um dos itens abaixo. E o App Central é o único espaço onde um dia poderemos falar do produto; começar lá com uma contribuição útil vale mais que qualquer anúncio depois.
+
+**Um alerta honesto:** o Justin diz que está *"doing a little research"*. Pode ser um vendor levantando informação de mercado. Isso não muda a decisão — **nada do que está abaixo é a nossa cunha.** Formato de CSV é ofício; a vantagem é o worklog nativo com a identidade da pessoa, e essa não aparece aqui.
 
 ```
-Short answer: there is no worklog gadget in Jira Cloud. The reason is worth knowing,
-because it tells you which workaround to pick.
+Disclosure first: I build Jira apps at Northstack Apps, so treat this as a view from
+that side of the fence rather than a customer's.
 
-What you do get natively:
+The part that decides whether invoicing from worklogs is painful is the shape of the
+export, and most exports get it backwards.
 
-- Company-managed projects: project sidebar, then Reports, then Time Tracking Report
-  (estimate against logged, per item) and User Workload Report (remaining estimate
-  per person, and note that is remaining, not logged).
-- Team-managed projects: the Worklog pie chart gadget, which does exist on
-  dashboards, but slices totals by a field with no date range.
-- Any filter results gadget can show a Time Spent column.
+One row per worklog entry, never a total per item. Summing raw rows into whatever
+grouping the invoice needs takes thirty seconds in a pivot table. Splitting a total
+that arrived already summed is impossible, and that is the state most people are in
+when they say the export is useless. Item-level totals are the easy thing to produce,
+which is exactly why they are the default and why they cost you an hour every month.
 
-The gap is the same in all three: they show totals per work item, never individual
-worklog entries with their dates. "How long did each person spend last week" is a
-question about entries, and no native surface renders entries. So it is a data-shape
-limit, not a setting. If someone tells you to enable something, it is not there to
-enable.
+Two duration columns, not one. Jira's own notation (3h 30m) so you can check a line
+against the item on screen, and decimal hours (3.5) because nobody sums "1h 30m" in a
+spreadsheet. Having both ends the recurring argument about which number is correct.
 
-Two ways out:
+Filter projects by exclusion. Whoever bills by client rarely knows how to list the
+projects they want, but always knows the two they do not want, which are the internal
+one and the holiday one. Selecting from a list of forty projects every month is where
+the errors come from.
 
-1. JQL plus export. A filter like this one:
+One that is a safety issue rather than a formatting preference. Any cell whose text
+starts with an equals sign, plus, minus or at sign is interpreted as a formula when
+the file is opened in Excel. A worklog comment that begins with an equals sign is
+enough. Whoever writes worklog comments is everyone on the team; whoever opens the
+CSV is usually finance. Prefix those cells with an apostrophe on export and it is a
+non-issue.
 
-       project = X AND worklogDate >= startOfWeek()
-
-   gets you the items touched this week, and you export the result to CSV. Caveat:
-   the Time Spent column is still each item's lifetime total, not this week's, so
-   you will be reconciling by hand.
-
-2. REST, if you can script it: /rest/api/3/issue/{key}/worklog returns every entry
-   with author, started and timeSpentSeconds, which is exactly the shape you want,
-   and it is the same data the reports are built from.
-
-If neither fits, an app is a fair answer here. Just check that it reads native Jira
-worklogs rather than keeping hours in its own database, or the numbers in your gadget
-and the numbers in the item's Worklog tab will drift apart over time.
+And the reconciliation step almost everyone skips: before the invoice goes out, open
+one item's Work log tab and compare it with the line on the invoice. If any part of
+the team logs hours through a tool that stores them outside Jira's native worklogs,
+the export and the item disagree, and the person who discovers it is the client.
 ```
 
-**⚠️ Conferir antes de postar:** confirmar que o gadget **Worklog pie chart** aparece mesmo num projeto team-managed. Se não aparecer, **corte esse item da lista** — os outros dois seguem válidos.
+**⚠️ Conferir antes de postar:** que você entrou no grupo App Central (botão **Join group** na página da pergunta).
+
+**Nota:** esta é a **única** das três com linha de identificação no texto. Motivo na regra 3 acima.
 
 ---
 
-## Depois das quatro: o post do beta
+## Depois das três: o anúncio do beta — **cancelado neste canal**
 
-Só depois que as quatro estiverem publicadas — e de preferência com pelo menos uma marcada como útil ou aceita — vai o anúncio do beta. **Post novo, não comentário numa thread alheia.** O texto está em [`BETA-ANUNCIO.md`](BETA-ANUNCIO.md).
+**Não existe forma de anunciar o beta na Atlassian Community sem violar as regras.** O texto que estava pronto quebra quatro delas de uma vez. A análise, com as citações e o que fazer no lugar, está em [`BETA-ANUNCIO.md`](BETA-ANUNCIO.md).
+
+Em uma frase: **a Community é canal de reputação durante o beta, não de recrutamento.** O recrutamento vai para r/jira, LinkedIn, Solution Partners e o fórum de desenvolvedores.
+
+---
+
+## Antes de publicar qualquer uma das três: o perfil
+
+Detalhado em [`BETA-ANUNCIO.md`](BETA-ANUNCIO.md), seção "O que mudar no perfil". O mínimo: **nome público com a empresa** (`Amarildo Pereira _Northstack Apps_`), campos **Company** e **Short bio** preenchidos, e `northstackapps.com` no campo **My website** — que é o único lugar onde o site pode aparecer sem violar a regra de links.
 
 ---
 
 ## Controle
 
-| # | Pergunta | Data | Publicada | Reação |
-|---|---|---|---|---|
-| 1 | [logged time > remaining time](https://community.atlassian.com/forums/Jira-questions/JIRA-Time-Tracking-How-to-filter-Issues-where-logged-time-gt/qaa-p/3281287#M1190210) | 18/02/2026 | ✅ **27/08/2026** | — |
-| 2 | worklog per month | 10/01/2026 | ⬜ | |
-| 3 | Automation sum worklogs | 18/08/2025 | ⬜ | |
-| 4 | worklog gadget | 01/05/2025 | ⬜ | |
-| — | **Post do beta** | — | ⬜ | |
+| # | Pergunta | Data da pergunta | Idade em 28/08 | Estado | Reação |
+|---|---|---|---|---|---|
+| 1 | [logged time greater than remaining](https://community.atlassian.com/forums/Jira-questions/JIRA-Time-Tracking-How-to-filter-Issues-where-logged-time-gt/qaa-p/3281287#M1190210) | 18/02/2026 | 6m 10d | ✅ **publicada 27/08** | — |
+| 2 | [Total Time Spent by user and by organization](https://community.atlassian.com/forums/Jira-Service-Management/Total-Time-Spent-by-user-and-by-organization/qaq-p/3243332) | 02/06/2026 | 2m 26d | ⬜ pronta | |
+| 3 | [log all of my work for the week in one place](https://community.atlassian.com/forums/Jira-questions/Is-there-any-way-to-log-all-of-my-work-for-the-week-in-one-place/qaq-p/3225964) | 23/04/2026 | 4m 5d | ⬜ pronta | |
+| 4 | [client invoicing from Jira worklogs](https://community.atlassian.com/forums/App-Central-questions/How-does-your-team-handle-client-invoicing-from-Jira-worklogs/qaq-p/3253898) | 26/06/2026 | 2m 2d | ⬜ pronta (entrar no grupo antes) | |
+| — | ~~Post do beta~~ | — | — | ❌ **cancelado neste canal** | |
 
-**Se alguém responder com uma pergunta técnica, me traz a thread.** Eu escrevo a réplica. Uma conversa que continua vale mais que quatro respostas soltas — e é ali que aparece o candidato a beta.
+**Todas as três estão dentro da janela de 6 meses hoje.** A número 3 é a mais próxima do limite: **vence em 23/10/2026**. Se o ritmo de publicação escorregar, publique a 3 primeiro.
 
-**Vale acompanhar a resposta 1 por alguns dias.** Ela tem a maior chance de virar resposta aceita das quatro: a thread estava sem resposta aceita, e o `workratio > 100` provavelmente é o que o autor queria. Se for aceita, o post do beta parte de outro patamar.
+**Se alguém responder com uma pergunta técnica, me traz a thread.** Eu escrevo a réplica. Uma conversa que continua vale mais que três respostas soltas — e é ali que aparece o candidato a beta, sem que a gente precise pedir nada.
+
+**Vale acompanhar a resposta 1.** A thread estava sem resposta aceita e o `workratio > 100` provavelmente é o que o autor queria. Uma resposta aceita muda o peso de tudo que vier depois.

@@ -618,6 +618,43 @@ Iniciar um timer em outro item grava o worklog do anterior primeiro. **Se essa g
 
 ---
 
+## 2026-08-28 — A Atlassian Community sai do recrutamento do beta
+
+**Decisão:** o anúncio do beta **não** será publicado na Atlassian Community. O canal passa a ser de **reputação** (responder perguntas técnicas, sem citar o app) e deixa de contar como canal de recrutamento. O recrutamento fica com r/jira, LinkedIn e Solution Partners.
+
+**Motivo, lido nas regras escritas do fórum em 28/08:**
+
+> *"Do only link to the Atlassian Marketplace or Partner Directory, not an external website"*
+> *"Don't link to lead-capture or gated assets (for example: forms, contact us pages, or downloads that require an email)."*
+> *"Do not mention special pricing or discounts, including free trials."*
+> *"Posts with the explicit intent to sell a product or service, or to drive people to a form or a website, will be removed at the discretion of our moderators."*
+
+**Não é um texto mal escrito, é uma impossibilidade estrutural.** O único destino de link permitido é a Marketplace, e nós não temos listagem — a listagem é justamente o que o beta precede. Um anúncio de beta é, por definição, um post cujo propósito é levar a pessoa para fora da Atlassian. As quatro regras acima batem, cada uma num elemento essencial do anúncio.
+
+**Descoberta de tabela junto:** a regra de **necroposting** — *"posting on threads that are six months old or more"* — invalidou três das quatro perguntas escolhidas para as respostas técnicas, **inclusive as duas que aceitavam resposta**. Foram trocadas por perguntas de junho, abril e junho de 2026, conferidas uma a uma no navegador. A resposta 1, já publicada, caiu 9 dias fora da janela; fica publicada, porque não promove nada e ajuda alguém, e a regra passa a valer daqui em diante.
+
+**O que isso custa, sem enfeite:** era o público mais qualificado da lista e estava em primeiro lugar no `BETA-RECRUTAMENTO.md`. Com o canal 1 (rede pessoal) já descartado em 26/08, **o recrutamento inteiro passa a depender de público frio e do canal de parceiros.** O risco do beta subiu — e ele já era o risco do projeto.
+
+**O que fica de ganho:** uma conta com respostas úteis e perfil identificado vale muito mais no dia da listagem do que uma conta criada naquele dia. O trabalho não foi perdido, foi adiantado.
+
+**Reversível?** Sim, e a reversão tem data: **depois da listagem na Marketplace**, quando o link permitido passa a existir.
+
+---
+
+## 2026-08-28 — O nome público do app é "Nativelog", com N maiúsculo
+
+**Decisão:** corrigir o nome do app no Developer Console de `nativelog` para `Nativelog`. **Não muda o link de instalação.**
+
+**Motivo:** na tela de instalação o app aparecia em minúsculo. São **duas strings diferentes**, e só uma delas era nossa: o painel dentro do item mostra o `title` dos módulos do `manifest.yml`, que sempre foi `Nativelog`; a tela de instalação mostra o **nome do app no Developer Console**, criado pelo `forge register` a partir do diretório e nascido minúsculo. Nunca escrevemos esse segundo nome — por isso ninguém percebeu até alguém instalar de fora.
+
+**Não dá para corrigir pelo manifest:** o manifest do Forge não tem campo de nome de app; as propriedades sob `app:` são `id`, `runtime`, `licensing`, `access`, `connect`, `package` e `storage`. É do Console, em **Settings**.
+
+**Por que não quebra o link:** a própria tela de distribuição lista **duas** condições que desligam o link de instalação — licença no manifest, ou submissão à Marketplace. Renomear não está entre elas, e o link se resolve por app id mais ambiente, não por nome.
+
+**Reversível?** Sim, imediatamente.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: em construção.** D1 e D2 entregues. Nenhuma decisão em aberto bloqueia o código.

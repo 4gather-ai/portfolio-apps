@@ -126,7 +126,9 @@ Pós-compra por micro-segmento, outros marketplaces (WordPress, Chrome, Atlassia
 
 Ler nesta ordem: `STATUS.md` → `apps/jira-time/STATUS.md` (estado do app, arquitetura e regras que não se quebra) → `apps/jira-time/PLANO-V1.md` (marcos por dia).
 
-**O risco aberto não é técnico, é o beta (regra 16):** achar 5–10 instâncias reais. Site e e-mail de suporte no ar desde 27/08; registro do beta em `apps/jira-time/BETA.md`. **Falta o humano gerar o link de instalação no Developer Console** — passo a passo em `STATUS.md`.
+**O risco aberto não é técnico, é o beta (regra 16):** achar 5–10 instâncias reais. Site e e-mail de suporte no ar desde 27/08; **link de instalação gerado e testado em 28/08** num site Jira criado do zero. Registro em `apps/jira-time/BETA.md`.
+
+**⚠️ O risco piorou em 28/08:** a **Atlassian Community saiu do recrutamento** — as regras escritas do fórum não permitem anunciar um beta cujo destino fica fora da Marketplace, e a nossa listagem é justamente o que o beta precede. O canal vira reputação; o recrutamento vai para r/jira, LinkedIn e Solution Partners. Com o canal 1 (rede pessoal) já descartado em 26/08, **sobrou público frio**. Ver `DECISOES.md`, 28/08.
 
 **⚠️ NÃO ligar a licença no `manifest.yml` antes de o beta terminar.** A tela do Developer Console avisa que app com licença no manifest **não pode mais ser compartilhado por link de instalação** — ligar antes da hora mata o beta. Ordem correta: beta sem licença → beta termina → licença + preço → submissão. Ver `DECISOES.md`, 27/08/2026.
 
@@ -146,3 +148,6 @@ Ler nesta ordem: `STATUS.md` → `apps/jira-time/STATUS.md` (estado do app, arqu
 - **Editor da Atlassian Community recusa `×` e HTML de colagem**, e sinal de comparação em prosa sai errado. Texto para lá vai em **ASCII puro**, com a comparação escrita por extenso e o sinal só dentro da linha de JQL — nunca no começo da linha
 - **`/rest/api/3/search/jql`** é o endpoint de busca atual (o `/rest/api/3/search` saiu). Confirmado funcionando na `northstack-dev` em 27/08
 - Site estático em `site/`, publicado pelo **Cloudflare Pages**: build vazio, output `site` — ver `site/README.md`
+- **O nome do app e o `title` do módulo são strings diferentes.** O manifest do Forge **não tem** campo de nome de app (sob `app:` só existem `id`, `runtime`, `licensing`, `access`, `connect`, `package`, `storage`). O `title` do módulo é o que aparece dentro do Jira; o **nome do app**, que é o que a tela de instalação mostra, nasce do `forge register` e só se muda no **Developer Console → Settings**. Defeito conhecido **FRGE-525**: o nome novo pode não se propagar para `staging`/`production` — conferir no link de instalação depois de salvar
+- **Regras da Atlassian Community, que restringem o que se pode publicar lá** (lidas em 28/08, citações em `apps/jira-time/COMMUNITY.md`): **necropost** é thread com **6 meses ou mais** — não responder; **links só para a Atlassian Marketplace ou Partner Directory**, nunca site externo; **nada de preço, desconto ou "free trial"**; app/solução só se menciona em **App Central** ou no grupo de Solution Partners, e publicar artigo lá exige o **Partner lozenge**. Consequência prática: **não dá para anunciar beta na Community antes de a listagem existir**
+- **Thread fechada da Community continua exibindo o botão "Answer".** O que diz a verdade é o aviso acima da lista de respostas: *"Comments for this post are closed"*. Conferir pelo botão leva à conclusão contrária da correta

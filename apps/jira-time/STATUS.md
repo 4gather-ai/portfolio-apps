@@ -2,7 +2,7 @@
 
 Apontamento de horas para Jira Cloud. **O worklog do Jira é a fonte de verdade; não há segunda cópia.**
 
-**Última atualização:** 27/08/2026 (sessão 14) · **D14 de 14 — os 14 dias de código acabaram** · **405 testes** · `forge lint` limpo
+**Última atualização:** 28/08/2026 (sessão 15) · **código da v1 pronto** · **405 testes** · `forge lint` limpo
 **Deploys:** `production` **2.0.0** (é onde o beta roda) · `development` **2.23.0** (é onde eu confiro)
 **Onde:** `northstack-dev.atlassian.net` · app id `22d863f1-cb08-4d77-a7b9-bd4098ede2b2` · elegível a **Runs on Atlassian**
 
@@ -36,7 +36,11 @@ Apontamento de horas para Jira Cloud. **O worklog do Jira é a fonte de verdade;
 
 ## ▶️ Próximo — o beta, e ele não é código
 
-O código da v1 acabou. O que falta é **gerar o link de instalação** no Developer Console (passo a passo em `../../STATUS.md`) e **achar 5 a 10 instâncias reais**.
+O código da v1 acabou. O link de instalação **foi gerado em 28/08** e o caminho inteiro foi testado num site Jira criado do zero (`nativelog-beta-zero`): instalou, o timer começou a contar na hora, o apontamento gravou, "Minha semana" veio em pt-BR. Registro em [`BETA.md`](BETA.md).
+
+**O que falta é achar 5 a 10 instâncias reais** — e ficou mais difícil em 28/08, porque a Atlassian Community saiu do recrutamento. Ver `../../STATUS.md` e `BETA-ANUNCIO.md`.
+
+**Um defeito veio do ensaio geral:** na tela de instalação o app aparecia como `nativelog`. É o **nome do app no Developer Console**, não o `title` do manifest — duas strings, e só a nossa estava certa. Correção em `../../DECISOES.md`, 28/08. **É o quinto defeito que só o navegador achou, e o primeiro que só aparece de fora** — nenhuma tela nossa mostra esse nome.
 
 **⚠️ Uma regra de ordem que o D14 descobriu:** **não ligar a licença no manifest antes de o beta terminar.** A tela do Developer Console diz que um app com licença no manifest **não pode mais ser compartilhado por link de instalação** — ligar agora mataria o beta. Ver `../../DECISOES.md`, 27/08.
 
@@ -54,10 +58,14 @@ Nenhum bloqueio técnico. **O risco aberto do projeto não é código, é o beta
 
 | # | O quê | Tempo | Bloqueia |
 |---|---|---|---|
-| 1 | **Gerar o link de instalação** no Developer Console — passo a passo em `../../STATUS.md` | 10 min | **O beta inteiro** |
-| 2 | **Publicar a resposta 2 da Community** — texto pronto para colar em `COMMUNITY.md` | 5 min | O beta |
+| 1 | **Corrigir o nome do app** no Developer Console → Settings: `nativelog` para `Nativelog` | 2 min | Nada — mas é a primeira coisa que um instalador vê |
+| 2 | **Ajustar o perfil da Community** (nome público com a empresa, Company, bio, My website) | 10 min | Publicar qualquer resposta |
+| 3 | **Publicar a resposta 2** — pergunta nova, texto pronto em `COMMUNITY.md` | 5 min | Reputação no canal |
+| 4 | **Me mandar o link de instalação** — não tenho a URL | 1 min | O post do r/jira e os e-mails aos parceiros |
+| 5 | **Postar no r/jira** — agora é o canal principal de recrutamento | 15 min | **O beta inteiro** |
+| 6 | **Escrever para 10 Solution Partners** — resposta lenta, começar cedo | 30 min | O beta |
 
-~~Publicar o site~~ ✅ e ~~criar `support@northstackapps.com`~~ ✅ — feitos por você em 27/08.
+~~Publicar o site~~ ✅, ~~criar `support@northstackapps.com`~~ ✅ (27/08) e ~~gerar o link de instalação~~ ✅ (28/08) — feitos por você.
 ~~Aprovar `PRECO.md`~~ ✅ — aprovado em 27/08: **duas editions**.
 | 4 | **Aprovar [`PRECO.md`](PRECO.md)** — uma decisão (2 ou 3 editions) e os números | 15 min | **Billing** |
 
