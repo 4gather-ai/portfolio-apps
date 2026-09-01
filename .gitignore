@@ -43,3 +43,6 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Insumo do chat estratégico, transitório — não versionar
+_entrada/

@@ -629,6 +629,44 @@ Três limitações que precisam ficar explícitas, porque tornam esta rodada **m
 
 ---
 
+### 🔧 Correção de 01/09/2026 — a tabela desta categoria estava incompleta
+
+A tabela acima **não mapeou o concorrente mais próximo de nós.** Ele apareceu na thread da Barbara Homer, anúnciado pelo próprio fornecedor, quatro meses depois de a rodada 4 ter sido escrita:
+
+| App | Nota | Aval. | Instalações | Selos |
+|---|---|---|---|---|
+| **Worklogs** (SolDevelo) | **4,5** | 101 | 5,4 mil | **Runs on Atlassian + Cloud Fortified + Gold** |
+
+**Por que a omissão importa mais que o número:** ele não é só mais um app de time tracking. **Ele é Runs on Atlassian, lê e grava worklog nativo por arquitetura, e é grátis até 10 usuários** — as três coisas que a rodada 5 tratou como a nossa cunha. Se a rodada 4 o tivesse mapeado, a frase *"worklog nativo com o seu nome"* nunca teria sido escrita como diferencial.
+
+**A consequência é de discurso, não de decisão:** a cunha continua **verdadeira como propriedade do produto** e passa a ser **fraca como argumento de venda**. O que muda é a listagem — registrado em `DECISOES.md`, 01/09/2026.
+
+> ⚠️ **A atenção de método:** este app estava na Marketplace o tempo todo. A rodada 4 leu **as seis primeiras posições por instalações** e parou aí. O concorrente que mais se parece com o produto que a gente ia construir estava fora do top 6 exatamente por ser o mais novo — **e ordenar por volume esconde justamente quem entrou depois com a mesma ideia.**
+
+---
+
+### Teste do Worklogs (SolDevelo) — 01/09/2026, resultado completo
+
+Instalado em trial (edition **Advanced**) na `northstack-dev`, o mesmo site onde o Nativelog já estava. Foi um teste de convivência, não de bancada.
+
+| O que | Resultado |
+|---|---|
+| **O Nativelog escreve worklog nativo com a identidade da pessoa** | ✅ **provado de fora** — aba Work log do `SCRUM-6`: *"Amarildo Pereira logged 10m"* |
+| O Worklogs **lê** worklog e estimativa nativos | ✅ o relatório de 24–31/08 mostrou as **3h16m** que o Nativelog gravou; o modal leu `30m / 2h 39m` do `SCRUM-1` |
+| O Worklogs conseguiu **gravar** | ❌ falhou no `SCRUM-6` e no `SCRUM-1`, com e sem *remaining estimate* — *"We were unable to save worklog at this time"*, precedido de *"Tracking field is hidden in this issue"* |
+| O Jira nativo grava no mesmo item | ✅ o diálogo Time tracking abre e funciona (`11m logged / 2h 49m remaining`) |
+| **Causa da falha deles** | ❓ **desconhecida** — consentimento/instalação do trial, defeito no Jira novo ("Spaces"), ou algo da instância |
+
+**A leitura que vale:** o teste confirmou uma coisa nossa e uma coisa deles. **Nossa:** o worklog do Nativelog é tão nativo que um app de terceiro o leu e somou sem saber que existimos — essa é a prova mais forte da cunha até hoje, porque veio de fora. **Deles:** eles leem nativo também, o que confirma a correção acima.
+
+> 🛑 **Regra adotada em 01/09/2026: não usar a falha de gravação deles como argumento enquanto a causa for desconhecida.** Nem em listagem, nem em resposta de fórum, nem em e-mail a parceiro, nem em conversa.
+>
+> **Motivo:** um concorrente mal instalado não prova nada. Se a causa for o trial, ou o Jira novo, ou a nossa instância, a afirmação volta contra nós **na primeira review** — e aí não é só um argumento perdido, é credibilidade. **Dizer que o concorrente está quebrado é a afirmação mais cara de errar que existe**, porque quem a desmente é o próprio fornecedor, em público, com log.
+>
+> Se um dia a causa for conhecida e for defeito deles: continua fora do nosso texto. **Vendemos o nosso peixe** (regra de discurso 2, `LISTING.md`).
+
+---
+
 ## Categoria 2 — Test management (Jira Cloud) 🟡
 
 | App | Nota | Aval. | Instalações | Selos |
@@ -1019,3 +1057,46 @@ Mesmo no cenário conservador, **51 clientes** contra os ~790 lojistas que a Sho
 | 5 | **Dor técnica repetida em vários concorrentes** | ✅ **Passa com folga** — fidelidade do dado aparece em 4 dos 6 apps, com citação explícita da correção |
 
 **Três critérios aplicáveis, três aprovados.** É o primeiro candidato em cinco rodadas nessa situação — e continua condicionado à verificação do `asUser` no Forge.
+
+---
+
+# RODADA 4b — os oito que anunciaram na thread da Barbara
+
+**Aberta em 01/09/2026. ⚠️ Não executada** — este bloco é o escopo, não o resultado.
+
+## Por que existe
+
+A pergunta da Barbara Homer — *"Is there any way to log all of my work for the week in one place?"* — juntou **dez respostas, oito delas de fornecedores indicando o próprio app**. É a lista de concorrentes mais honesta que existe: não é uma busca nossa por palavra-chave, **é quem se reconheceu no problema**.
+
+E ela já pagou uma correção antes de começar: foi daí que saiu o Worklogs (SolDevelo), que a rodada 4 tinha deixado de fora. **Se um app fora do top 6 muda a nossa frase de posicionamento, os outros sete precisam passar pelo mesmo filtro.**
+
+## Os oito
+
+| # | App | Fornecedor | Estado |
+|---|---|---|---|
+| 1 | **Worklogs** | RVS *(ver nota de atribuição abaixo)* | ✅ verificado em 01/09 — ver rodada 4, categoria 1 |
+| 2 | Report Hub | Grandia | ⬜ |
+| 3 | Calendar for Jira | Teamlead | ⬜ |
+| 4 | WorklogPro | — | ⬜ |
+| 5 | Time Assistant | SolDevelo | ⬜ |
+| 6 | TimePlanner | DevSamurai | ⬜ |
+| 7 | ActivityTimeline | Reliex | ⬜ |
+| 8 | JetTime | JetHeads | ⬜ |
+
+> ⚠️ **Atribuição de fornecedor a confirmar.** A nota de entrada nomeia o app testado como **"Worklogs (SolDevelo)"** e, na lista dos oito, como **"Worklogs (RVS)"** — com a **SolDevelo** aparecendo no item 5 como fornecedora do **Time Assistant**. São duas leituras incompatíveis e **eu não tenho como decidir qual está certa daqui**. Conferir na página da Marketplace do app testado, no campo do fornecedor, **antes de a rodada 4b concluir qualquer coisa** — se forem dois apps distintos, são dois itens da lista, não um.
+
+## O que cada um precisa responder (regra 8)
+
+Nota, número de avaliações, instalações, selos, preço até 10 e a 50 usuários, **e a pergunta que importa**: *ele tem uma tela de lançamento da semana, ou só relatório?*
+
+**Essa é a única coluna que decide alguma coisa agora.** Depois de 01/09 o nosso posicionamento não é mais "worklog nativo", é **digitar a semana numa tela só** — então o concorrente que importa não é quem faz time tracking, é quem faz **entrada** de tempo em grade semanal. Relatório bonito e não editável deixa o problema da Barbara de pé.
+
+## Critério de parada, definido antes de olhar
+
+**Se qualquer um dos oito tiver grade semanal editável com nota 4,8+ e 300+ avaliações, o critério de reprovação da regra 8 bate e aí a conversa é outra** — não cancelar o app, que já está construído, mas parar de vender a tela da semana como o que nos separa e procurar o que nos separa de verdade.
+
+Definir isso **agora**, antes de ler as páginas, é de propósito: critério escolhido depois do dado é critério escolhido para dar o resultado que a gente queria.
+
+## Prioridade
+
+**Baixa, e vale dizer por quê.** O caminho crítico do projeto é o beta, não a pesquisa — `0 de 5` instâncias. A rodada 4b **não pode consumir dia de recrutamento**; ela existe para a listagem não prometer exclusividade que os oito desmentem, e a listagem só vai ao ar depois do beta.

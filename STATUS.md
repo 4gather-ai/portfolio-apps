@@ -1,6 +1,6 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-08-28 (sessão 16) · Dia 3 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
+**Última atualização:** 2026-09-01 (sessão 17) · Dia 8 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
@@ -19,7 +19,57 @@
 
 ---
 
-## 🔴 A notícia ruim da sessão: a Atlassian Community saiu do recrutamento
+## 🟡 O achado de 01/09: apareceu um concorrente que faz a nossa cunha — e o app continua
+
+Você instalou o **Worklogs (SolDevelo)** ao lado do nosso e testou os dois na mesma instância. O resultado tem duas metades e **as duas importam**.
+
+### A metade boa, e ela é a prova mais forte que temos
+
+**Um app de terceiro leu o worklog que o Nativelog gravou, somou, e mostrou `3h16m`** — sem saber que existimos. A cunha deixou de ser afirmação nossa e virou fato verificável **de fora**: se o dado fosse uma cópia nossa, o app deles não teria o que ler.
+
+### A metade ruim, e é sobre a frase, não sobre o produto
+
+O Worklogs é **4,5★, 101 avaliações, 5,4 mil instalações, Runs on Atlassian + Cloud Fortified + Gold**, e **não estava mapeado** na rodada 4 — ela leu as seis primeiras posições por instalações e parou. Ele lê e grava nativo por arquitetura, e é grátis até 10 usuários.
+
+> **"Worklog nativo com o seu nome" descreve os dois. E frase que descreve o concorrente não é posicionamento, é categoria.**
+
+### O que a regra 8 diz, conferida em vez de sentida
+
+O critério de reprovação é *"líder com **4,8★+ e 300+ avaliações** no mesmo escopo"*. Worklogs: **4,5 e 101**. Tempo: **4,1**. **Nenhum critério bate — o app continua.** Escrevi isso em `DECISOES.md` de propósito: a reação instintiva a esse achado é desistir, e a regra existe para a decisão não ser tomada pelo susto.
+
+### O que mudou de verdade: a listagem, e junto com ela o código
+
+A tela principal do Worklogs é **relatório** — oito filtros, grade não editável, lançamento por modal um item de cada vez. **Eles resolveram o problema do gerente. O problema da Barbara continua sem dono:** *"I currently have to open several tickets to log my work for the day or week."*
+
+Então a manchete inverteu: **a semana numa tela só** vira o título, o worklog nativo desce para prova. **E isso cobrou uma dívida no ato** — o D6/D7 lia, navegava, corrigia e apagava a semana, mas **não criava**. Ou o D15 entrava, ou a listagem prometia o que o app não faz. **O D15 está pronto** (abaixo).
+
+**⚠️ Uma regra nova, e vale para conversa também:** **não usamos a falha de gravação do Worklogs como argumento** enquanto a causa for desconhecida. Ela pode ser o trial, o Jira novo ou a nossa instância. Dizer que o concorrente está quebrado é a afirmação mais cara de errar que existe — quem desmente é o próprio fornecedor, em público, com log.
+
+---
+
+## ✅ D15 — a semana passou a lançar, não só a corrigir
+
+`Add entry` no topo e um atalho em cada coluna de dia. Seletor de item **já cheio antes de a pessoa digitar** (itens recentes dela), busca por chave ou por resumo, a data vem da coluna clicada. **443 testes**, `forge lint` limpo, `development` **2.25.0**, ainda elegível a Runs on Atlassian.
+
+**Duas decisões que valem ser vistas:**
+
+**Um caminho só de gravação, para as duas telas.** O painel do item e a folha da semana chamam o **mesmo** resolver; o que muda é de onde vem o item — do contexto, ou do payload. Duas cópias de um código que grava hora saem de sincronia na primeira mudança de regra, e a que ficar para trás grava errado sem ninguém notar.
+
+**O item pode vir do navegador; a identidade nunca.** O comentário antigo do código dizia que criar exigia o contexto. Estava incompleto: quem guarda esse caminho é o `asUser()` — um item forjado no payload só alcança o que a pessoa já alcança **abrindo o item no Jira e clicando em Log work**, e ainda seria hora dela, no nome dela. Não há nada a escalar, e agora há teste dizendo isso.
+
+### 🐞 E o navegador achou mais um — o sexto
+
+**Gravava certo e o dia continuava dizendo "nothing logged".** A folha é remontada por JQL, e o índice de busca do Jira atrasa alguns segundos: o formulário fechava, a mensagem verde aparecia, e logo abaixo dela o dia seguia vazio. **Numa folha de ponto isso não é um atraso, é um convite a lançar de novo** — e o segundo lançamento é um worklog duplicado.
+
+Corrigido: a entrada recém-gravada fica visível **com o id de verdade que o Jira devolveu** (então Edit e Delete já funcionam nela) e **some sozinha** assim que a busca a devolve. Não é uma segunda cópia dos dados — é a resposta da escrita que acabamos de fazer, segurada por alguns segundos. A regra saiu do `.jsx` para `semanaUi.js`, com teste: defeito de estado de tela sem teste volta.
+
+**Verificado no navegador, na `northstack-dev`:** clicar em `Log time on seg., 31 de ago.` abriu o formulário **dentro da coluna de segunda, com a data já preenchida** → digitar `workratio` no seletor manteve as nove letras (o campo não engoliu nada) e filtrou para o SCRUM-3 → gravou 25m → `Add entry` no topo abriu **em terça, que é hoje** → `SCRUM-4`, 40m → **a entrada apareceu na hora, o dia foi de 10m para 50m e a semana de 35m para 1h 15m, sem tocar em Refresh** → e a aba **Work log nativa do SCRUM-4** mostra *"Amarildo Pereira logged 40m"*.
+
+**⚠️ Isto está em `development`, não em `production`.** Ver a lista abaixo.
+
+---
+
+## 🔴 A notícia ruim da sessão anterior: a Atlassian Community saiu do recrutamento
 
 Fui ler as regras escritas do fórum antes de ajustar o texto do anúncio. **Não existe versão do anúncio que caiba nelas.** Não é redação ruim, é impossibilidade estrutural:
 
@@ -51,6 +101,19 @@ Troquei as três por perguntas de **junho, abril e junho de 2026**, todas confer
 ---
 
 ## 🔴 O QUE VOCÊ PRECISA FAZER
+
+### 0. Autorizar o deploy do D15 em produção — **é o primeiro, e bloqueia dois outros**
+
+**Tentei e o sandbox recusou o comando.** O `production` está em **2.0.0**, que é a versão que o link de instalação entrega — ou seja, **quem instalar hoje recebe a semana sem o botão de lançar**.
+
+Isso importa para além de estética: a listagem nova e o e-mail dos parceiros prometem *lançar a semana numa tela*. **Enquanto a produção não subir, essa frase não pode ser dita** (regra de discurso 4: nada de prometer o que não está construído).
+
+```
+cd apps/jira-time/app
+npx forge deploy -e production --non-interactive
+```
+
+**É seguro:** nenhum escopo mudou, então nada precisa ser reinstalado, e hoje só existe a sua instância de ensaio. Se preferir que eu rode, me dê a permissão no `settings.json` e eu faço na próxima sessão.
 
 ### 1. Corrigir o nome do app — 2 minutos
 
@@ -155,7 +218,21 @@ O código já está pronto para os dois mundos: `lib/licenca.js` trata ausência
 
 **O contador que importa não é de testes, é este:** `0 de 5` instâncias reais usando de verdade.
 
-**O que se moveu em 28/08:** o `support@` passou a enviar, a conta do Reddit existe e já tem uma contribuição técnica no ar, e os dez e-mails para parceiros estão escritos. **Nada disso é uma instância ainda** — é a infraestrutura de conseguir a primeira. O canal com a maior chance de virar número é o de parceiros, e ele é o mais lento; por isso começa hoje.
+**O que se moveu em 28/08:** o `support@` passou a enviar, a conta do Reddit existe e já tem uma contribuição técnica no ar, e os dez e-mails para parceiros estão escritos.
+
+**O que se moveu de 29/08 a 01/09:** resposta 3 publicada na Community (30/08), primeiro parceiro contatado (A-Players, 30/08, pelo formulário do Partner Directory), uma troca com o OP no r/jira, e o teste do Worklogs. **Nenhuma instância ainda.**
+
+### O placar dos canais, em números, porque ele diz onde não insistir
+
+| Canal | Estado em 01/09 | Leitura |
+|---|---|---|
+| **Community** | 2 respostas no ar, **0 kudos, 0 réplicas** | Já era só reputação; os zeros confirmam. **Publicar as outras duas e não esperar retorno** |
+| **r/jira** | 1 comentário técnico + 1 troca com o OP · megathread ainda não postado | O aquecimento está funcionando. O megathread é depósito, não vitrine |
+| **Parceiros** | 1 de 10 contatado, sem resposta | **É o canal com maior chance de virar número**, e o mais lento. Um por dia |
+
+**Uma validação externa que não vira instância:** o `u/Kurczakus`, OP da thread do r/jira, migrou do Tempo **pelos dois motivos exatos da nossa tese** — onde as horas moram e quem é o autor do worklog — mais preço. **A dor é real e alguém a descreveu sem nós perguntarmos.** Ele não é candidato a beta: já migrou, e está satisfeito com o Worklogs.
+
+**Uma tarefa por dia mantém o projeto vivo. Zero tarefa por dia é o que o mata.**
 
 ---
 

@@ -103,6 +103,25 @@ permissions:
 | ~~**D13**~~ ✅ | **27/08** | Acessibilidade, revisão de UI, textos finais | — |
 | ~~**D14**~~ ✅ | **27/08** | Empacotar para o beta: produção no ar, `BETA.md`, guia publicado | ~~Gerar o link de instalação~~ ✅ **feito em 28/08, e testado num site novo** |
 
+| ~~**D15**~~ ✅ | **01/09** | **Lançar** na tela da semana: botão Add entry, atalho por dia, seletor de item com os recentes carregados | — |
+
+> **Por que existe um D15 depois de o build ter acabado.** Ele não é escopo novo por vontade: **é o preço de uma decisão de listagem.** Em 01/09 o posicionamento passou a ser *"a semana numa tela só"*, e o D6/D7 **lia, navegava, corrigia e apagava** a semana sem **criar** nada. A regra de discurso 4 (`LISTING.md`) proíbe prometer o que não está construído — então ou o D15 entrava, ou a manchete era mentira. Ver `../../DECISOES.md`, 01/09.
+
+### D15 — escopo, e nada além dele
+
+- **Botão `Add entry`** na página Minha semana, e um **atalho na coluna de cada dia**
+- **Seletor de item:** busca por chave ou resumo, **com a lista de itens recentes da pessoa já carregada** — seletor que abre vazio faz a pessoa voltar ao item, que é exatamente o problema que estamos resolvendo
+- **A data já vem preenchida** com o dia da coluna clicada
+- **Duração e descrição reusando o formulário extraído no D7** — nunca uma segunda cópia
+- **Mesma trilha de autoria e validação do painel do item:** identidade sempre do contexto do Forge, nunca do cliente
+- Depois de gravar, **a semana se remonta** e o total do dia se move na tela
+
+**Não fazer:** lançamento em lote, copiar semana anterior, favoritos, aprovação, taxas. **Cada um é uma boa ideia e nenhum é a v1.**
+
+**Fechamento pela regra 17:** termina com a tela aberta no navegador, **lançando de verdade**, e conferindo a entrada na aba **Work log** nativa do item.
+
+> **O que o D15 não muda:** o recrutamento do beta é o caminho crítico e **não espera por ele.** O beta pode começar com o produto de hoje — o que o D15 destrava é o texto da listagem, e a listagem só vai ao ar depois do beta.
+
 > **Um dia de folga recuperado.** O D2 saiu em 26/08, no dia do D1. As datas seguintes ficam como estavam de propósito: o aviso abaixo diz que a compressão para 14 dias tirou todo o amortecedor, então o dia ganho vale mais como folga do que como antecipação.
 
 **Dias 15–35 — beta privado (regra 16):** 5–10 instâncias reais por 2–3 semanas, correções em ciclo curto, tudo registrado em `BETA.md`.

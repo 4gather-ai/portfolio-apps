@@ -198,11 +198,16 @@ and no amount of configuration will make the totals agree.
 
 ---
 
-## Resposta 3 — **pergunta nova**
+## ✅ Resposta 3 — **PUBLICADA em 30/08/2026**
 
 **Pergunta:** [Is there any way to log all of my work for the week in one place?](https://community.atlassian.com/forums/Jira-questions/Is-there-any-way-to-log-all-of-my-work-for-the-week-in-one-place/qaq-p/3225964)
 **Autora:** Barbara Homer · **23/04/2026** · Jira Cloud, plano Enterprise
 **Conferido no navegador em 28/08:** **aberta**, 10 respostas, **sem resposta aceita**. 4 meses de idade.
+**Publicada em 30/08/2026.** Até 01/09: **0 kudos, 0 réplicas** — ver a leitura no Controle, no fim do arquivo.
+
+> ⚠️ **Falta o permalink da nossa resposta.** O link acima e o da tabela de Controle apontam para **a pergunta**, não para o comentário. Quando abrir a thread, copie a URL da nossa resposta (ela termina em `#M…`) e me mande — é ela que vale para acompanhar reação, e é o formato que a resposta 1 já tem.
+
+> 📍 **E esta thread virou mais que uma resposta.** Foram as **oito respostas de fornecedores** que não resolvem a pergunta da Barbara que derrubaram o posicionamento antigo da listagem, em 01/09. Ver `../../DECISOES.md` e a **rodada 4b** do `../../PESQUISA.md`, que existe por causa dela. **A pergunta que a gente foi responder acabou respondendo uma nossa.**
 
 **Por que esta:** é, literalmente, a pergunta que o nosso produto responde — *"I currently have to open several tickets to log my work for the day or week."* E é por isso que ela exige mais disciplina que as outras: **a resposta tem que ser honesta e não pode terminar em "instale o meu app"**, senão vira exatamente o que a moderação fechou na thread da Laura.
 
@@ -317,15 +322,27 @@ Detalhado em [`BETA-ANUNCIO.md`](BETA-ANUNCIO.md), seção "O que mudar no perfi
 
 ## Controle
 
-| # | Pergunta | Data da pergunta | Idade em 28/08 | Estado | Reação |
+**Estado em 01/09/2026: 2 de 4 publicadas.**
+
+| # | Pergunta | Data da pergunta | Idade em 01/09 | Estado | Reação |
 |---|---|---|---|---|---|
-| 1 | [logged time greater than remaining](https://community.atlassian.com/forums/Jira-questions/JIRA-Time-Tracking-How-to-filter-Issues-where-logged-time-gt/qaa-p/3281287#M1190210) | 18/02/2026 | 6m 10d | ✅ **publicada 27/08** | — |
-| 2 | [Total Time Spent by user and by organization](https://community.atlassian.com/forums/Jira-Service-Management/Total-Time-Spent-by-user-and-by-organization/qaq-p/3243332) | 02/06/2026 | 2m 26d | ⬜ pronta | |
-| 3 | [log all of my work for the week in one place](https://community.atlassian.com/forums/Jira-questions/Is-there-any-way-to-log-all-of-my-work-for-the-week-in-one-place/qaq-p/3225964) | 23/04/2026 | 4m 5d | ⬜ pronta | |
-| 4 | [client invoicing from Jira worklogs](https://community.atlassian.com/forums/App-Central-questions/How-does-your-team-handle-client-invoicing-from-Jira-worklogs/qaq-p/3253898) | 26/06/2026 | 2m 2d | ⬜ pronta (entrar no grupo antes) | |
+| 1 | [logged time greater than remaining](https://community.atlassian.com/forums/Jira-questions/JIRA-Time-Tracking-How-to-filter-Issues-where-logged-time-gt/qaa-p/3281287#M1190210) | 18/02/2026 | 6m 14d | ✅ **publicada 27/08** | **0 kudos, 0 réplicas** |
+| 2 | [Total Time Spent by user and by organization](https://community.atlassian.com/forums/Jira-Service-Management/Total-Time-Spent-by-user-and-by-organization/qaq-p/3243332) | 02/06/2026 | 2m 30d | ⬜ pronta | |
+| 3 | [log all of my work for the week in one place](https://community.atlassian.com/forums/Jira-questions/Is-there-any-way-to-log-all-of-my-work-for-the-week-in-one-place/qaq-p/3225964) | 23/04/2026 | 4m 9d | ✅ **publicada 30/08** — falta o permalink | **0 kudos, 0 réplicas** |
+| 4 | [client invoicing from Jira worklogs](https://community.atlassian.com/forums/App-Central-questions/How-does-your-team-handle-client-invoicing-from-Jira-worklogs/qaq-p/3253898) | 26/06/2026 | 2m 6d | ⬜ pronta (entrar no grupo antes) | |
 | — | ~~Post do beta~~ | — | — | ❌ **cancelado neste canal** | |
 
-**Todas as três estão dentro da janela de 6 meses hoje.** A número 3 é a mais próxima do limite: **vence em 23/10/2026**. Se o ritmo de publicação escorregar, publique a 3 primeiro.
+**As duas que faltam continuam dentro da janela de 6 meses.** A número 3 já saiu, então o relógio que corre agora é o da **2, que vence em 02/12/2026**, e o da **4, em 26/12/2026**. Folga confortável.
+
+### O que os dois zeros dizem, e o que não dizem
+
+Duas respostas no ar, **0 kudos e 0 réplicas nas duas**. Vale ler isso com cuidado, porque é o tipo de número que leva à conclusão errada nos dois sentidos.
+
+**O que não dá para concluir:** que as respostas são ruins. Thread de fórum técnico é lida por quem chega pela busca meses depois, e a maior parte de quem lê nunca clica em nada. **Kudo é sinal de baixa taxa de emissão** — duas amostras não medem nada.
+
+**O que dá para concluir, e é o que importa:** **este canal não vai produzir instância de beta no prazo que a gente tem.** Ele já tinha sido rebaixado a reputação em 28/08, quando as regras fecharam o anúncio; os dois zeros confirmam que a decisão estava certa e que **não vale investir mais dia nele agora**. Publicar as respostas 2 e 4 continua valendo — elas custam 10 minutos, servem ao pedido do Partner lozenge e ficam no ar para sempre. **O que não vale é esperar retorno delas.**
+
+**Onde o dia de trabalho deve ir:** parceiros e megathread. Ver `../../STATUS.md`.
 
 **Se alguém responder com uma pergunta técnica, me traz a thread.** Eu escrevo a réplica. Uma conversa que continua vale mais que três respostas soltas — e é ali que aparece o candidato a beta, sem que a gente precise pedir nada.
 

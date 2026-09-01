@@ -689,6 +689,50 @@ Iniciar um timer em outro item grava o worklog do anterior primeiro. **Se essa g
 
 ---
 
+## 2026-09-01 — O app continua: nenhum critério de reprovação da regra 8 foi atingido
+
+**Decisão:** manter o Nativelog. O achado do Worklogs (SolDevelo) **não** cancela o app.
+
+**Motivo, e ele é o texto da regra, não uma preferência:** o critério de reprovação da regra 8 é *"existe líder com **4,8★+ e 300+ avaliações** no mesmo escopo"*. Os números reais:
+
+| App | Nota | Avaliações | Bate o critério? |
+|---|---|---|---|
+| Worklogs (SolDevelo) | 4,5 | 101 | **Não** — falha nos dois |
+| Timesheets by Tempo | 4,1 | 896 | **Não** — falha na nota |
+
+**Não existe o líder que nos mandaria parar.** Nem os outros dois critérios batem: não há concorrente **grátis** que cubra a v1 inteira (todos cobram acima de 10 usuários, como nós), e a categoria somada fica dentro da faixa de ~500 a ~5.000 avaliações.
+
+**Por que registro isto como decisão, e não como não-evento:** o Worklogs é Runs on Atlassian, lê e grava worklog nativo, é grátis até 10 usuários e tem Cloud Fortified e Gold. **Ele é o app mais parecido com o nosso que existe** — e a reação instintiva a esse achado é desistir. Escrever a conferência aqui é o que impede a decisão de ser tomada pelo susto. A regra 8 foi escrita para ser aplicada nos dois sentidos: **ela reprova candidato, e também protege candidato aprovado de ser abandonado por impressão.**
+
+**O que o achado custa de verdade** está na decisão seguinte. Não é o produto, é a frase.
+
+**Reversível?** Sim — a rodada 4b pode achar entre os outros sete um app que bata o critério. Está no `PESQUISA.md`, com o gatilho definido **antes** da leitura.
+
+---
+
+## 2026-09-01 — A listagem sai da arquitetura e entra na tela da semana
+
+**Decisão:** reescrever as seções 2, 3, 4 e 6 do [`LISTING.md`](apps/jira-time/LISTING.md). A manchete deixa de ser *"Your hours belong in Jira. Not in our database."* e passa a ser **a semana numa tela só**. O worklog nativo continua no texto — **desce de manchete para prova**.
+
+**Motivo:** a manchete antiga descreve **como o produto é feito**, não o que a pessoa ganha na segunda de manhã. E é um eixo que outros apps sérios ocupam com a mesma legitimidade: o Worklogs também é Runs on Atlassian, também lê e grava nativo, também é grátis até 10 usuários. **"Worklog nativo com o seu nome" descreve os dois — e uma frase que descreve o concorrente não é posicionamento, é categoria.**
+
+**O que continua sendo nosso:** a thread da Barbara Homer tem dez respostas, **oito de fornecedores indicando o próprio app, e nenhuma resolve a pergunta dela** — *"I currently have to open several tickets to log my work for the day or week."* A tela principal do Worklogs é relatório: oito filtros, grade não editável, lançamento por modal um item de cada vez. **Eles resolveram o problema do gerente; o problema da Barbara continua sem dono.**
+
+**A inversão, em uma linha:** o benefício vira manchete, o worklog nativo vira prova. **Nada do que estava escrito era falso — mudou a ordem.**
+
+**Quatro regras de discurso, daqui para a frente, em toda listagem e todo texto público:**
+
+1. **Nunca "o único app que…"**, nem "diferente de todos os outros". Exclusividade que não se prova é o que volta contra nós na primeira review.
+2. **Nenhum concorrente citado, nem por alusão.**
+3. **Worklog nativo é afirmado como propriedade nossa, não como raridade.** *"Every entry is a real Jira worklog"* é fato sobre nós e não faz afirmação sobre o mercado.
+4. **Nada de prometer o que não está construído.**
+
+**A regra 4 tem consequência de código, e por isso esta decisão tem um custo:** a listagem nova promete *lançar* a semana numa tela. O D6/D7 hoje **lê, navega, corrige e apaga** a semana — **não cria**. Ou o D15 entra, ou a manchete é mentira. **O D15 entrou junto com esta decisão**, no mesmo dia, e o escopo está fechado em `apps/jira-time/PLANO-V1.md`.
+
+**Reversível?** Sim, e barato — é texto, e a listagem ainda não foi submetida.
+
+---
+
 ## Decisões em aberto (precisam do humano / do chat estratégico)
 
 **Estado: em construção.** D1 e D2 entregues. Nenhuma decisão em aberto bloqueia o código.

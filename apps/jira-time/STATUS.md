@@ -2,8 +2,8 @@
 
 Apontamento de horas para Jira Cloud. **O worklog do Jira é a fonte de verdade; não há segunda cópia.**
 
-**Última atualização:** 28/08/2026 (sessão 15) · **código da v1 pronto** · **405 testes** · `forge lint` limpo
-**Deploys:** `production` **2.0.0** (é onde o beta roda) · `development` **2.23.0** (é onde eu confiro)
+**Última atualização:** 01/09/2026 (sessão 17) · **código da v1 pronto, mais o D15** · **443 testes** · `forge lint` limpo
+**Deploys:** `production` **2.0.0** (é onde o beta roda — **está sem o D15**) · `development` **2.25.0** (é onde eu confiro)
 **Onde:** `northstack-dev.atlassian.net` · app id `22d863f1-cb08-4d77-a7b9-bd4098ede2b2` · elegível a **Runs on Atlassian**
 
 > Este arquivo é o estado do **app**. O estado do portfólio fica em `../../STATUS.md`; os marcos por dia em `PLANO-V1.md`; as decisões em `../../DECISOES.md`.
@@ -29,8 +29,35 @@ Apontamento de horas para Jira Cloud. **O worklog do Jira é a fonte de verdade;
 | **D12** | Instância grande: paginação de verdade e leitura em lotes | 405 |
 | **D13** | Acessibilidade e revisão de textos | 405 |
 | **D14** | **Beta empacotado:** produção no ar, `BETA.md`, guia publicado | 405 |
+| **D15** | **Lançar pela tela da semana** — Add entry, atalho por dia, seletor com os recentes | 443 |
 
 **A cunha está provada no produto, não só no spike:** em 26/08 o Amarildo apontou tempo pelo app e o worklog nasceu **com o nome dele** na aba Work log do Jira. Era o único critério do D3 que o Claude Code não conseguia fechar sozinho.
+
+---
+
+## ✅ D15 — 01/09/2026
+
+A semana passou a **lançar**, não só a corrigir. `Add entry` no topo e um atalho em cada coluna; o seletor de item abre **já com os itens recentes da pessoa** e busca por chave ou por resumo; a data vem da coluna clicada; o formulário é o mesmo do D7, não uma segunda cópia.
+
+**Existe por causa da listagem, e isso está registrado:** em 01/09 o posicionamento virou *"a semana numa tela só"*, e até então a semana lia, navegava, corrigia e apagava — **não criava**. Ver `../../DECISOES.md`.
+
+### Três decisões que valem ser vistas
+
+**1. Um caminho só de gravação, para as duas telas.** O painel e a folha chamam o **mesmo** resolver (`apontarManual`); muda só de onde vem o item — do contexto, ou do payload. É a lição do formulário no D7 aplicada ao servidor.
+
+**2. O item pode vir do navegador; a identidade nunca.** O comentário antigo de `itemDoAlvo` dizia que **criar** exigia o contexto porque não há autoria a conferir. Estava incompleto: quem guarda esse caminho é o `asUser()`. Um item forjado no payload só alcança o que a pessoa já alcança abrindo o item no Jira e clicando em Log work — e ainda seria hora dela, no nome dela. **Não há nada a escalar**, e há teste afirmando que um `accountId` no payload é ignorado.
+
+**3. O seletor é conveniência e falha como conveniência.** `sugerirItens` devolve lista vazia com o motivo em vez de erro: se o picker do Jira cair, a pessoa perde o atalho — **não pode perder o caminho de gravar hora**. Tem teste em cima disso.
+
+### 🐞 O sexto defeito que só o navegador achou
+
+**Gravava certo e o dia continuava dizendo "nothing logged".** A folha é remontada por JQL e o índice de busca do Jira atrasa (~5,7 s, medido no spike). O formulário fechava, a mensagem verde aparecia, e logo abaixo dela o dia seguia vazio. **Numa folha de ponto isso é um convite a lançar de novo** — e o segundo lançamento é um worklog duplicado.
+
+Corrigido: a entrada fica visível com o **id de verdade** que o Jira devolveu (Edit e Delete já funcionam nela) e **some sozinha** quando a busca a devolve. Não é uma segunda cópia — é a resposta da escrita, segurada por segundos. A regra saiu do `.jsx` para `semanaUi.js` com teste: **defeito de estado de tela sem teste volta.**
+
+**Verificado no navegador:** `Log time on seg., 31 de ago.` abriu na coluna de segunda com a data preenchida → `workratio` no seletor manteve as nove letras e filtrou para o SCRUM-3 → 25m gravados → `Add entry` do topo abriu em terça, que é hoje → SCRUM-4, 40m → **apareceu na hora, dia 10m → 50m, semana 35m → 1h 15m, sem Refresh** → aba **Work log nativa do SCRUM-4**: *"Amarildo Pereira logged 40m"*.
+
+**⚠️ Está em `development`. A produção continua em 2.0.0**, sem o D15 — e é ela que o link de instalação entrega. O comando foi recusado pelo sandbox; está na lista do humano.
 
 ---
 
@@ -58,6 +85,7 @@ Nenhum bloqueio técnico. **O risco aberto do projeto não é código, é o beta
 
 | # | O quê | Tempo | Bloqueia |
 |---|---|---|---|
+| 0 | **Autorizar o deploy do D15 em produção** — `npx forge deploy -e production --non-interactive` | 2 min | **A listagem nova e o e-mail dos parceiros** — os dois prometem lançar a semana |
 | 1 | **Corrigir o nome do app** no Developer Console → Settings: `nativelog` para `Nativelog` | 2 min | Nada — mas é a primeira coisa que um instalador vê |
 | 2 | **Ajustar o perfil da Community** (nome público com a empresa, Company, bio, My website) | 10 min | Publicar qualquer resposta |
 | 3 | **Publicar a resposta 2** — pergunta nova, texto pronto em `COMMUNITY.md` | 5 min | Reputação no canal |
@@ -95,6 +123,7 @@ src/
     lotes.js        concorrência limitada: 60 chamadas simultâneas viram 429
     permissoes.js   o que esta pessoa pode fazer neste item
     semana.js       a folha da semana, em dois passos (JQL + endpoint do item)
+    itens.js        sugestões para o seletor de item — recentes sem digitar nada
   resolvers/
     painel.js       as operações do painel — tudo que pode dar errado mora aqui
     semana.js       as operações da página "Minha semana"
@@ -105,7 +134,7 @@ src/
     FormularioApontamento.jsx  o formulário, usado pelas duas telas
     estado.js       relógio otimista, quando reconsultar, o que mudou por fora
     formulario.js   dia+hora local ⇄ instante absoluto
-    semanaUi.js     os sete dias e os rótulos da folha
+    semanaUi.js     os sete dias, os rótulos, e a entrada que a busca ainda não viu
     equipeUi.js     a folha do time agrupada por pessoa — só totais, sem edição
     mensagens.js    motivo técnico → frase que a pessoa entende
 ```
@@ -124,7 +153,8 @@ src/
 8. **Uma consulta de permissão que falha nunca tranca ninguém.** Na dúvida, libera — a gravação de verdade ainda recusa com frase clara, e nesse caminho nada se perde.
 9. **A licença segue a mesma regra, e ela é assimétrica de propósito.** Bloquear um cliente pagante por um campo que não soubemos ler é pior que alguém ver o Pro de graça por um tempo. Só a visão de equipe é paga; o núcleo é igual em todas as editions.
 10. **Ler do Jira sempre pagina e sempre em lotes.** Ler a primeira página e somar dá um total que parece completo e não é; 60 chamadas simultâneas viram 429 e a folha volta furada.
-11. **Símbolo não é texto.** Travessão para dia vazio não é lido por leitor de tela. Campo tem `Label` associado, não texto ao lado.
+11. **Gravar e ver são coisas diferentes, e a busca atrasa.** Depois de escrever, nunca confiar no JQL para confirmar: a entrada recém-gravada é mostrada a partir da **resposta da escrita**, até a busca a devolver. É a regra 2 vista pelo lado da tela.
+12. **Símbolo não é texto.** Travessão para dia vazio não é lido por leitor de tela. Campo tem `Label` associado, não texto ao lado.
 
 ---
 
@@ -137,6 +167,7 @@ Em 26/08 o Claude Code teve acesso ao Chrome pela primeira vez. **Três defeitos
 | Painel mentindo | Aba antiga seguia com "Running" e o relógio andando depois de o timer ser encerrado em outra aba | O painel não é dono da verdade e não reconsultava |
 | Relógio preso | ~20 s entre clicar Start e o relógio andar | Cold start do resolver; e o início marcado pelo servidor comia esses segundos do apontamento |
 | **Campo engolindo texto** | Digitar `45m` deixava `m` | Campo controlado no UI Kit 2: o `value` do re-render volta **depois** da tecla seguinte e sobrescreve |
+| **Dia vazio depois de gravar** *(01/09, D15)* | Gravava certo e o dia seguia "nothing logged" | A folha vem do JQL, e o índice do Jira atrasa. **Convite a lançar em duplicata** |
 
 Em 27/08 o método pagou de novo: **as entradas da semana não carregavam a descrição**, e editar a partir da folha teria apagado em silêncio o que a pessoa escreveu. Apareceu ao ligar o formulário na tela, antes de ir para o ar.
 
@@ -150,7 +181,7 @@ E é a evidência mais forte a favor da **regra 16**: dev store com uma aba só 
 
 ```bash
 # Node está fora do PATH nesta máquina
-"/c/Program Files/nodejs/npm.cmd" run check        # lint + 405 testes
+"/c/Program Files/nodejs/npm.cmd" run check        # lint + 443 testes
 "/c/Program Files/nodejs/npx.cmd" forge lint
 "/c/Program Files/nodejs/npx.cmd" forge deploy --non-interactive
 ```

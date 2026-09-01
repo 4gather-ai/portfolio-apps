@@ -480,11 +480,46 @@ Isso não é acusação de nada. É que **pedir a um vendor concorrente que inst
 
 ---
 
+## 🔧 Atualização de 01/09/2026 — o parágrafo do meio de todos os dez ficou velho
+
+**Os dez e-mails abertos abaixo vendem a cunha errada.** Todos trazem alguma variação de *"cada apontamento vira um worklog nativo do Jira, gravado com a identidade da pessoa"* como **a** diferença do produto. Em 01/09 isso deixou de se sustentar como argumento: existe pelo menos um concorrente que faz igual, é Runs on Atlassian e é grátis até 10 usuários. Motivo completo em `../../DECISOES.md`.
+
+**A frase não é falsa — ela só não separa mais.** E um parceiro de Solution Partner é exatamente quem tem repertório para responder *"o Worklogs também faz isso"*. Mandar o texto velho para os nove restantes é entregar a objeção pronta.
+
+**Troque este parágrafo**, em qualquer um dos dez:
+
+```
+Construí um app de apontamento de horas para Jira Cloud, em Forge. A diferença dele
+é uma só: cada apontamento vira um worklog nativo do Jira, gravado com a identidade
+da pessoa, não do app. [...]
+```
+
+**Por este:**
+
+```
+Construí um app de apontamento de horas para Jira Cloud, em Forge. Ele resolve uma
+coisa que o Jira nao faz: lancar a semana inteira numa tela so. Sete dias lado a
+lado, voce digita as horas de cada dia ali mesmo, sem abrir um item de cada vez e
+sem vinte abas na sexta-feira.
+
+Por baixo, cada entrada e um worklog nativo do Jira gravado no seu nome - entao o
+worklogAuthor = currentUser() acha, o relatorio nativo bate, e se desinstalar as
+horas ficam onde estao.
+```
+
+**O que mudou, e é a mesma inversão da listagem:** o benefício sobe para a primeira frase, o worklog nativo desce para a segunda, como **prova** e não como manchete. **Nenhuma afirmação sobre o mercado, nenhum concorrente citado** — regras de discurso 1 e 2.
+
+> ⚠️ **Isto só pode ser dito depois do D15 estar no ar em produção.** A tela de lançamento da semana foi construída em 01/09; até ela ser implantada no ambiente `production`, o link de instalação entrega uma versão que **lê e corrige** a semana, mas não lança. **Regra de discurso 4: não prometer o que não está construído.** Conferir o estado em `STATUS.md` antes de enviar o parceiro nº 2.
+
+**O e-mail da A-Players, que já saiu, fica como está.** Se eles responderem, a conversa continua com o texto novo — e não há nada a corrigir, porque o que foi dito é verdade.
+
+---
+
 ## Controle
 
 | # | Parceiro | Enviado em | Resposta | Instalou? | Notas |
 |---|---|---|---|---|---|
-| 1 | A-Players | | | ⬜ | |
+| 1 | A-Players | **30/08** — formulário do Partner Directory | ❌ nenhuma até 01/09 | ⬜ | Ver a nota sobre o formulário, abaixo |
 | 2 | PrimeUp | | | ⬜ | |
 | 3 | Loonar | | | ⬜ | |
 | 4 | Vericode | | | ⬜ | |
@@ -496,3 +531,13 @@ Isso não é acusação de nada. É que **pedir a um vendor concorrente que inst
 | 10 | e-Core | | | ⬜ | |
 
 **Quem disser sim entra no [`BETA.md`](BETA.md), não aqui.** Esta tabela é do contato; aquela é da instância — e só a de lá conta para as cinco.
+
+### Sobre o contato nº 1 ter ido pelo formulário
+
+O plano dizia `support@`; o caminho real foi o **formulário do Partner Directory**, que é o que o perfil deles oferece. Está certo — **era exatamente o que o arquivo mandava fazer em vez de inventar endereço.** Duas consequências que valem registrar:
+
+**A resposta não volta necessariamente para o `support@`.** Formulário de parceiro costuma abrir um lead no CRM deles e responder para o endereço digitado no formulário. **Confira qual endereço foi preenchido** — se não foi o `support@`, a resposta pode estar numa caixa que ninguém olha.
+
+**Sem resposta em 2 dias não é sinal de nada.** Formulário de site institucional de consultoria cai em fila comercial, e fila comercial de agosto responde em uma semana ou nunca. **O follow-up combinado é de 7 dias**, e continua valendo: 06/09. Depois disso, o caminho é o LinkedIn de alguém nomeado, não um segundo formulário.
+
+**O que isso muda no ritmo:** nada. **Um por dia.** O parceiro nº 2 sai amanhã, independentemente de a A-Players ter respondido — a taxa de resposta a e-mail frio é baixa por natureza e a resposta a isso é volume com constância, não esperar em fila.
