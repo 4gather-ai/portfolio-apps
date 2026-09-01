@@ -125,5 +125,14 @@
   "semana.erro.precisaPro": "La vista de equipo forma parte de la edición Pro. Todo lo relativo a tu propio tiempo sigue disponible en cualquier edición.",
   "semana.diaVazio": "nada registrado",
   "csv.rotulo": "CSV para copiar",
-  "form.duracaoAjuda": "Usa la notación de Jira: 1h 30m, 45m, o 2 para dos horas."
+  "form.duracaoAjuda": "Usa la notación de Jira: 1h 30m, 45m, o 2 para dos horas.",
+  "semana.novaEntrada": "Registrar tiempo",
+  "semana.lancarNoDia": "Registrar tiempo el {0}",
+  "semana.lancar": "Registrar tiempo",
+  "semana.item": "Elemento de trabajo",
+  "semana.buscarItem": "Escribe la clave o parte del resumen",
+  "semana.escolhaItem": "Elige primero un elemento de trabajo.",
+  "semana.semItens": "Ningún elemento coincide. Prueba con menos palabras, o con la clave del elemento.",
+  "semana.itensParciais": "Jira no ha devuelto sugerencias ahora mismo. Escribe la clave completa del elemento y se encontrará igualmente.",
+  "semana.lancado": "{0} registrado en {1}."
 }

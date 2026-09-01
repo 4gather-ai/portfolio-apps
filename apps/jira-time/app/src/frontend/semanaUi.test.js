@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { diasDaSemana, rotuloDoDia, tituloDaSemana } from './semanaUi.js';
+import {
+  aindaPendentes,
+  diasDaSemana,
+  rotuloDoDia,
+  semanaVisivel,
+  tituloDaSemana,
+} from './semanaUi.js';
 import { chaveDoDia, limitesDaSemana } from '../lib/time.js';
 
 /**
@@ -80,5 +86,77 @@ describe('rótulos', () => {
     expect(titulo).toMatch(/24/);
     expect(titulo).toMatch(/30/);
     expect(titulo).toContain(' - ');
+  });
+});
+
+/**
+ * D15 — a entrada recém-lançada que a busca ainda não enxerga.
+ *
+ * Estes testes existem por um defeito visto no navegador: gravar dava certo e o
+ * dia continuava dizendo "nothing logged", porque a folha é remontada por JQL e
+ * o índice do Jira atrasa. **Numa folha de ponto isso vira lançamento em
+ * duplicata**, então a regra não pode morar dentro de um `.jsx` sem teste.
+ */
+describe('semanaVisivel', () => {
+  const janela = {
+    inicio: new Date(2026, 7, 31, 0, 0, 0),
+    fim: new Date(2026, 8, 6, 23, 59, 59, 999),
+  };
+  const naSemana = new Date(2026, 7, 31, 11, 25).toISOString();
+  const foraDaSemana = new Date(2026, 7, 20, 11, 25).toISOString();
+
+  const daBusca = [{ id: '1', started: naSemana }];
+
+  it('sem pendente, devolve o que a busca devolveu', () => {
+    expect(semanaVisivel(daBusca, [], janela)).toEqual(daBusca);
+  });
+
+  it('mostra a entrada recém-lançada que a busca ainda não trouxe', () => {
+    const nova = { id: '2', started: naSemana };
+    expect(semanaVisivel(daBusca, [nova], janela)).toEqual([daBusca[0], nova]);
+  });
+
+  it('não duplica quando a busca já a devolveu', () => {
+    // O caso que faz a entrada aparecer duas vezes na folha, que é pior que não
+    // aparecer: a pessoa apagaria uma delas achando que lançou duas vezes.
+    const nova = { id: '1', started: naSemana };
+    expect(semanaVisivel(daBusca, [nova], janela)).toEqual(daBusca);
+  });
+
+  it('compara id como texto — o Jira devolve número num lado e string no outro', () => {
+    expect(semanaVisivel([{ id: 1, started: naSemana }], [{ id: '1', started: naSemana }], janela))
+      .toHaveLength(1);
+  });
+
+  it('não arrasta a entrada de hoje para a semana que a pessoa está olhando', () => {
+    // Lançar hoje e navegar para a semana passada não pode mostrar a entrada
+    // lá — seria hora aparecendo num dia em que ninguém trabalhou.
+    const nova = { id: '2', started: foraDaSemana };
+    expect(semanaVisivel(daBusca, [nova], janela)).toEqual(daBusca);
+  });
+
+  it('janela ausente ou ilegível não inventa entrada nenhuma', () => {
+    const nova = { id: '2', started: naSemana };
+    expect(semanaVisivel(daBusca, [nova], null)).toEqual(daBusca);
+    expect(semanaVisivel(daBusca, [nova], { inicio: 'ontem', fim: 'hoje' })).toEqual(daBusca);
+  });
+
+  it('data ilegível na pendente é descartada, não mostrada por engano', () => {
+    expect(semanaVisivel(daBusca, [{ id: '2', started: 'qualquer coisa' }], janela)).toEqual(daBusca);
+  });
+});
+
+describe('aindaPendentes', () => {
+  it('tira as que a busca já devolveu', () => {
+    expect(aindaPendentes([{ id: '1' }, { id: '2' }], [{ id: '1' }])).toEqual([{ id: '2' }]);
+  });
+
+  it('devolve o mesmo array quando nada mudou — array novo a cada carga re-renderiza à toa', () => {
+    const pendentes = [{ id: '9' }];
+    expect(aindaPendentes(pendentes, [{ id: '1' }])).toBe(pendentes);
+  });
+
+  it('aguenta lista vazia dos dois lados', () => {
+    expect(aindaPendentes(undefined, undefined)).toEqual([]);
   });
 });

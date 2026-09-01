@@ -37,20 +37,32 @@ function itemDoPainel(req) {
 }
 
 /**
- * O item de uma entrada que já existe — do contexto, ou do payload.
+ * O item da operação — do contexto quando existe, do payload quando não.
  *
- * A folha da semana (D7) mexe em apontamentos de itens que ela não está
+ * A folha da semana mexe em apontamentos de itens em que ela não está
  * "dentro": é uma `globalPage`, não tem `extension.issue`. Então o id do item
- * vem do navegador ali.
+ * vem do navegador ali — desde o D7 para corrigir e apagar, e desde o **D15**
+ * também para criar.
  *
- * **Isso não afrouxa nada, e vale dizer por quê.** O que nunca vem do cliente é
- * a **identidade** — o `accountId` continua saindo do contexto do Forge. E toda
- * operação que usa esta função passa antes por `conferirAutoria`, que lê o
- * apontamento no Jira e confere o autor. Um id de item forjado só alcança
- * worklogs daquele item cujo autor é quem está pedindo — ou seja, os próprios,
- * que a pessoa já pode editar de qualquer forma. Para **criar** apontamento o
- * item continua vindo só do contexto: ali não há entrada existente para
- * conferir autoria contra.
+ * **O que nunca vem do cliente é a identidade.** O `accountId` continua saindo
+ * do contexto do Forge, e é ele que decide de quem é a hora.
+ *
+ * **Editar e apagar** passam antes por `conferirAutoria`, que lê o apontamento
+ * no Jira e confere o autor: um id forjado só alcança worklogs cujo autor é
+ * quem está pedindo — os próprios, que a pessoa já pode editar de qualquer
+ * jeito.
+ *
+ * **Criar não tem entrada existente contra a qual conferir autoria — e não
+ * precisa ter.** O comentário anterior tratava isso como motivo para exigir o
+ * contexto; o D15 mostrou que o raciocínio estava incompleto. Quem guarda esse
+ * caminho é o `asUser()`: a escrita vale a permissão **da pessoa** naquele
+ * item, e o worklog nasce no nome dela. Um item forjado no payload só consegue
+ * o que ela já consegue **abrindo o item no Jira e clicando em Log work** — e o
+ * resultado ainda seria hora dela, no nome dela. Não há nada a escalar.
+ *
+ * O que muda de verdade é a superfície de erro, não a de segurança: item que
+ * não existe, ou em que ela não pode apontar, volta 400/403/404 do Jira e sai
+ * como frase na tela.
  */
 function itemDoAlvo(req) {
   const issue = req?.context?.extension?.issue;
@@ -338,7 +350,13 @@ export function criarPainel({ timers, worklogs, permissoes, agora = () => new Da
      */
     apontarManual: seguro(async (req) => {
       const accountId = quemEstaPedindo(req);
-      const { issueId, issueKey } = itemDoPainel(req);
+      // `itemDoAlvo` e não `itemDoPainel`: desde o D15 este mesmo caminho serve
+      // ao painel do item (item no contexto) e à tela da semana (item no
+      // payload). **Um caminho só, de propósito** — duas cópias de um código
+      // que grava hora saem de sincronia na primeira mudança de regra, e a que
+      // ficar para trás grava errado sem ninguém notar. Foi a lição do
+      // formulário no D7, e ela vale para o servidor também.
+      const { issueId, issueKey } = itemDoAlvo(req);
 
       const valido = validarApontamento(req?.payload, agora());
       if (!valido.ok) return { ok: false, motivo: valido.motivo };

@@ -13,6 +13,7 @@ import { criarTimers } from '../lib/timer.js';
 import { criarWorklogs } from '../lib/worklog.js';
 import { criarPermissoes } from '../lib/permissoes.js';
 import { criarSemana } from '../lib/semana.js';
+import { criarItens } from '../lib/itens.js';
 import { criarPainel } from './painel.js';
 import { criarVisaoSemana } from './semana.js';
 
@@ -40,7 +41,12 @@ const painel = criarPainel({
 
 // A página "Minha semana" (D6). Mesmo resolver, outra pergunta: o painel é
 // sobre um item, a semana é sobre uma pessoa.
-const visaoSemana = criarVisaoSemana({ semana: criarSemana({ pedir }) });
+const visaoSemana = criarVisaoSemana({
+  semana: criarSemana({ pedir }),
+  // D15 — o seletor de item da tela da semana. Também `asUser`: os itens
+  // recentes são os **desta pessoa**, e a busca enxerga o que ela enxerga.
+  itens: criarItens({ pedir }),
+});
 
 const resolver = new Resolver();
 for (const [nome, fn] of Object.entries({ ...painel, ...visaoSemana })) {

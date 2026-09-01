@@ -125,5 +125,14 @@
   "semana.erro.precisaPro": "A visão de equipe faz parte da edition Pro. Tudo que é sobre o seu próprio tempo continua disponível em qualquer edition.",
   "semana.diaVazio": "nada apontado",
   "csv.rotulo": "CSV para copiar",
-  "form.duracaoAjuda": "Use a notação do Jira: 1h 30m, 45m, ou 2 para duas horas."
+  "form.duracaoAjuda": "Use a notação do Jira: 1h 30m, 45m, ou 2 para duas horas.",
+  "semana.novaEntrada": "Lançar tempo",
+  "semana.lancarNoDia": "Lançar tempo em {0}",
+  "semana.lancar": "Lançar tempo",
+  "semana.item": "Item de trabalho",
+  "semana.buscarItem": "Digite a chave ou parte do resumo",
+  "semana.escolhaItem": "Escolha antes um item de trabalho.",
+  "semana.semItens": "Nenhum item encontrado. Tente menos palavras, ou a chave do item.",
+  "semana.itensParciais": "O Jira não devolveu sugestões agora. Digite a chave inteira do item e ele será encontrado do mesmo jeito.",
+  "semana.lancado": "{0} lançado em {1}."
 }

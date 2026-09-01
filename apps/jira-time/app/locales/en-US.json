@@ -125,5 +125,14 @@
   "semana.erro.precisaPro": "The team view is part of the Pro edition. Everything about your own time stays available on every edition.",
   "semana.diaVazio": "nothing logged",
   "csv.rotulo": "CSV to copy",
-  "form.duracaoAjuda": "Use Jira notation: 1h 30m, 45m, or 2 for two hours."
+  "form.duracaoAjuda": "Use Jira notation: 1h 30m, 45m, or 2 for two hours.",
+  "semana.novaEntrada": "Add entry",
+  "semana.lancarNoDia": "Log time on {0}",
+  "semana.lancar": "Log time",
+  "semana.item": "Work item",
+  "semana.buscarItem": "Type a key or part of the summary",
+  "semana.escolhaItem": "Choose a work item first.",
+  "semana.semItens": "No work items matched. Try fewer words, or the item key.",
+  "semana.itensParciais": "Jira didn't return suggestions just now. Type the item key in full and it will still be found.",
+  "semana.lancado": "{0} logged on {1}."
 }

@@ -83,6 +83,24 @@ export function formularioVazio(agora = new Date()) {
 }
 
 /**
+ * Formulário em branco **para um dia escolhido** — o D15 abre assim.
+ *
+ * A data vem da coluna em que a pessoa clicou; só a hora é a de agora. É o
+ * detalhe que faz o clique na quarta valer alguma coisa: se a data também
+ * viesse de "agora", clicar na coluna de quarta e clicar no botão do topo
+ * dariam o mesmo formulário, e a coluna seria enfeite.
+ *
+ * `data` já vem no formato do DatePicker ('YYYY-MM-DD'). Data ilegível cai
+ * para hoje em vez de montar um formulário quebrado — o campo é editável e a
+ * pessoa vê o que vai gravar antes de gravar.
+ */
+export function formularioNoDia(data, agora = new Date()) {
+  const base = formularioVazio(agora);
+  const valida = typeof data === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(data.trim());
+  return valida ? { ...base, data: data.trim() } : base;
+}
+
+/**
  * Formulário preenchido a partir de um apontamento existente, para corrigir.
  *
  * Traz o comentário de volta junto: editar a duração não pode apagar a

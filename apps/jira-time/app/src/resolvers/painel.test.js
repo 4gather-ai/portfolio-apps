@@ -1156,3 +1156,110 @@ describe('D7: corrigir e apagar a partir da folha da semana', () => {
     expect(worklogs.chamadas).toHaveLength(0);
   });
 });
+
+/**
+ * D15 — lançar a partir da tela da semana.
+ *
+ * A folha é uma `globalPage`: **não há item no contexto do Forge**, então o
+ * item vem no payload. Estes testes seguram as duas metades da regra: o item
+ * pode vir de fora, a **identidade nunca**.
+ */
+describe('apontarManual a partir da folha da semana', () => {
+  /** O contexto de uma globalPage: pessoa identificada, nenhum item. */
+  const NA_SEMANA = req('conta-eu', null);
+
+  it('grava no item que veio no payload quando não há item no contexto', async () => {
+    const { painel, worklogs } = montarD4();
+
+    const r = await painel.apontarManual(
+      comPayload(NA_SEMANA, {
+        duracao: '45m',
+        iniciadoEm: '2026-08-26T14:00:00.000Z',
+        issueId: '10007',
+        issueKey: 'NL-7',
+      })
+    );
+
+    expect(r).toMatchObject({ ok: true, gravado: true, issueKey: 'NL-7' });
+    expect(worklogs.gravados[0]).toMatchObject({ issueId: '10007', segundos: 2700 });
+  });
+
+  it('o item do contexto ganha do payload — no painel, o item é onde a pessoa está', async () => {
+    // Um payload com outro item, aberto dentro de NL-1, grava em NL-1. Sem
+    // isso, um payload malformado moveria silenciosamente a hora de item.
+    const { painel, worklogs } = montarD4();
+
+    await painel.apontarManual(
+      comPayload(EU, {
+        duracao: '10m',
+        iniciadoEm: '2026-08-26T14:00:00.000Z',
+        issueId: '99999',
+      })
+    );
+
+    expect(worklogs.gravados[0].issueId).toBe('10001');
+  });
+
+  it('sem item em lugar nenhum, recusa em vez de inventar um', async () => {
+    const { painel, worklogs } = montarD4();
+
+    const r = await painel.apontarManual(
+      comPayload(NA_SEMANA, { duracao: '1h', iniciadoEm: '2026-08-26T14:00:00.000Z' })
+    );
+
+    expect(r).toMatchObject({ ok: false, motivo: 'sem-item' });
+    expect(worklogs.gravados).toHaveLength(0);
+  });
+
+  it('a identidade continua vindo do contexto, nunca do payload', async () => {
+    // **É esta a linha que o `asUser()` protege.** Um payload que se diz outra
+    // pessoa não grava hora no nome dela.
+    const { painel, worklogs } = montarD4();
+
+    const r = await painel.apontarManual({
+      context: {},
+      payload: {
+        accountId: 'conta-eu',
+        duracao: '1h',
+        iniciadoEm: '2026-08-26T14:00:00.000Z',
+        issueId: '10007',
+      },
+    });
+
+    expect(r).toMatchObject({ ok: false, motivo: 'sem-usuario' });
+    expect(worklogs.gravados).toHaveLength(0);
+  });
+
+  it('a validação do apontamento vale igual, venha o item de onde vier', async () => {
+    const { painel, worklogs } = montarD4();
+
+    const r = await painel.apontarManual(
+      comPayload(NA_SEMANA, {
+        duracao: '30h',
+        iniciadoEm: '2026-08-26T14:00:00.000Z',
+        issueId: '10007',
+      })
+    );
+
+    expect(r.ok).toBe(false);
+    expect(worklogs.gravados).toHaveLength(0);
+  });
+
+  it('lançar pela folha não toca no timer que está rodando', async () => {
+    // Mesma regra do D4, agora pela segunda tela: lançar a sexta esquecida numa
+    // segunda-feira não pode matar o cronômetro que está contando agora.
+    const { painel, storage } = montarD4();
+    await painel.iniciarTimer(EU);
+    const antes = await storage.get(chaveDoTimer('conta-eu'));
+
+    await painel.apontarManual(
+      comPayload(NA_SEMANA, {
+        duracao: '1h',
+        iniciadoEm: '2026-08-26T14:00:00.000Z',
+        issueId: '10007',
+      })
+    );
+
+    expect(await storage.get(chaveDoTimer('conta-eu'))).toEqual(antes);
+  });
+});

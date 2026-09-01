@@ -125,5 +125,14 @@
   "semana.erro.precisaPro": "La vue d'équipe fait partie de l'édition Pro. Tout ce qui concerne votre propre temps reste disponible dans toutes les éditions.",
   "semana.diaVazio": "rien de saisi",
   "csv.rotulo": "CSV à copier",
-  "form.duracaoAjuda": "Utilisez la notation Jira : 1h 30m, 45m, ou 2 pour deux heures."
+  "form.duracaoAjuda": "Utilisez la notation Jira : 1h 30m, 45m, ou 2 pour deux heures.",
+  "semana.novaEntrada": "Saisir du temps",
+  "semana.lancarNoDia": "Saisir du temps le {0}",
+  "semana.lancar": "Saisir du temps",
+  "semana.item": "Ticket",
+  "semana.buscarItem": "Saisissez la clé ou une partie du résumé",
+  "semana.escolhaItem": "Choisissez d'abord un ticket.",
+  "semana.semItens": "Aucun ticket ne correspond. Essayez avec moins de mots, ou avec la clé du ticket.",
+  "semana.itensParciais": "Jira n'a pas renvoyé de suggestions à l'instant. Saisissez la clé complète du ticket : il sera trouvé quand même.",
+  "semana.lancado": "{0} saisi sur {1}."
 }

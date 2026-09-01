@@ -3,6 +3,7 @@ import {
   deInstante,
   formularioDe,
   formularioVazio,
+  formularioNoDia,
   paraDataLocal,
   paraEnvio,
   paraHoraLocal,
@@ -174,5 +175,39 @@ describe('paraDataLocal e paraHoraLocal', () => {
     const d = new Date(2026, 0, 3, 7, 4);
     expect(paraDataLocal(d)).toBe('2026-01-03');
     expect(paraHoraLocal(d)).toBe('07:04');
+  });
+});
+
+/**
+ * D15 — o formulário que abre na coluna de um dia.
+ *
+ * O que estes testes seguram é o que faz o clique na coluna valer alguma coisa:
+ * **a data é a do dia clicado, a hora é a de agora.** Se a data também viesse
+ * de "agora", clicar na quarta e clicar no botão do topo dariam o mesmo
+ * formulário — e a coluna seria enfeite.
+ */
+describe('formularioNoDia', () => {
+  const agora = new Date(2026, 7, 28, 15, 30);
+
+  it('usa o dia pedido e mantém a hora de agora', () => {
+    expect(formularioNoDia('2026-08-26', agora)).toEqual({
+      id: null,
+      duracao: '',
+      data: '2026-08-26',
+      hora: '15:30',
+      comentario: '',
+    });
+  });
+
+  it('ignora espaço em volta da data', () => {
+    expect(formularioNoDia(' 2026-08-26 ', agora).data).toBe('2026-08-26');
+  });
+
+  it('data ilegível cai para hoje em vez de montar um formulário quebrado', () => {
+    // O campo é editável e a pessoa vê o que vai gravar antes de gravar; um
+    // DatePicker com lixo dentro é pior que um com a data de hoje.
+    expect(formularioNoDia('ontem', agora).data).toBe('2026-08-28');
+    expect(formularioNoDia(undefined, agora).data).toBe('2026-08-28');
+    expect(formularioNoDia('2026-8-6', agora).data).toBe('2026-08-28');
   });
 });

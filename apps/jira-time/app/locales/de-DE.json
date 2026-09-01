@@ -125,5 +125,14 @@
   "semana.erro.precisaPro": "Die Teamansicht gehört zur Pro-Edition. Alles rund um deine eigene Zeit bleibt in jeder Edition verfügbar.",
   "semana.diaVazio": "nichts erfasst",
   "csv.rotulo": "CSV zum Kopieren",
-  "form.duracaoAjuda": "Jira-Notation verwenden: 1h 30m, 45m oder 2 für zwei Stunden."
+  "form.duracaoAjuda": "Jira-Notation verwenden: 1h 30m, 45m oder 2 für zwei Stunden.",
+  "semana.novaEntrada": "Zeit erfassen",
+  "semana.lancarNoDia": "Zeit für {0} erfassen",
+  "semana.lancar": "Zeit erfassen",
+  "semana.item": "Vorgang",
+  "semana.buscarItem": "Schlüssel oder Teil der Zusammenfassung eingeben",
+  "semana.escolhaItem": "Wähle zuerst einen Vorgang aus.",
+  "semana.semItens": "Kein Vorgang gefunden. Versuche es mit weniger Wörtern oder mit dem Vorgangsschlüssel.",
+  "semana.itensParciais": "Jira hat gerade keine Vorschläge geliefert. Gib den vollständigen Vorgangsschlüssel ein, dann wird er trotzdem gefunden.",
+  "semana.lancado": "{0} für {1} erfasst."
 }

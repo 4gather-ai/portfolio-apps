@@ -31,7 +31,7 @@ function seguro(fn) {
   };
 }
 
-export function criarVisaoSemana({ semana }) {
+export function criarVisaoSemana({ semana, itens }) {
   return {
     minhaSemana: seguro(async (req) => {
       const accountId = quemEstaPedindo(req);
@@ -88,6 +88,29 @@ export function criarVisaoSemana({ semana }) {
     recursos: seguro(async (req) => {
       quemEstaPedindo(req);
       return { recursos: recursosDoContexto(req?.context) };
+    }),
+
+    /**
+     * D15 — sugestões para o seletor de item da tela da semana.
+     *
+     * **Falha aqui nunca vira erro de tela.** Devolve `ok: true` com lista
+     * vazia e o motivo ao lado: o seletor é conveniência, e conveniência que
+     * quebra não pode levar junto o caminho de gravar hora. Quem não receber
+     * sugestão ainda consegue lançar digitando a chave.
+     */
+    sugerirItens: seguro(async (req) => {
+      quemEstaPedindo(req);
+      const { texto } = req?.payload || {};
+
+      const r = await itens.sugerir({ texto });
+      return {
+        itens: r.itens || [],
+        cortada: Boolean(r.cortada),
+        // A tela mostra a lista que veio; o motivo serve para explicar uma
+        // lista vazia em vez de deixar a pessoa achando que não tem item.
+        parcial: !r.ok,
+        motivo: r.ok ? null : r.motivo,
+      };
     }),
 
     /** Os projetos que esta pessoa enxerga, para o seletor. */

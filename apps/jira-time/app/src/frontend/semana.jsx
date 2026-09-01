@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ForgeReconciler, {
   Button,
   ButtonGroup,
@@ -22,9 +22,9 @@ import { agruparPorDia, chaveDoDia, formatarDuracao, limitesDaSemana } from '../
 import { filtrarProjetos, paraCSV, projetosDe } from '../lib/csv.js';
 import { porPessoa, totalDoTime } from './equipeUi.js';
 import { FormularioApontamento } from './FormularioApontamento.jsx';
-import { formularioDe, paraEnvio } from './formulario.js';
+import { formularioDe, formularioNoDia, paraEnvio } from './formulario.js';
 import { mensagemDaSemana, mensagemDoApontamento, preencher } from './mensagens.js';
-import { diasDaSemana, tituloDaSemana } from './semanaUi.js';
+import { aindaPendentes, diasDaSemana, semanaVisivel, tituloDaSemana } from './semanaUi.js';
 
 /**
  * Nativelog — "Minha semana".
@@ -57,6 +57,32 @@ const Semana = () => {
   // projeto escolhido como sinal de aba deixava as duas folhas na tela ao mesmo
   // tempo enquanto ninguém tinha escolhido projeto — visto no navegador.
   const [aba, setAba] = useState('minha');
+  // D15 — lançar a partir da folha. `lancando` guarda a chave do dia em que o
+  // formulário está aberto: é o que faz o painel nascer dentro da coluna certa
+  // em vez de no topo, e o que garante que só existe um aberto por vez.
+  const [lancando, setLancando] = useState(null);
+  const [itemEscolhido, setItemEscolhido] = useState(null);
+  const [sugestoes, setSugestoes] = useState([]);
+  const [buscandoItens, setBuscandoItens] = useState(false);
+  const [sugestoesParciais, setSugestoesParciais] = useState(false);
+  /**
+   * O que acabou de ser lançado e a busca ainda não enxerga.
+   *
+   * **Visto no navegador em 01/09, e é o defeito que só o navegador acha.** A
+   * folha é remontada por JQL, e o índice de busca do Jira atrasa alguns
+   * segundos (medido: ~5,7 s no spike). Então gravar dava certo, o formulário
+   * fechava, e o dia continuava dizendo "nothing logged" logo abaixo de uma
+   * mensagem verde de sucesso. **Numa folha de ponto isso não é um atraso, é um
+   * convite a lançar de novo** — e o segundo lançamento é um worklog duplicado
+   * que ninguém pediu.
+   *
+   * Não é cópia de dados: é a resposta da escrita que acabamos de fazer, e ela
+   * sai da tela sozinha assim que a busca devolve a mesma entrada.
+   */
+  const [recemLancadas, setRecemLancadas] = useState([]);
+  // O `setTimeout` da busca com atraso, e um selo que descarta resposta velha.
+  const buscaAgendada = useRef(null);
+  const buscaMaisRecente = useRef(0);
   const [projetoDoTime, setProjetoDoTime] = useState('');
   const [time, setTime] = useState(null);
   const [projetosDisponiveis, setProjetosDisponiveis] = useState([]);
@@ -124,6 +150,156 @@ const Semana = () => {
   }, [carregarTime, aba, projetoDoTime, deslocamento]);
 
   /**
+   * A entrada recém-lançada sai da mão assim que a busca passa a devolvê-la.
+   *
+   * Sem esta limpeza, ela seria mostrada para sempre a partir de um estado
+   * nosso — e aí sim seria uma segunda cópia dos dados, que é exatamente o que
+   * este app não tem.
+   */
+  useEffect(() => {
+    if (!dados?.entradas?.length) return;
+    setRecemLancadas((antigas) => aindaPendentes(antigas, dados.entradas));
+  }, [dados]);
+
+  /**
+   * D15 — as sugestões do seletor de item.
+   *
+   * `selo` descarta resposta atrasada: digitar "log" dispara três buscas, e
+   * elas não voltam em ordem. Sem isso, a lista de "l" chega depois da de "log"
+   * e a tela mostra o resultado da letra errada — defeito clássico de
+   * type-ahead, e daqueles que só aparecem com rede lenta.
+   */
+  const buscarItens = useCallback(async (texto) => {
+    const selo = buscaMaisRecente.current + 1;
+    buscaMaisRecente.current = selo;
+    setBuscandoItens(true);
+
+    try {
+      const r = await invoke('sugerirItens', { texto });
+      if (buscaMaisRecente.current !== selo) return;
+      setSugestoes(r?.itens || []);
+      setSugestoesParciais(Boolean(r?.parcial) || !r?.ok);
+    } catch (e) {
+      if (buscaMaisRecente.current !== selo) return;
+      setSugestoes([]);
+      setSugestoesParciais(true);
+    }
+    if (buscaMaisRecente.current === selo) setBuscandoItens(false);
+  }, []);
+
+  /** Digitar não busca a cada tecla: espera a pessoa parar. */
+  const buscarComAtraso = useCallback(
+    (texto) => {
+      if (buscaAgendada.current) clearTimeout(buscaAgendada.current);
+      buscaAgendada.current = setTimeout(() => buscarItens(texto), 300);
+    },
+    [buscarItens]
+  );
+
+  // Timer pendente ao sair da página é vazamento e, pior, um `setState` depois
+  // do desmonte. O `estado.js` do painel aprendeu isso no D3.1.
+  useEffect(() => () => {
+    if (buscaAgendada.current) clearTimeout(buscaAgendada.current);
+  }, []);
+
+  /**
+   * Abrir o formulário de lançamento na coluna de um dia.
+   *
+   * Fecha edição e confirmação de apagar antes: dois formulários abertos sobre
+   * a mesma folha é a forma mais fácil de alguém gravar no lugar errado.
+   */
+  const abrirLancamento = (chaveDoDiaAlvo) => {
+    setAviso(null);
+    setEditando(null);
+    setApagando(null);
+    setItemEscolhido(null);
+    setSugestoes([]);
+    setSugestoesParciais(false);
+    setLancando(chaveDoDiaAlvo);
+    // Já carrega os recentes: seletor que abre vazio manda a pessoa de volta ao
+    // item, que é justamente o que esta tela existe para evitar.
+    buscarItens('');
+  };
+
+  const fecharLancamento = () => {
+    setLancando(null);
+    setItemEscolhido(null);
+    setSugestoes([]);
+  };
+
+  /**
+   * D15 — gravar uma entrada nova a partir da folha.
+   *
+   * Vai pelo **mesmo resolver do painel do item** (`apontarManual`), com o item
+   * no payload porque a página global não está dentro de item nenhum. A
+   * identidade continua vindo do contexto do Forge, e a escrita é `asUser`:
+   * isto só alcança item em que a pessoa já poderia apontar pelo Jira.
+   */
+  const lancar = async (valores) => {
+    if (!itemEscolhido) {
+      setAviso({ tipo: 'error', texto: t('semana.escolhaItem', 'Choose a work item first.') });
+      return;
+    }
+
+    const envio = paraEnvio(valores);
+    if (!envio.ok) {
+      setAviso({ tipo: 'error', texto: t(...mensagemDoApontamento(envio.motivo)) });
+      return;
+    }
+
+    setOcupado(true);
+    setAviso(null);
+    try {
+      const r = await invoke('apontarManual', {
+        ...envio.payload,
+        // Sem `worklogId`: este caminho cria, não corrige.
+        worklogId: undefined,
+        issueId: itemEscolhido.issueId,
+        issueKey: itemEscolhido.issueKey,
+      });
+
+      if (!r?.ok) {
+        // Não fecha: fechar joga fora o que a pessoa digitou justo quando ela
+        // precisa corrigir e reenviar.
+        setAviso({ tipo: 'error', texto: t(...mensagemDoApontamento(r?.motivo)) });
+      } else {
+        // A entrada fica visível já, com o id de verdade que o Jira devolveu —
+        // então Edit e Delete funcionam nela antes mesmo de a busca a enxergar.
+        if (r.worklog?.id) {
+          setRecemLancadas((antigas) => [
+            ...antigas.filter((e) => e.id !== String(r.worklog.id)),
+            {
+              id: String(r.worklog.id),
+              issueId: itemEscolhido.issueId,
+              issueKey: r.issueKey || itemEscolhido.issueKey,
+              titulo: itemEscolhido.titulo,
+              started: r.worklog.started,
+              segundos: r.worklog.segundos,
+              duracao: r.worklog.duracao,
+              comentario: valores.comentario || '',
+            },
+          ]);
+        }
+        fecharLancamento();
+        setAviso({
+          tipo: 'success',
+          texto: preencher(t('semana.lancado', '{0} logged on {1}.'), [
+            r.worklog?.duracao,
+            r.issueKey || itemEscolhido.issueKey,
+          ]),
+        });
+      }
+    } catch (e) {
+      setAviso({ tipo: 'error', texto: t(...mensagemDoApontamento()) });
+    }
+
+    // A folha se remonta do Jira: o total do dia se move sozinho, e a entrada
+    // nova aparece na coluna certa sem nós a inserirmos na lista à mão.
+    await carregar(deslocamento);
+    setOcupado(false);
+  };
+
+  /**
    * Salvar a correção. O `issueId` vai no payload porque esta é uma página
    * global: não há item no contexto do Forge para o resolver ler. A guarda de
    * autoria continua no servidor — ver `itemDoAlvo` em `resolvers/painel.js`.
@@ -185,7 +361,10 @@ const Semana = () => {
 
   if (carregando && !dados) return <Spinner label={t('semana.carregando', 'Loading your week')} />;
 
-  const entradas = dados?.entradas || [];
+  // A busca mais o que acabou de ser lançado e ela ainda não enxerga. A regra
+  // e o motivo estão em `semanaUi.js`, com teste — defeito de estado de tela
+  // sem teste volta.
+  const entradas = semanaVisivel(dados?.entradas, recemLancadas, dados);
   // Agrupamento no fuso local — ver o comentário no topo.
   const { porDia, total } = agruparPorDia(
     entradas.map((e) => ({ started: e.started, timeSpentSeconds: e.segundos }))
@@ -195,9 +374,88 @@ const Semana = () => {
   const linhasDoTime = time
     ? porPessoa(time.entradas, diasDoTime, t('semana.autorDesconhecido', 'Unknown user'))
     : [];
+  /**
+   * Em que dia o botão do topo abre.
+   *
+   * **Hoje, se hoje estiver na semana que está na tela. Senão, o primeiro dia
+   * dela.** O caso que isto evita é silencioso e feio: olhando a semana
+   * passada, clicar em "Add entry" com data de hoje grava numa semana que não
+   * está na tela — a entrada some do olho da pessoa no instante em que grava, e
+   * ela lança de novo achando que falhou.
+   */
+  const hoje = new Date();
+  const diaPadrao =
+    dias.find((d) => chaveDoDia(d.data) === chaveDoDia(hoje)) || dias[0] || null;
+
   const projetos = projetosDe(entradas);
   const paraExportar = filtrarProjetos(entradas, { modo: 'excluir', chaves: projetosFora });
   const csv = exportando ? paraCSV(paraExportar) : '';
+
+  /**
+   * O painel de lançamento, desenhado dentro da coluna do dia.
+   *
+   * **O seletor de item vem antes do formulário e fora dele, de propósito.** O
+   * `useForm` do `@forge/react` registra campos não-controlados; o item, que é
+   * o único valor que precisa viver em `useState` (porque a busca o alimenta de
+   * fora), ficaria sendo a exceção controlada dentro de um formulário
+   * não-controlado. Separar deixa cada metade com uma regra só.
+   */
+  const painelDeLancamento = (chaveDoDiaAlvo) => (
+    <Stack space="space.100">
+      <Label labelFor="nativelog-item">{t('semana.item', 'Work item')}</Label>
+      <Select
+        id="nativelog-item"
+        inputId="nativelog-item"
+        isSearchable
+        isLoading={buscandoItens}
+        placeholder={t('semana.buscarItem', 'Type a key or part of the summary')}
+        options={sugestoes.map((i) => ({
+          label: `${i.issueKey} ${i.titulo}`.trim(),
+          value: i.issueKey,
+        }))}
+        value={
+          itemEscolhido
+            ? {
+                label: `${itemEscolhido.issueKey} ${itemEscolhido.titulo}`.trim(),
+                value: itemEscolhido.issueKey,
+              }
+            : null
+        }
+        /* Só busca; nunca devolve o texto para o campo. Passar `inputValue` de
+           volta a cada tecla é o defeito que engoliu o formulário no D4 — no
+           UI Kit 2 o componente é desenhado do outro lado de uma ponte
+           assíncrona, e o valor do re-render chega depois da tecla seguinte. */
+        onInputChange={(texto) => buscarComAtraso(texto || '')}
+        onChange={(opcao) =>
+          setItemEscolhido(sugestoes.find((i) => i.issueKey === opcao?.value) || null)
+        }
+      />
+
+      {/* Lista vazia sem explicação faz a pessoa achar que não tem item. */}
+      {sugestoesParciais && (
+        <Text>
+          {t(
+            'semana.itensParciais',
+            "Jira didn't return suggestions just now. Type the item key in full and it will still be found."
+          )}
+        </Text>
+      )}
+      {!buscandoItens && !sugestoesParciais && sugestoes.length === 0 && (
+        <Text>{t('semana.semItens', 'No work items matched. Try fewer words, or the item key.')}</Text>
+      )}
+
+      {/* `key` com o dia: os campos são não-controlados, e sem ela abrir o
+          formulário numa segunda coluna reaproveitaria a data da primeira. */}
+      <FormularioApontamento
+        key={`novo-${chaveDoDiaAlvo}`}
+        inicial={formularioNoDia(chaveDoDiaAlvo)}
+        titulo={t('semana.lancar', 'Log time')}
+        ocupado={ocupado}
+        aoSalvar={lancar}
+        aoCancelar={fecharLancamento}
+      />
+    </Stack>
+  );
 
   return (
     <Stack space="space.200">
@@ -401,6 +659,15 @@ const Semana = () => {
           {total > 0 ? formatarDuracao(total) : t('semana.nada', 'nothing logged')}
         </Lozenge>
         {carregando && <Spinner size="small" label={t('semana.atualizando', 'Refreshing')} />}
+        {/* D15 — lançar sem sair da folha. É a razão de a tela existir: quem
+            precisa abrir o item para apontar não ganhou nada com a semana. */}
+        <Button
+          appearance="primary"
+          onClick={() => diaPadrao && abrirLancamento(chaveDoDia(diaPadrao.data))}
+          isDisabled={ocupado || carregando || !diaPadrao}
+        >
+          {t('semana.novaEntrada', 'Add entry')}
+        </Button>
       </Inline>
       )}
 
@@ -420,7 +687,20 @@ const Semana = () => {
                   ? formatarDuracao(segundosDoDia)
                   : t('semana.diaVazio', 'nothing logged')}
               </Text>
+              {/* O atalho de cada coluna. O rótulo repete o dia porque um "+"
+                  solto, para um leitor de tela, é sete botões chamados "mais". */}
+              <Button
+                appearance="subtle"
+                onClick={() =>
+                  lancando === chave ? fecharLancamento() : abrirLancamento(chave)
+                }
+                isDisabled={ocupado}
+              >
+                {preencher(t('semana.lancarNoDia', 'Log time on {0}'), [dia.rotulo])}
+              </Button>
             </Inline>
+
+            {lancando === chave && painelDeLancamento(chave)}
 
             {doDia.map((e) => (
               <Stack key={e.id} space="space.050">
