@@ -5,6 +5,22 @@
  * `estado.js` e `formulario.js`: é lógica de calendário, e calendário erra em
  * silêncio — vira uma folha de ponto com seis dias, ou com a segunda-feira
  * errada, e ninguém percebe olhando a tela.
+ *
+ * ## O idioma dos rótulos é o do app, não o do navegador (D15.1)
+ *
+ * Estas funções recebiam `undefined` no `toLocaleDateString`, que quer dizer
+ * "use o idioma do navegador". **O resto da tela usa o idioma do Jira**, que é
+ * outro: numa instância em inglês aberta num Chrome em português a folha saía
+ * com botões `My week` e colunas `qua., 2 de set.` lado a lado.
+ *
+ * Duas datas no mesmo painel em idiomas diferentes não é só feio. **Num campo
+ * de data é ambiguidade real:** `9/2` é 2 de setembro para quem escreve em
+ * inglês e 9 de fevereiro para quem escreve em português, e quem lê "qua., 2
+ * de set." logo acima tem todo o direito de ler o campo do jeito errado.
+ *
+ * Agora o idioma vem de quem chama, que o tira do mesmo `useTranslation` que
+ * traduz os textos. **`undefined` continua valendo** e cai no navegador — é o
+ * que acontece enquanto o i18n do Forge ainda não carregou.
  */
 
 /**
@@ -15,21 +31,21 @@
  * 23 ou 25 horas: somar 24 h pularia ou repetiria uma data, e a folha de ponto
  * ficaria com um dia a menos exatamente na semana da virada.
  */
-export function diasDaSemana(inicio) {
+export function diasDaSemana(inicio, idioma) {
   const dias = [];
   const base = new Date(inicio);
 
   for (let i = 0; i < 7; i += 1) {
     const data = new Date(base.getFullYear(), base.getMonth(), base.getDate() + i);
-    dias.push({ data, rotulo: rotuloDoDia(data) });
+    dias.push({ data, rotulo: rotuloDoDia(data, idioma) });
   }
 
   return dias;
 }
 
-/** "Mon, Aug 24" no idioma de quem está olhando. */
-export function rotuloDoDia(data) {
-  return data.toLocaleDateString(undefined, {
+/** "Mon, Aug 24" no idioma do app — ver o cabeçalho. */
+export function rotuloDoDia(data, idioma) {
+  return data.toLocaleDateString(idioma || undefined, {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
@@ -37,8 +53,8 @@ export function rotuloDoDia(data) {
 }
 
 /** "Aug 24 - Aug 30" — o intervalo que a tela está mostrando. */
-export function tituloDaSemana(inicio, fim) {
-  const curto = (d) => d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+export function tituloDaSemana(inicio, fim, idioma) {
+  const curto = (d) => d.toLocaleDateString(idioma || undefined, { month: 'short', day: 'numeric' });
   return `${curto(inicio)} - ${curto(fim)}`;
 }
 

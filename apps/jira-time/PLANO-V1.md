@@ -104,6 +104,7 @@ permissions:
 | ~~**D14**~~ ✅ | **27/08** | Empacotar para o beta: produção no ar, `BETA.md`, guia publicado | ~~Gerar o link de instalação~~ ✅ **feito em 28/08, e testado num site novo** |
 
 | ~~**D15**~~ ✅ | **01/09** | **Lançar** na tela da semana: botão Add entry, atalho por dia, seletor de item com os recentes carregados | — |
+| ~~**D15.1**~~ ✅ | **02/09** | **O seletor passou a buscar de verdade** (`currentJQL`), lista curta completada, título antes do campo, data no idioma do app | ✅ **achado por você no beta-zero, pela regra 17** |
 
 > **Por que existe um D15 depois de o build ter acabado.** Ele não é escopo novo por vontade: **é o preço de uma decisão de listagem.** Em 01/09 o posicionamento passou a ser *"a semana numa tela só"*, e o D6/D7 **lia, navegava, corrigia e apagava** a semana sem **criar** nada. A regra de discurso 4 (`LISTING.md`) proíbe prometer o que não está construído — então ou o D15 entrava, ou a manchete era mentira. Ver `../../DECISOES.md`, 01/09.
 
@@ -119,6 +120,8 @@ permissions:
 **Não fazer:** lançamento em lote, copiar semana anterior, favoritos, aprovação, taxas. **Cada um é uma boa ideia e nenhum é a v1.**
 
 **Fechamento pela regra 17:** termina com a tela aberta no navegador, **lançando de verdade**, e conferindo a entrada na aba **Work log** nativa do item.
+
+> **O D15.1 não estava no plano, e é assim que deveria ser.** Ele nasceu de um defeito achado no navegador, numa instância que não é a de desenvolvimento, um dia depois de o D15 sair. **Marco que fecha pela regra 17 gera marco de correção** — e o D15.1 custou meia sessão contra o que teria custado descobrir isso pelo primeiro participante do beta.
 
 > **O que o D15 não muda:** o recrutamento do beta é o caminho crítico e **não espera por ele.** O beta pode começar com o produto de hoje — o que o D15 destrava é o texto da listagem, e a listagem só vai ao ar depois do beta.
 

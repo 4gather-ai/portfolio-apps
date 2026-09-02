@@ -2,8 +2,8 @@
 
 Apontamento de horas para Jira Cloud. **O worklog do Jira é a fonte de verdade; não há segunda cópia.**
 
-**Última atualização:** 01/09/2026 (sessão 17) · **código da v1 pronto, mais o D15** · **443 testes** · `forge lint` limpo
-**Deploys:** `production` **2.0.0** (é onde o beta roda — **está sem o D15**) · `development` **2.25.0** (é onde eu confiro)
+**Última atualização:** 02/09/2026 (sessão 18) · **código da v1 pronto, mais o D15 e o D15.1** · **460 testes** · `forge lint` limpo
+**Deploys:** `production` **2.2.0** (é onde o beta roda — **já com o D15.1**) · `development` **2.27.0** (é onde eu confiro)
 **Onde:** `northstack-dev.atlassian.net` · app id `22d863f1-cb08-4d77-a7b9-bd4098ede2b2` · elegível a **Runs on Atlassian**
 
 > Este arquivo é o estado do **app**. O estado do portfólio fica em `../../STATUS.md`; os marcos por dia em `PLANO-V1.md`; as decisões em `../../DECISOES.md`.
@@ -30,6 +30,7 @@ Apontamento de horas para Jira Cloud. **O worklog do Jira é a fonte de verdade;
 | **D13** | Acessibilidade e revisão de textos | 405 |
 | **D14** | **Beta empacotado:** produção no ar, `BETA.md`, guia publicado | 405 |
 | **D15** | **Lançar pela tela da semana** — Add entry, atalho por dia, seletor com os recentes | 443 |
+| **D15.1** | **O seletor passou a buscar de verdade** + acabamento do formulário | 460 |
 
 **A cunha está provada no produto, não só no spike:** em 26/08 o Amarildo apontou tempo pelo app e o worklog nasceu **com o nome dele** na aba Work log do Jira. Era o único critério do D3 que o Claude Code não conseguia fechar sozinho.
 
@@ -57,7 +58,54 @@ Corrigido: a entrada fica visível com o **id de verdade** que o Jira devolveu (
 
 **Verificado no navegador:** `Log time on seg., 31 de ago.` abriu na coluna de segunda com a data preenchida → `workratio` no seletor manteve as nove letras e filtrou para o SCRUM-3 → 25m gravados → `Add entry` do topo abriu em terça, que é hoje → SCRUM-4, 40m → **apareceu na hora, dia 10m → 50m, semana 35m → 1h 15m, sem Refresh** → aba **Work log nativa do SCRUM-4**: *"Amarildo Pereira logged 40m"*.
 
-**⚠️ Está em `development`. A produção continua em 2.0.0**, sem o D15 — e é ela que o link de instalação entrega. O comando foi recusado pelo sandbox; está na lista do humano.
+~~**⚠️ Está em `development`. A produção continua em 2.0.0**~~ — **resolvido em 02/09: produção 2.2.0, com o D15 e o D15.1.** O link de instalação já entrega a tela que a listagem promete.
+
+---
+
+## ✅ D15.1 — 02/09/2026 · o seletor só devolvia o histórico
+
+**Achado pelo Amarildo na `nativelog-beta-zero`, em produção, pela regra 17.** Digitar a chave ou o resumo de um item **nunca visitado** não devolvia nada. Abrir o item uma vez no Jira o fazia aparecer. Status não tinha influência — conferido com o SCRUM-2 em In Progress.
+
+### A causa, confirmada na documentação antes de mexer
+
+A resposta do `/rest/api/3/issue/picker` vem em duas seções, e **elas não são a mesma coisa**:
+
+| Seção | O que é | Vem sempre? |
+|---|---|---|
+| `hs` — History Search | o que **esta pessoa já abriu** | sim |
+| `cs` — Current Search | **a busca de verdade** | **só com `currentJQL`** |
+
+A Atlassian é explícita: *"Current search is based on a JQL query and is only retrieved when the currentJQL parameter is specified in your request."* Nós não mandávamos o parâmetro. **Metade do seletor não existia.**
+
+**Por que passou:** quem testa um seletor testa com o item que acabou de abrir. Na `northstack-dev` eu já tinha visitado os seis itens, então o histórico cobria tudo e a busca parecia funcionar. **O defeito era invisível exatamente para quem construiu.**
+
+### O que os testes não pegavam, e é a lição
+
+Os testes de `itens.js` afirmavam o **formato** da resposta — as duas seções, montadas à mão no duplo. **Nenhum afirmava que a chamada pedia as duas.** Um duplo devolve o que o autor do teste imaginou, e eu tinha imaginado a resposta completa.
+
+> **Teste de integração com duplo só vale até onde vai a imaginação de quem o escreveu.** O que ele nunca cobre é o parâmetro que você não sabia que existia — e é por isso que a regra 17 não é opcional.
+
+Agora há um teste que **falha sem o parâmetro e passa com ele** (conferido removendo a linha e rodando).
+
+### `currentJQL` amplo, e não vazio
+
+Vai `order by lastViewed DESC`. A Atlassian documenta que `currentJQL` **vazio** deixa de funcionar quando o administrador liga *"Disable empty JQL queries"* — e configuração de instância alheia não é coisa em que se apostar num app que vai para a Marketplace.
+
+### Mais três acabamentos, do mesmo relato
+
+**Lista curta é completada com os itens atribuídos à pessoa.** Instância nova tem histórico vazio, e instância nova é o que o beta tem. Uma sugestão só é praticamente lista vazia. **Com texto digitado, o complemento é filtrado pelo texto** — completar uma busca com item que não casa é pior que devolver vazio: a pessoa lê a lista como resultado da busca e escolhe o item errado.
+
+**O título "Log time" passou a vir antes do campo "Work item".** O seletor mora fora do formulário, então o `FormHeader` caía no meio: o título aparecia **depois** do campo que ele apresenta.
+
+**A data e a hora seguem o idioma do app.** E aqui o relato apontou para mais do que dizia: a folha usava **dois idiomas ao mesmo tempo** — os botões vinham do i18n do Forge e os rótulos dos dias do `toLocaleDateString` do navegador. Numa instância em inglês aberta num Chrome em português saía `My week` com colunas `qua., 2 de set.`. **Num painel com campo de data isso é ambiguidade real:** `9/2` é 2 de setembro em inglês e 9 de fevereiro em português, e quem lê "2 de set." logo acima tem todo o direito de ler o campo errado. Agora os dois saem do mesmo `useTranslation`.
+
+### Verificado no navegador, na `nativelog-beta-zero`, em produção
+
+Sem abrir item nenhum antes, para o histórico continuar vazio: o seletor abriu oferecendo **SCRUM-2, SCRUM-3 e SCRUM-5** (antes traria só o SCRUM-5) → digitar `Tarefa` devolveu **SCRUM-2, SCRUM-3 e SCRUM-1**, três itens nunca abertos, o que só a seção Current Search explica → 15m lançados no **SCRUM-2**, o item exato do relato → total do dia 10m → 25m → e a aba **Work log nativa do SCRUM-2** mostra *"Amarildo Pereira logged 15m"*.
+
+E os rótulos passaram a concordar: `Aug 31 - Sep 6` com `Mon, Aug 31`, num app cuja interface está em inglês. Antes eram rótulos em português sobre botões em inglês.
+
+> ⚠️ **O que não deu para conferir:** a data em `pt-BR`. As duas instâncias que temos rodam o app em inglês, e trocar o idioma da conta é ajuste seu, não meu. **O que dá para afirmar é que campo e rótulo saem do mesmo idioma** — antes eram fontes diferentes, e era daí que vinha `9/2/2026` embaixo de `2 de set.`
 
 ---
 
@@ -85,7 +133,6 @@ Nenhum bloqueio técnico. **O risco aberto do projeto não é código, é o beta
 
 | # | O quê | Tempo | Bloqueia |
 |---|---|---|---|
-| 0 | **Autorizar o deploy do D15 em produção** — `npx forge deploy -e production --non-interactive` | 2 min | **A listagem nova e o e-mail dos parceiros** — os dois prometem lançar a semana |
 | 1 | **Corrigir o nome do app** no Developer Console → Settings: `nativelog` para `Nativelog` | 2 min | Nada — mas é a primeira coisa que um instalador vê |
 | 2 | **Ajustar o perfil da Community** (nome público com a empresa, Company, bio, My website) | 10 min | Publicar qualquer resposta |
 | 3 | **Publicar a resposta 2** — pergunta nova, texto pronto em `COMMUNITY.md` | 5 min | Reputação no canal |
@@ -168,6 +215,7 @@ Em 26/08 o Claude Code teve acesso ao Chrome pela primeira vez. **Três defeitos
 | Relógio preso | ~20 s entre clicar Start e o relógio andar | Cold start do resolver; e o início marcado pelo servidor comia esses segundos do apontamento |
 | **Campo engolindo texto** | Digitar `45m` deixava `m` | Campo controlado no UI Kit 2: o `value` do re-render volta **depois** da tecla seguinte e sobrescreve |
 | **Dia vazio depois de gravar** *(01/09, D15)* | Gravava certo e o dia seguia "nothing logged" | A folha vem do JQL, e o índice do Jira atrasa. **Convite a lançar em duplicata** |
+| **Seletor só achava o já visitado** *(02/09, D15.1)* | Item nunca aberto não aparecia na busca | Faltava `currentJQL`, e **o duplo do teste devolvia a resposta que eu imaginei** |
 
 Em 27/08 o método pagou de novo: **as entradas da semana não carregavam a descrição**, e editar a partir da folha teria apagado em silêncio o que a pessoa escreveu. Apareceu ao ligar o formulário na tela, antes de ir para o ar.
 
@@ -181,7 +229,7 @@ E é a evidência mais forte a favor da **regra 16**: dev store com uma aba só 
 
 ```bash
 # Node está fora do PATH nesta máquina
-"/c/Program Files/nodejs/npm.cmd" run check        # lint + 443 testes
+"/c/Program Files/nodejs/npm.cmd" run check        # lint + 460 testes
 "/c/Program Files/nodejs/npx.cmd" forge lint
 "/c/Program Files/nodejs/npx.cmd" forge deploy --non-interactive
 ```

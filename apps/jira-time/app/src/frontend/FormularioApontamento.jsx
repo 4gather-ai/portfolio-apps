@@ -40,21 +40,42 @@ import {
  * **Quem monta este componente deve passar `key`** com o id da entrada: os
  * campos são não-controlados, e sem `key` o "Edit" da segunda linha
  * reaproveitaria os valores da primeira.
+ *
+ * **`cabecalho={false}` quando quem chama já escreveu o título.** A tela da
+ * semana precisa do título **antes** do seletor de item, que mora fora do
+ * formulário; se o `FormHeader` continuasse aqui, "Log time" apareceria no
+ * meio, depois do campo que ele deveria estar apresentando.
+ *
+ * **A data e a hora seguem o idioma da pessoa**, não o da máquina que serviu a
+ * página. Sem `locale`, o `DatePicker` mostra `9/2/2026` para quem está lendo o
+ * resto da tela em português — e `9/2` é 9 de fevereiro para essa pessoa, não 2
+ * de setembro. **Num campo de data, formato ambíguo não é estética: é hora
+ * lançada no mês errado.** O idioma sai do mesmo `useTranslation` que traduz o
+ * resto, então os dois nunca discordam.
  */
-export const FormularioApontamento = ({ inicial, ocupado, titulo, aoSalvar, aoCancelar }) => {
-  const { t } = useTranslation();
+export const FormularioApontamento = ({
+  inicial,
+  ocupado,
+  titulo,
+  cabecalho = true,
+  aoSalvar,
+  aoCancelar,
+}) => {
+  const { t, locale } = useTranslation();
   const { handleSubmit, register, getFieldId } = useForm({ defaultValues: inicial });
 
   return (
     <Form onSubmit={handleSubmit(aoSalvar)}>
       {/* `FormHeader` e não um `Strong` solto: dentro do `FormSection`, o texto
           solto encostava no primeiro rótulo e saía "Log timeTime spent". */}
-      <FormHeader
-        title={
-          titulo ||
-          (inicial.id ? t('form.editar', 'Edit entry') : t('form.novo', 'Log time'))
-        }
-      />
+      {cabecalho && (
+        <FormHeader
+          title={
+            titulo ||
+            (inicial.id ? t('form.editar', 'Edit entry') : t('form.novo', 'Log time'))
+          }
+        />
+      )}
       <FormSection>
         <Label labelFor={getFieldId('duracao')}>
           {t('form.duracao', 'Time spent')}
@@ -75,12 +96,12 @@ export const FormularioApontamento = ({ inicial, ocupado, titulo, aoSalvar, aoCa
           {t('form.data', 'Date started')}
           <RequiredAsterisk />
         </Label>
-        <DatePicker {...register('data', { required: true })} />
+        <DatePicker locale={locale} {...register('data', { required: true })} />
 
         <Label labelFor={getFieldId('hora')}>{t('form.hora', 'Time started')}</Label>
         {/* `timeIsEditable` porque a lista pronta só oferece de 30 em 30
             minutos, e trabalho não começa em número redondo. */}
-        <TimePicker timeIsEditable {...register('hora')} />
+        <TimePicker locale={locale} timeIsEditable {...register('hora')} />
 
         <Label labelFor={getFieldId('comentario')}>{t('form.descricao', 'Description')}</Label>
         <TextArea placeholder={t('form.opcional', 'Optional')} {...register('comentario')} />

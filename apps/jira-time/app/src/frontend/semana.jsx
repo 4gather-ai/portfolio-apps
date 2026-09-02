@@ -36,7 +36,12 @@ import { aindaPendentes, diasDaSemana, semanaVisivel, tituloDaSemana } from './s
  * seguinte, e a pessoa veria horas num dia em que não trabalhou.
  */
 const Semana = () => {
-  const { t } = useTranslation();
+  // `locale` só existe quando o i18n do Forge terminou de carregar; até lá é
+  // `undefined`, e as datas caem no idioma do navegador. **Passar isto adiante
+  // é o que impede a folha de mostrar dois idiomas ao mesmo tempo** — botões
+  // em inglês com colunas em português, e um campo de data que a pessoa lê
+  // pelo formato errado. Ver `semanaUi.js`.
+  const { t, locale } = useTranslation();
   const [dados, setDados] = useState(null);
   const [erro, setErro] = useState(null);
   const [carregando, setCarregando] = useState(true);
@@ -369,8 +374,8 @@ const Semana = () => {
   const { porDia, total } = agruparPorDia(
     entradas.map((e) => ({ started: e.started, timeSpentSeconds: e.segundos }))
   );
-  const dias = dados ? diasDaSemana(dados.inicio) : [];
-  const diasDoTime = time ? diasDaSemana(time.inicio) : [];
+  const dias = dados ? diasDaSemana(dados.inicio, locale) : [];
+  const diasDoTime = time ? diasDaSemana(time.inicio, locale) : [];
   const linhasDoTime = time
     ? porPessoa(time.entradas, diasDoTime, t('semana.autorDesconhecido', 'Unknown user'))
     : [];
@@ -402,6 +407,12 @@ const Semana = () => {
    */
   const painelDeLancamento = (chaveDoDiaAlvo) => (
     <Stack space="space.100">
+      {/* O título vem antes do primeiro campo, e o primeiro campo é o seletor
+          de item — que mora fora do formulário. Por isso ele é escrito aqui e
+          o `FormularioApontamento` recebe `cabecalho={false}`: com o título
+          dentro do formulário, "Log time" aparecia depois do campo que ele
+          apresenta. Achado no beta em 02/09. */}
+      <Heading as="h4">{t('semana.lancar', 'Log time')}</Heading>
       <Label labelFor="nativelog-item">{t('semana.item', 'Work item')}</Label>
       <Select
         id="nativelog-item"
@@ -449,7 +460,7 @@ const Semana = () => {
       <FormularioApontamento
         key={`novo-${chaveDoDiaAlvo}`}
         inicial={formularioNoDia(chaveDoDiaAlvo)}
-        titulo={t('semana.lancar', 'Log time')}
+        cabecalho={false}
         ocupado={ocupado}
         aoSalvar={lancar}
         aoCancelar={fecharLancamento}
@@ -466,7 +477,9 @@ const Semana = () => {
         {aba === 'time' ? t('semana.time', 'Team') : t('semana.minha', 'My week')}
       </Heading>
       <Heading as="h3">
-        {dados ? tituloDaSemana(dados.inicio, dados.fim) : t('semana.carregando', 'Loading your week')}
+        {dados
+          ? tituloDaSemana(dados.inicio, dados.fim, locale)
+          : t('semana.carregando', 'Loading your week')}
       </Heading>
 
       {/* D9 — duas abas. A de equipe é somente leitura, e a tela diz isso. */}

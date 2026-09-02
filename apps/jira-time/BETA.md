@@ -49,9 +49,13 @@ Uma linha por defeito, com o que mudou por causa dele. **Vazio até o beta come�
 
 | Data | Quem achou | O que aconteceu | Por que os testes não pegaram | O que mudou |
 |---|---|---|---|---|
-| | | | | |
+| **02/09** | Amarildo, na `nativelog-beta-zero` (produção 2.1.0) | **O seletor de item só achava o que já tinha sido aberto.** Digitar a chave ou o resumo de um item nunca visitado não devolvia nada; bastava abrir o item uma vez no Jira para ele passar a aparecer | Os testes afirmavam o **formato** da resposta do picker, com as duas seções montadas à mão. **Nunca afirmaram que a chamada pedia as duas.** Um duplo devolve o que o autor do teste imaginou, e eu tinha imaginado a resposta completa | `currentJQL` passou a ir na chamada — sem ele o Jira devolve **só o histórico**. Mais um teste que falha sem o parâmetro, e a lista curta passou a ser completada com os itens atribuídos à pessoa. Ver `STATUS.md`, D15.1 |
 
 **A coluna que mais importa é a quarta.** Um defeito que os testes não pegaram diz onde o nosso modelo do mundo está errado — e é essa a informação que dev store nenhuma dá.
+
+> **A primeira linha desta tabela veio de uma instância que não é participante do beta, e mesmo assim prova a regra 16.** A `nativelog-beta-zero` é nossa, tem cinco itens e nenhum dado sujo — e ainda assim mostrou um defeito que a `northstack-dev` escondia, **por um motivo que ninguém teria previsto: lá eu já tinha aberto todos os itens.** O histórico do picker estava cheio, então a busca parecia funcionar.
+>
+> **É o argumento da regra 16 no seu formato mais barato:** não foi carga, nem fuso, nem permissão estranha. Foi *outra pessoa, noutra instância, com outro passado de navegação*. Cinco a dez delas acham o que nós dois não achamos.
 
 ---
 

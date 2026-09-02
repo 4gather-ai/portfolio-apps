@@ -160,3 +160,37 @@ describe('aindaPendentes', () => {
     expect(aindaPendentes(undefined, undefined)).toEqual([]);
   });
 });
+
+/**
+ * D15.1 — o idioma dos rótulos.
+ *
+ * A folha mostrava botões no idioma do Jira e colunas no idioma do navegador.
+ * **Num painel com campo de data isso é ambiguidade real:** `9/2` é 2 de
+ * setembro em inglês e 9 de fevereiro em português.
+ */
+describe('idioma dos rótulos', () => {
+  const quarta = new Date(2026, 8, 2);
+
+  it('o rótulo do dia segue o idioma pedido', () => {
+    expect(rotuloDoDia(quarta, 'en-US')).toContain('Sep');
+    expect(rotuloDoDia(quarta, 'pt-BR')).toContain('set');
+  });
+
+  it('o título da semana também', () => {
+    expect(tituloDaSemana(quarta, new Date(2026, 8, 6), 'en-US')).toContain('Sep');
+    expect(tituloDaSemana(quarta, new Date(2026, 8, 6), 'pt-BR')).toContain('set');
+  });
+
+  it('os sete dias saem todos no mesmo idioma', () => {
+    const rotulos = diasDaSemana(new Date(2026, 7, 31), 'pt-BR').map((d) => d.rotulo);
+    expect(rotulos).toHaveLength(7);
+    for (const rotulo of rotulos) expect(rotulo).not.toMatch(/Mon|Tue|Wed|Thu|Fri|Sat|Sun/);
+  });
+
+  it('sem idioma continua valendo — é o que vale enquanto o i18n não carregou', () => {
+    // Não afirma o resultado, que depende da máquina: afirma que não quebra e
+    // que devolve rótulo de verdade.
+    expect(rotuloDoDia(quarta)).toBeTruthy();
+    expect(diasDaSemana(new Date(2026, 7, 31))).toHaveLength(7);
+  });
+});

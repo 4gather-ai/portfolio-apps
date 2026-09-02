@@ -1,21 +1,63 @@
 # STATUS — Northstack Apps
 
-**Última atualização:** 2026-09-01 (sessão 17) · Dia 8 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
+**Última atualização:** 2026-09-02 (sessão 18) · Dia 9 de 365 · **Gasto: R$ 0,00 no projeto** (domínio pago à parte)
 **Meta 12 meses:** US$ 15.000/mês recorrente · R$ 1M acumulado · Orçamento R$ 10.000
 
 ---
 
-## ▶️ Nativelog · código pronto · **o beta pode começar** · 405 testes
+## ▶️ Nativelog · código pronto · **produção 2.2.0, com o D15** · 460 testes
 
 | Etapa | Estado |
 |---|---|
-| **D1–D14** · 26–27/08 | ✅ os 14 dias de código, produção 2.0.0 no ar |
+| **D1–D14** · 26–27/08 | ✅ os 14 dias de código |
+| **D15 + D15.1** · 01–02/09 | ✅ **a semana lança**, e o seletor busca de verdade — **produção 2.2.0** |
 | **Link de instalação** | ✅ **gerado por você em 28/08** |
 | **Ensaio geral em site novo** (`nativelog-beta-zero`) | ✅ instalou, apontou, tudo certo — [`BETA.md`](apps/jira-time/BETA.md) |
 | **`support@` enviando, não só recebendo** | ✅ 28/08 — sem isso o canal de parceiros não existia |
 | **Conta no Reddit + aquecimento** | ▶️ `u/amarildo_dev`, 1 comentário técnico publicado em 28/08 |
 | **10 Solution Partners, com e-mail pronto para cada um** | ✅ [`BETA-PARCEIROS.md`](apps/jira-time/BETA-PARCEIROS.md) |
 | **Convidar 5–10 instâncias reais** | 🔴 **é aqui que o projeto está parado, e não é problema de código** |
+
+---
+
+## 🐞 02/09: você achou o sétimo defeito, e ele é o mais instrutivo até agora
+
+**O seletor de item só encontrava o que você já tinha aberto.** Digitar a chave ou o resumo de um item nunca visitado devolvia nada; bastava abrir o item uma vez no Jira para ele passar a aparecer.
+
+### A causa, e por que ela passou por 443 testes
+
+O endpoint do Jira devolve **duas** seções: o histórico (o que a pessoa já abriu) e a busca de verdade. A segunda **só vem se você pedir**, com um parâmetro chamado `currentJQL`, que nós não mandávamos. A documentação da Atlassian diz isso com todas as letras — fui conferir antes de mexer, como você pediu.
+
+**Metade do seletor não existia, e era a metade que importa:** a tela da semana serve justamente para lançar hora **no item que a pessoa não abriu**.
+
+**Por que nem eu nem os testes pegamos:**
+
+- **Eu:** na `northstack-dev` eu já tinha visitado todos os seis itens. O histórico cobria tudo, e a busca parecia funcionar. **O defeito era invisível exatamente para quem construiu.**
+- **Os testes:** eles afirmavam o **formato** da resposta, com as duas seções montadas à mão no duplo. Nenhum afirmava que a chamada **pedia** as duas.
+
+> **Um duplo de teste devolve o que quem escreveu o teste imaginou.** Ele nunca cobre o parâmetro que você não sabia que existia. É o argumento da regra 17 no formato mais barato que já tivemos — e você o achou em minutos.
+
+Agora existe um teste que **falha sem o parâmetro e passa com ele**. Conferi tirando a linha e rodando.
+
+### E o que a sua lista de acabamento revelou de quebra
+
+Você relatou "a data sai em formato americano numa interface em português". Ao ir consertar, o problema era maior do que a frase: **a folha usava dois idiomas ao mesmo tempo.** Os botões vinham do i18n do Forge; os rótulos dos dias, do idioma do navegador. Numa instância em inglês aberta num Chrome em português, saía `My week` com colunas `qua., 2 de set.`.
+
+**Num painel com campo de data isso não é estética.** `9/2` é 2 de setembro em inglês e 9 de fevereiro em português — e quem lê "2 de set." logo acima tem todo o direito de ler o campo errado. **Isso é hora lançada no mês errado.** Os dois agora saem da mesma fonte.
+
+Os outros dois saíram como pedido: o título "Log time" vem antes do campo "Work item", e a lista curta é completada com os itens atribuídos à pessoa — com o cuidado de, havendo texto digitado, só completar com o que casa com ele.
+
+### Verificado onde importa
+
+**Na `nativelog-beta-zero`, em produção**, sem abrir item nenhum antes: o seletor abriu oferecendo SCRUM-2, SCRUM-3 e SCRUM-5 → `Tarefa` devolveu três itens nunca abertos → 15m lançados no **SCRUM-2**, o item exato do seu relato → aba **Work log nativa**: *"Amarildo Pereira logged 15m"*.
+
+**Uma coisa não deu para conferir e eu prefiro dizer:** a data em `pt-BR`. As duas instâncias rodam o app em inglês, e trocar o idioma da conta é ajuste seu. O que dá para afirmar é que campo e rótulo agora saem do **mesmo** idioma — antes eram fontes diferentes, e era daí que vinha o `9/2/2026`.
+
+### E isto é evidência da regra 16, não só um defeito a mais
+
+A `nativelog-beta-zero` **não é participante do beta** — é nossa, tem cinco itens e nenhum dado sujo. Mesmo assim mostrou o que a `northstack-dev` escondia, por um motivo que ninguém teria previsto: **lá eu já tinha aberto todos os itens.**
+
+Não foi carga, nem fuso, nem permissão estranha. Foi *outra pessoa, noutra instância, com outro passado de navegação*. **Cinco a dez delas acham o que nós dois não achamos** — e é exatamente isso que a regra 16 compra.
 
 ---
 
@@ -101,19 +143,6 @@ Troquei as três por perguntas de **junho, abril e junho de 2026**, todas confer
 ---
 
 ## 🔴 O QUE VOCÊ PRECISA FAZER
-
-### 0. Autorizar o deploy do D15 em produção — **é o primeiro, e bloqueia dois outros**
-
-**Tentei e o sandbox recusou o comando.** O `production` está em **2.0.0**, que é a versão que o link de instalação entrega — ou seja, **quem instalar hoje recebe a semana sem o botão de lançar**.
-
-Isso importa para além de estética: a listagem nova e o e-mail dos parceiros prometem *lançar a semana numa tela*. **Enquanto a produção não subir, essa frase não pode ser dita** (regra de discurso 4: nada de prometer o que não está construído).
-
-```
-cd apps/jira-time/app
-npx forge deploy -e production --non-interactive
-```
-
-**É seguro:** nenhum escopo mudou, então nada precisa ser reinstalado, e hoje só existe a sua instância de ensaio. Se preferir que eu rode, me dê a permissão no `settings.json` e eu faço na próxima sessão.
 
 ### 1. Corrigir o nome do app — 2 minutos
 
@@ -210,7 +239,7 @@ O código já está pronto para os dois mundos: `lib/licenca.js` trata ausência
 
 ## 📊 Onde o projeto está
 
-**Três dias de calendário, 14 marcos, 405 testes, zero real gasto. O código da v1 acabou** — e o ensaio geral de 28/08 provou que o caminho de instalação funciona numa instância criada do zero.
+**Três dias de calendário, 16 marcos, 460 testes, zero real gasto. O código da v1 acabou** — e o ensaio geral de 28/08 provou que o caminho de instalação funciona numa instância criada do zero.
 
 **O que sobra é o que sempre foi o risco, e ele piorou nesta sessão:** achar 5 a 10 instâncias reais, agora sem o canal mais qualificado. Isso não é trabalho de código — é convencer estranhos a instalar um app novo de um desenvolvedor desconhecido, e a regra 16 não deixa pular.
 
